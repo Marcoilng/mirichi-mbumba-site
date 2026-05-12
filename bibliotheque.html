@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bibliothèque — Boutique officielle | Mirichi Mbumba</title>
+  <meta name="description" content="Catalogue des ouvrages : la seule boutique en ligne agréée.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+
+<div id="mm-nav-root"></div>
+
+<main class="page-shell">
+<section class="section-alt py-14 px-6 lg:px-12">
+  <div class="max-w-7xl mx-auto">
+    <p class="breadcrumb mb-6"><a href="index.html">Accueil</a> · Bibliothèque</p>
+    <div class="section-label flex items-center gap-3 mb-3 reveal"><div class="gold-line"></div>Catalogue</div>
+    <h1 class="reveal reveal-delay-1" style="font-size:clamp(2.25rem,4vw,3.25rem);font-weight:300">La <span style="color:var(--gold-light);font-style:italic">Bibliothèque</span></h1>
+    <p class="reveal reveal-delay-2" style="color:var(--muted);max-width:640px;margin-top:1rem;line-height:1.8">⚠️ <strong style="color:var(--gold-light)">La seule boutique en ligne agréée</strong> pour acquérir les ouvrages de Mirichi Mbumba.</p>
+  </div>
+</section>
+<section class="section-main py-10 px-6 lg:px-12">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex gap-3 justify-center mb-12 flex-wrap reveal">
+      <button type="button" class="filter-btn active" onclick="filterBooks('all',this)">Tous</button>
+      <button type="button" class="filter-btn" onclick="filterBooks('entrepreneuriat',this)">Entrepreneuriat</button>
+      <button type="button" class="filter-btn" onclick="filterBooks('foi',this)">Foi &amp; Business</button>
+      <button type="button" class="filter-btn" onclick="filterBooks('dev',this)">Développement perso</button>
+      <button type="button" class="filter-btn" onclick="filterBooks('lead',this)">Leadership</button>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6" id="books-grid">
+      <article class="book-item reveal card-dark p-5 flex flex-col h-full relative" data-category="foi">
+        <a href="livre.html" class="book-cover mb-4 block relative" style="border-radius:2px">
+          <div class="p-6 flex flex-col justify-center relative" style="min-height:200px">
+            <span class="badge-release" style="position:absolute;top:10px;right:10px;font-size:0.55rem">Nouveau</span>
+            <div style="font-size:0.55rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold)">Mirichi Mbumba</div>
+            <h2 style="font-family:'Cormorant Garant',serif;font-size:1.75rem;margin-top:0.5rem">Chrepreneur</h2>
+            <p style="font-size:0.8rem;color:var(--muted);font-style:italic">Chrétien et Entrepreneur</p>
+          </div>
+        </a>
+        <p class="clinique-pill inline-block mb-2" style="font-size:0.62rem">Foi &amp; Business</p>
+        <h3 style="font-family:'Cormorant Garant',serif;font-size:1.15rem">Chrepreneur</h3>
+        <p style="color:var(--muted);font-size:0.82rem;line-height:1.65;flex:1;margin:0.5rem 0 1rem">L'union de la foi et de l'entrepreneuriat moderne.</p>
+        <div class="flex items-center justify-between pt-3" style="border-top:1px solid rgba(196,146,42,0.12)">
+          <span style="font-family:'Cormorant Garant',serif;color:var(--gold-light);font-size:1.25rem">24,99 €</span>
+          <button type="button" class="btn-gold" style="padding:8px 14px;font-size:0.65rem" onclick="addToCart('Chrepreneur','24.99','Broché')">Ajouter</button>
+        </div>
+      </article>
+      <article class="book-item reveal reveal-delay-1 card-dark p-5 flex flex-col h-full" data-category="entrepreneuriat">
+        <div class="book-cover mb-4" style="border-radius:2px">
+          <div class="p-6 flex flex-col justify-center" style="min-height:200px">
+            <div style="font-size:0.55rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold)">Mirichi Mbumba</div>
+            <h2 style="font-family:'Cormorant Garant',serif;font-size:1.45rem">L'ADN de l'Entrepreneur</h2>
+          </div>
+        </div>
+        <p class="clinique-pill inline-block mb-2" style="font-size:0.62rem">Entrepreneuriat</p>
+        <h3 style="font-family:'Cormorant Garant',serif;font-size:1.15rem">L'ADN de l'Entrepreneur</h3>
+        <p style="color:var(--muted);font-size:0.82rem;line-height:1.65;flex:1;margin:0.5rem 0 1rem">Décoder le génie entrepreneurial.</p>
+        <div class="flex items-center justify-between pt-3" style="border-top:1px solid rgba(196,146,42,0.12)">
+          <span style="font-family:'Cormorant Garant',serif;color:var(--gold-light);font-size:1.25rem">19,99 €</span>
+          <button type="button" class="btn-gold" style="padding:8px 14px;font-size:0.65rem" onclick="addToCart('ADN Entrepreneur','19.99','Broché')">Ajouter</button>
+        </div>
+      </article>
+      <article class="book-item reveal reveal-delay-2 card-dark p-5 flex flex-col h-full" data-category="lead">
+        <div class="book-cover mb-4" style="border-radius:2px">
+          <div class="p-6 flex flex-col justify-center" style="min-height:200px">
+            <div style="font-size:0.55rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold)">Mirichi Mbumba</div>
+            <h2 style="font-family:'Cormorant Garant',serif;font-size:1.35rem">Architectes du Futur</h2>
+          </div>
+        </div>
+        <p class="clinique-pill inline-block mb-2" style="font-size:0.62rem">Leadership</p>
+        <h3 style="font-family:'Cormorant Garant',serif;font-size:1.15rem">Architectes du Futur</h3>
+        <p style="color:var(--muted);font-size:0.82rem;line-height:1.65;flex:1;margin:0.5rem 0 1rem">Guide du leader chrétien.</p>
+        <div class="flex items-center justify-between pt-3" style="border-top:1px solid rgba(196,146,42,0.12)">
+          <span style="font-family:'Cormorant Garant',serif;color:var(--gold-light);font-size:1.25rem">21,99 €</span>
+          <button type="button" class="btn-gold" style="padding:8px 14px;font-size:0.65rem" onclick="addToCart('Architectes du Futur','21.99','Broché')">Ajouter</button>
+        </div>
+      </article>
+      <article class="book-item reveal reveal-delay-3 card-dark p-5 flex flex-col h-full relative" data-category="dev">
+        <div class="book-cover mb-4 relative" style="border-radius:2px">
+          <div class="p-6 flex flex-col justify-center relative" style="min-height:200px">
+            <span class="badge-release" style="position:absolute;top:10px;right:10px;font-size:0.5rem;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--dark)">Exclusif web</span>
+            <div style="font-size:0.55rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold)">Mirichi Mbumba</div>
+            <h2 style="font-family:'Cormorant Garant',serif;font-size:1.25rem">Journal du Bâtisseur</h2>
+          </div>
+        </div>
+        <p class="clinique-pill inline-block mb-2" style="font-size:0.62rem">Développement personnel</p>
+        <h3 style="font-family:'Cormorant Garant',serif;font-size:1.15rem">Journal du Bâtisseur</h3>
+        <p style="color:var(--muted);font-size:0.82rem;line-height:1.65;flex:1;margin:0.5rem 0 1rem">365 jours de discipline, foi et clarté.</p>
+        <div class="flex items-center justify-between pt-3" style="border-top:1px solid rgba(196,146,42,0.12)">
+          <span><span style="text-decoration:line-through;color:var(--muted);font-size:0.85rem;margin-right:6px">29 €</span><span style="font-family:'Cormorant Garant',serif;color:var(--gold-light);font-size:1.25rem">22 €</span></span>
+          <button type="button" class="btn-gold" style="padding:8px 14px;font-size:0.65rem" onclick="addToCart('Journal du Bâtisseur','22','Broché')">Ajouter</button>
+        </div>
+      </article>
+    </div>
+    <div class="card-dark p-8 mt-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6 reveal">
+      <div>
+        <p class="section-label mb-2">Pack intégral</p>
+        <p style="font-family:'Cormorant Garant',serif;font-size:1.5rem">Toute la collection</p>
+        <p style="color:var(--muted);font-size:0.9rem;margin-top:0.35rem">Économisez jusqu'à 15 % en commandant le pack.</p>
+      </div>
+      <a href="contact.html" class="btn-outline inline-block">Demander le pack</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="mm-footer-root"></div>
+<div id="mm-cart-root"></div>
+<script src="site-chrome.js"></script>
+<script src="_shared.js"></script>
+</body>
+</html>

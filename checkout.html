@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Mirichi Mbumba</title>
+  <meta name="description" content="Informations, livraison et paiement.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+
+<div id="mm-nav-root"></div>
+
+<main class="page-shell">
+<section class="section-alt py-12 px-6 lg:px-12">
+  <div class="max-w-7xl mx-auto">
+    <p class="breadcrumb mb-4"><a href="index.html">Accueil</a> · <a href="panier.html">Panier</a> · Checkout</p>
+    <h1 style="font-size:clamp(2rem,3vw,2.5rem);font-weight:300">Commande</h1>
+    <div class="chk-steps mt-8">
+      <span class="done">✓ Panier</span>
+      <span>→</span>
+      <span class="current">2 Informations</span>
+      <span>→</span>
+      <span>3 Livraison</span>
+      <span>→</span>
+      <span>4 Paiement</span>
+    </div>
+  </div>
+</section>
+<section class="section-main py-10 px-6 lg:px-12">
+  <div class="max-w-6xl mx-auto grid lg:grid-cols-3 gap-10">
+    <div class="lg:col-span-2 space-y-8">
+      <div class="card-dark p-6 lg:p-8">
+        <p class="section-label mb-4">Informations personnelles</p>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div><label class="form-label">Prénom</label><input class="form-input" placeholder="Jean"></div>
+          <div><label class="form-label">Nom</label><input class="form-input" placeholder="Dupont"></div>
+          <div class="sm:col-span-2"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="vous@email.com"></div>
+          <div class="sm:col-span-2"><label class="form-label">Téléphone</label><input class="form-input" placeholder="+243…"></div>
+        </div>
+      </div>
+      <div class="card-dark p-6 lg:p-8">
+        <p class="section-label mb-4">Adresse de livraison</p>
+        <div class="space-y-4">
+          <div><label class="form-label">Adresse</label><input class="form-input" placeholder="Rue, numéro"></div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div><label class="form-label">Ville</label><input class="form-input"></div>
+            <div><label class="form-label">Code postal</label><input class="form-input"></div>
+          </div>
+          <div><label class="form-label">Pays</label><select class="form-input"><option>RDC</option><option>France</option><option>Belgique</option><option>Autre</option></select></div>
+        </div>
+      </div>
+      <div class="card-dark p-6 lg:p-8">
+        <p class="section-label mb-4">Méthode de paiement</p>
+        <label class="flex items-center gap-3 mb-3" style="cursor:pointer;font-size:0.9rem;color:var(--muted)"><input type="radio" name="pay" checked> Carte bancaire (Visa / Mastercard)</label>
+        <label class="flex items-center gap-3 mb-3" style="cursor:pointer;font-size:0.9rem;color:var(--muted)"><input type="radio" name="pay"> Mobile Money (M-Pesa, Orange Money…)</label>
+        <label class="flex items-center gap-3" style="cursor:pointer;font-size:0.9rem;color:var(--muted)"><input type="radio" name="pay"> PayPal</label>
+      </div>
+      <button type="button" class="btn-gold" style="width:100%;padding:16px;font-size:0.78rem">Valider et payer (démo)</button>
+    </div>
+    <aside class="card-dark p-6 h-fit lg:sticky" style="top:6rem" id="checkout-summary-root">
+      <p class="section-label mb-4">Résumé</p>
+      <div id="checkout-lines" class="mb-4"></div>
+      <div class="flex justify-between text-sm" style="color:var(--muted)"><span>Sous-total</span><span id="chk-subtotal">0,00 €</span></div>
+      <div class="flex justify-between text-sm mt-2" style="color:var(--muted)"><span>Livraison</span><span id="chk-shipping">0,00 €</span></div>
+      <div class="full-divider my-4"></div>
+      <div class="flex justify-between"><span style="font-weight:600">Total</span><span id="chk-total" style="font-family:'Cormorant Garant',serif;font-size:1.35rem;color:var(--gold-light)">0,00 €</span></div>
+    </aside>
+  </div>
+</section>
+</main>
+
+<div id="mm-footer-root"></div>
+<div id="mm-cart-root"></div>
+<script src="site-chrome.js"></script>
+<script src="_shared.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réserver une session — Mirichi Mbumba</title>
+  <meta name="description" content="Type de session, calendrier et créneaux (maquette).">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+
+<div id="mm-nav-root"></div>
+
+<main class="page-shell">
+<section class="section-alt py-14 px-6 lg:px-12">
+  <div class="max-w-7xl mx-auto">
+    <p class="breadcrumb mb-4"><a href="index.html">Accueil</a> · Réservation</p>
+    <h1 style="font-size:clamp(2rem,3vw,2.75rem);font-weight:300">Réserver une <span style="color:var(--gold-light);font-style:italic">session</span></h1>
+    <p style="color:var(--muted);margin-top:0.5rem">Intégration Calendly / Cal.com possible ici.</p>
+  </div>
+</section>
+<section class="section-main py-10 px-6 lg:px-12">
+  <div class="max-w-5xl mx-auto grid lg:grid-cols-2 gap-10">
+    <div class="space-y-4 reveal">
+      <p class="section-label">Type de session</p>
+      <label class="card-dark p-4 flex gap-3 cursor-pointer" style="align-items:flex-start"><input type="radio" name="sess" checked><div><strong>Session découverte</strong><p style="font-size:0.85rem;color:var(--muted)">30 min · gratuit</p></div></label>
+      <label class="card-dark p-4 flex gap-3 cursor-pointer" style="align-items:flex-start"><input type="radio" name="sess"><div><strong>Coaching individuel</strong><p style="font-size:0.85rem;color:var(--muted)">90 min · 175€</p></div></label>
+      <label class="card-dark p-4 flex gap-3 cursor-pointer" style="align-items:flex-start"><input type="radio" name="sess"><div><strong>Stratégie business</strong><p style="font-size:0.85rem;color:var(--muted)">2h · 290€</p></div></label>
+      <label class="card-dark p-4 flex gap-3 cursor-pointer" style="align-items:flex-start"><input type="radio" name="sess"><div><strong>Audit organisationnel</strong><p style="font-size:0.85rem;color:var(--muted)">Demi-journée · sur devis</p></div></label>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <p class="section-label mb-3">Calendrier (démo)</p>
+      <div class="card-dark p-4 mb-4">
+        <div class="cal-grid">
+          <span style="color:var(--gold);font-weight:600">L</span><span style="color:var(--gold);font-weight:600">M</span><span style="color:var(--gold);font-weight:600">M</span><span style="color:var(--gold);font-weight:600">J</span><span style="color:var(--gold);font-weight:600">V</span><span style="color:var(--gold);font-weight:600">S</span><span style="color:var(--gold);font-weight:600">D</span>
+          <span class="cal-cell muted">—</span><span class="cal-cell muted">—</span><span class="cal-cell muted">1</span><span class="cal-cell pick">2</span><span class="cal-cell pick">3</span><span class="cal-cell">4</span><span class="cal-cell">5</span>
+          <span class="cal-cell">6</span><span class="cal-cell pick">7</span><span class="cal-cell">8</span><span class="cal-cell">9</span><span class="cal-cell">10</span><span class="cal-cell">11</span><span class="cal-cell">12</span>
+        </div>
+      </div>
+      <p class="section-label mb-2">Créneaux</p>
+      <div class="slot-grid">
+        <button type="button" class="slot sel">09:00</button>
+        <button type="button" class="slot">11:30</button>
+        <button type="button" class="slot">15:00</button>
+        <button type="button" class="slot">17:30</button>
+      </div>
+      <p style="font-size:0.78rem;color:var(--muted);margin-top:1rem">Fuseau : Africa/Kinshasa (à paramétrer).</p>
+      <button type="button" class="btn-gold mt-6" style="width:100%;padding:14px;font-size:0.75rem">Confirmer (démo)</button>
+      <p style="font-size:0.72rem;color:var(--muted);margin-top:0.75rem">Après confirmation : email + lien visio (Zoom / Meet).</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="mm-footer-root"></div>
+<div id="mm-cart-root"></div>
+<script src="site-chrome.js"></script>
+<script src="_shared.js"></script>
+</body>
+</html>

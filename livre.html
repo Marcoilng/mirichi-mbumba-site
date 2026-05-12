@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chrepreneur — Détail livre | Mirichi Mbumba</title>
+  <meta name="description" content="Page produit : formats, extraits, ajout au panier.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+
+<div id="mm-nav-root"></div>
+
+<main class="page-shell">
+<section class="section-alt py-12 px-6 lg:px-12">
+  <div class="max-w-7xl mx-auto">
+    <p class="breadcrumb mb-6"><a href="index.html">Accueil</a> · <a href="bibliotheque.html">Bibliothèque</a> · Chrepreneur</p>
+    <div class="section-label mb-2">Détail livre</div>
+  </div>
+</section>
+<section class="section-main py-8 px-6 lg:px-12">
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
+    <div class="reveal">
+      <div class="book-cover" style="border-radius:4px;min-height:420px">
+        <div class="p-10 flex flex-col justify-between h-full" style="min-height:420px">
+          <div>
+            <div style="font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold)">Mirichi Mbumba</div>
+            <h1 style="font-family:'Cormorant Garant',serif;font-size:3rem;font-weight:700;margin-top:0.5rem">Chre<span style="color:var(--gold-light)">preneur</span></h1>
+            <p style="color:var(--muted);font-style:italic;margin-top:0.5rem">Chrétien et Entrepreneur</p>
+          </div>
+          <div style="font-size:5rem;color:rgba(196,146,42,0.06);font-family:'Cormorant Garant',serif;text-align:right">†</div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2 space-y-6">
+      <p style="color:var(--muted);font-size:0.9rem">Auteur : <strong style="color:var(--white)">Mirichi Mbumba</strong></p>
+      <div class="flex items-center gap-2" style="color:var(--gold-light)">★★★★★ <span style="color:var(--muted);font-size:0.8rem">(128 avis)</span></div>
+      <div class="flex items-baseline gap-3">
+        <span style="font-family:'Cormorant Garant',serif;font-size:2.25rem;color:var(--gold-light)">24,99 €</span>
+      </div>
+      <div>
+        <label class="form-label">Format</label>
+        <select id="livre-format" class="form-input">
+          <option>Broché</option>
+          <option>PDF numérique</option>
+          <option>Pack papier + numérique</option>
+        </select>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <button type="button" class="btn-gold" onclick="addChrepreneur()">Ajouter au panier</button>
+        <a href="checkout.html" class="btn-outline inline-flex items-center" onclick="addChrepreneur()">Acheter maintenant</a>
+      </div>
+      <p style="font-size:0.78rem;color:var(--muted)">Livraison suivie · PDF téléchargeable · Garantie 30 jours</p>
+      <div style="padding:1rem;border-left:2px solid var(--gold);background:rgba(196,146,42,0.06)">
+        <p style="font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.25rem">Boutique agréée</p>
+        <p style="font-size:0.85rem;color:var(--muted)">Seule plateforme officielle pour les ouvrages de l'auteur.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section-alt py-16 px-6 lg:px-12">
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-10">
+    <div class="lg:col-span-2 space-y-4 reveal">
+      <h2 style="font-family:'Cormorant Garant',serif;font-size:1.75rem;font-weight:400">Résumé</h2>
+      <p style="color:var(--muted);line-height:1.9">Cet ouvrage explore l'intersection entre foi chrétienne et entrepreneuriat : vision, intégrité, stewardship et impact mesurable.</p>
+      <p style="color:var(--muted);line-height:1.9">Des études de cas, des repères bibliques appliqués, et des outils pour passer de la conviction à l'action.</p>
+      <h3 style="font-family:'Cormorant Garant',serif;font-size:1.35rem;margin-top:2rem">Chapitres (aperçu)</h3>
+      <ol style="color:var(--muted);line-height:2;padding-left:1.25rem;font-size:0.92rem">
+        <li>La vocation de bâtisseur</li>
+        <li>Stewardship &amp; ressources</li>
+        <li>Stratégie &amp; sagesse</li>
+        <li>Échec, résilience, recommencement</li>
+      </ol>
+    </div>
+    <aside class="card-dark p-6 reveal">
+      <p class="section-label mb-4">Détails</p>
+      <ul style="color:var(--muted);font-size:0.88rem;line-height:2">
+        <li>Pages : 284</li>
+        <li>Langue : français</li>
+        <li>Édition : 2026</li>
+        <li>ISBN : à confirmer</li>
+      </ul>
+    </aside>
+  </div>
+</section>
+</main>
+
+<div id="mm-footer-root"></div>
+<div id="mm-cart-root"></div>
+<script src="site-chrome.js"></script>
+<script src="_shared.js"></script>
+<script>
+function addChrepreneur() {
+  var sel = document.getElementById('livre-format');
+  var fmt = sel ? sel.value : 'Broché';
+  addToCart('Chrepreneur', '24.99', fmt);
+}
+</script>
+</body>
+</html>

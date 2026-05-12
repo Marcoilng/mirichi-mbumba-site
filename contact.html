@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact &amp; newsletter — Mirichi Mbumba</title>
+  <meta name="description" content="Formulaire de contact et inscription à la newsletter.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+
+<div id="mm-nav-root"></div>
+
+<main class="page-shell">
+<section class="section-alt py-14 px-6 lg:px-12">
+  <div class="max-w-7xl mx-auto">
+    <p class="breadcrumb mb-4"><a href="index.html">Accueil</a> · Contact</p>
+    <h1 style="font-size:clamp(2rem,3vw,2.75rem);font-weight:300">Contact &amp; <span style="color:var(--gold-light);font-style:italic">newsletter</span></h1>
+  </div>
+</section>
+<section class="section-main py-12 px-6 lg:px-12">
+  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12">
+    <div class="card-dark p-8 lg:p-10 reveal">
+      <p class="section-label mb-4">Message</p>
+      <div class="grid sm:grid-cols-2 gap-4 mb-4">
+        <div><label class="form-label">Prénom</label><input class="form-input" placeholder="Jean"></div>
+        <div><label class="form-label">Nom</label><input class="form-input" placeholder="Dupont"></div>
+      </div>
+      <div class="mb-4"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="vous@email.com"></div>
+      <div class="mb-4"><label class="form-label">Objet</label>
+        <select class="form-input">
+          <option>Commander un livre</option>
+          <option>Réserver une session de coaching</option>
+          <option>Inviter comme conférencier</option>
+          <option>Collaboration &amp; partenariat</option>
+          <option>Autre demande</option>
+        </select>
+      </div>
+      <div class="mb-4"><label class="form-label">Message</label><textarea class="form-input" rows="5" placeholder="Votre message…"></textarea></div>
+      <button type="button" class="btn-gold" style="width:100%;padding:14px;font-size:0.75rem">Envoyer mon message</button>
+      <p style="font-size:0.75rem;color:var(--muted);margin-top:1rem">Réponse sous 48h ouvrées.</p>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="card-dark p-8 lg:p-10 mb-8" style="background:linear-gradient(135deg,rgba(196,146,42,0.08),rgba(123,29,41,0.08))">
+        <p class="section-label mb-2">La Tribune de Mirichi</p>
+        <h2 style="font-family:'Cormorant Garant',serif;font-size:1.75rem;font-weight:400">Newsletter hebdomadaire</h2>
+        <p style="color:var(--muted);margin:0.75rem 0 1.25rem;line-height:1.75">Réflexions exclusives : entrepreneuriat, foi, leadership.</p>
+        <p style="font-size:0.8rem;color:var(--gold);margin-bottom:1rem">Rejoignez 12 000 abonnés (objectif éditorial)</p>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input type="email" class="form-input" placeholder="votre@email.com">
+          <button type="button" class="btn-gold" style="padding:14px 22px;font-size:0.7rem;white-space:nowrap">S'abonner</button>
+        </div>
+      </div>
+      <div class="space-y-4" style="color:var(--muted);font-size:0.9rem">
+        <p><strong style="color:var(--gold-light)">Email</strong><br>contact@mirichimbumba.com</p>
+        <p><strong style="color:var(--gold-light)">WhatsApp pro</strong><br>+243 XX XXX XXXX</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="mm-footer-root"></div>
+<div id="mm-cart-root"></div>
+<script src="site-chrome.js"></script>
+<script src="_shared.js"></script>
+</body>
+</html>
