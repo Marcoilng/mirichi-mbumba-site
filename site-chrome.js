@@ -15,7 +15,7 @@
     '<div class="desktop-nav flex items-center gap-5 xl:gap-6">' +
     '<a href="about.html" class="nav-link">À propos</a>' +
     '<a href="foi-valeurs.html" class="nav-link">Foi &amp; Valeurs</a>' +
-    '<a href="bibliotheque.html" class="nav-link">Bibliothèque</a>' +
+    '<a href="shop.html" class="nav-link">Shop</a>' +
     '<a href="tribunes.html" class="nav-link">Tribunes</a>' +
     '<a href="coaching.html" class="nav-link">Coaching</a>' +
     '<a href="clinique.html" class="nav-link">La Clinique</a>' +
@@ -38,7 +38,7 @@
     '<a href="index.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Accueil</a>' +
     '<a href="about.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">À propos</a>' +
     '<a href="foi-valeurs.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Foi &amp; Valeurs</a>' +
-    '<a href="bibliotheque.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Bibliothèque</a>' +
+    '<a href="shop.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Shop</a>' +
     '<a href="tribunes.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Tribunes</a>' +
     '<a href="coaching.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Coaching</a>' +
     '<a href="clinique.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">La Clinique</a>' +
@@ -50,23 +50,70 @@
     '<div id="site-menu-overlay" aria-hidden="true">' +
     '<button type="button" class="site-menu-close" onclick="closeSiteMenu()" aria-label="Fermer le menu">' +
     '<svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>' +
-    '<div class="site-menu-inner"><div><p class="section-label mb-6">Navigation</p><nav class="space-y-1">' +
-    '<a href="index.html" class="block" onclick="closeSiteMenu()"><span class="nav-num">01</span><span class="nav-big">Accueil</span></a>' +
-    '<a href="about.html" class="block" onclick="closeSiteMenu()"><span class="nav-num">02</span><span class="nav-big">À propos</span></a>' +
-    '<a href="foi-valeurs.html" class="block" onclick="closeSiteMenu()"><span class="nav-num">03</span><span class="nav-big">Ma foi &amp; mes valeurs</span></a>' +
-    '<a href="bibliotheque.html" class="block" onclick="closeSiteMenu()"><span class="nav-num">04</span><span class="nav-big">Bibliothèque</span></a>' +
-    '<a href="tribunes.html" class="block" onclick="closeSiteMenu()"><span class="nav-num">05</span><span class="nav-big">Tribunes</span></a>' +
-    '<a href="coaching.html" class="block" onclick="closeSiteMenu()"><span class="nav-num">06</span><span class="nav-big">Coaching</span></a>' +
-    '<a href="clinique.html" class="block" onclick="closeSiteMenu()"><span class="nav-num">07</span><span class="nav-big">La Clinique</span></a>' +
-    '<a href="contact.html" class="block" onclick="closeSiteMenu()"><span class="nav-num">08</span><span class="nav-big">Contact</span></a></nav></div>' +
-    '<div class="space-y-10"><div><p class="section-label mb-4">Réseaux</p><div class="flex flex-wrap gap-3">' +
-    '<a href="#" class="clinique-pill">LinkedIn</a><a href="#" class="clinique-pill">Facebook</a><a href="#" class="clinique-pill">YouTube</a><a href="#" class="clinique-pill">Instagram</a><a href="#" class="clinique-pill">X</a></div></div>' +
-    '<div class="card-dark p-6"><p class="section-label mb-3">Livre en vedette</p>' +
-    '<p style="font-family:\'Cormorant Garant\',serif;font-size:1.5rem;color:var(--white)">Chrepreneur</p>' +
-    '<p style="color:var(--muted);font-size:0.85rem;margin:0.5rem 0 1rem">Chrétien et Entrepreneur — sortie 30 juin 2026.</p>' +
-    '<a href="livre.html" class="btn-gold inline-block" style="padding:10px 20px;font-size:0.7rem" onclick="closeSiteMenu()">Découvrir</a></div>' +
-    '<div class="card-dark p-6"><p class="section-label mb-3">Prochain événement</p>' +
-    '<p style="color:var(--white);font-size:0.95rem">Masterclass — « Foi &amp; stratégie » (dates à confirmer).</p></div></div></div></div>';
+    '<div class="site-menu-inner mm-overlay-minimal">' +
+    // Left: Navigation
+    '<div>' +
+    '<p class="section-label mb-6" style="margin-bottom:1.4rem">Navigation</p>' +
+    '<nav class="space-y-1">' +
+    '<a href="index.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
+    '<span class="nav-num">01</span><span class="nav-big">Accueil</span></a>' +
+    '<a href="about.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
+    '<span class="nav-num">02</span><span class="nav-big">À propos</span></a>' +
+    '<a href="foi-valeurs.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
+    '<span class="nav-num">03</span><span class="nav-big">Ma foi &amp; mes valeurs</span></a>' +
+    '<a href="shop.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
+    '<span class="nav-num">04</span><span class="nav-big">Bibliothèque</span></a>' +
+    '<a href="tribunes.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
+    '<span class="nav-num">05</span><span class="nav-big">Tribunes</span></a>' +
+    '<a href="coaching.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
+    '<span class="nav-num">06</span><span class="nav-big">Coaching</span></a>' +
+    '<a href="clinique.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
+    '<span class="nav-num">07</span><span class="nav-big">La Clinique</span></a>' +
+    '<a href="contact.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
+    '<span class="nav-num">08</span><span class="nav-big">Contact</span></a>' +
+    '</nav>' +
+    '</div>' +
+    // Right: Info + Socials
+    '<div class="mm-overlay-right">' +
+    '<div class="mm-overlay-info">' +
+    '<p class="section-label" style="margin-bottom:0.75rem">Livre en vedette</p>' +
+    '<p class="mm-overlay-title">Chrepreneur</p>' +
+    '<p class="mm-overlay-muted">Chrétien et Entrepreneur — sortie 30 juin 2026.</p>' +
+    '<div class="full-divider my-6" style="border-top-color: rgba(196,146,42,0.10)"></div>' +
+    '<p class="section-label" style="margin-bottom:0.75rem">Prochain événement</p>' +
+    '<p class="mm-overlay-muted" style="color:var(--white);font-size:0.98rem">Masterclass — « Foi &amp; stratégie » (dates à confirmer).</p>' +
+    '</div>' +
+    '<div class="mm-overlay-social" aria-label="Réseaux sociaux">' +
+    '<ul class="mm-overlay-social-list">' +
+    '<li><a href="#" class="mm-overlay-social-link">LI</a></li>' +
+    '<li><a href="#" class="mm-overlay-social-link">FB</a></li>' +
+    '<li><a href="#" class="mm-overlay-social-link">IG</a></li>' +
+    '</ul>' +
+    '</div>' +
+    '</div>' +
+    '</div>' +
+    // Minimal overlay-specific CSS (scoped via classes)
+    '<style>' +
+    '#site-menu-overlay{background:rgba(5,5,5,0.98)}' +
+    '.mm-overlay-minimal{max-width:1200px;margin:0 auto;padding:7rem 1.5rem 4rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;}' +
+    '@media (min-width:1024px){.mm-overlay-minimal{grid-template-columns:1fr 1fr}}' +
+    '.mm-overlay-link{padding:0.45rem 0.1rem;transition:opacity 0.25s ease,transform 0.25s ease;}' +
+    '.mm-overlay-link .nav-big{font-weight:400;}' +
+    '.mm-overlay-link:hover{opacity:0.92;}' +
+    '.mm-overlay-link:hover .nav-big{font-style:italic;color:var(--gold-light)}' +
+    '.mm-overlay-right{display:flex;flex-direction:column;min-height:70vh;}' +
+    '.mm-overlay-info{flex:1;}' +
+    '.mm-overlay-title{font-family:"Cormorant Garant",serif;font-size:1.7rem;color:var(--gold-light);font-weight:300;line-height:1.2;margin:0 0 0.5rem 0}' +
+    '.mm-overlay-muted{color:rgba(245,240,232,0.7);font-size:0.95rem;line-height:1.6;margin:0}' +
+    '.mm-overlay-social{align-self:flex-end;margin-top:auto}' +
+    '.mm-overlay-social-list{list-style:none;display:flex;gap:14px;padding:0;margin:0;}' +
+    '.mm-overlay-social-link{color:rgba(245,240,232,0.72);text-decoration:none;font-size:0.8rem;letter-spacing:0.18em;text-transform:uppercase;font-family:"DM Sans",sans-serif;transition:opacity 0.2s ease, color 0.2s ease;}' +
+    '.mm-overlay-social-link:hover{opacity:0.95;color:var(--gold-light)}' +
+    '.mm-overlay-minimal a{border-bottom:none !important;text-decoration:none !important;}' +
+    '.mm-overlay-minimal li{border-bottom:none !important;}' +
+    '</style>'
+    '</div>';
+
 
   var CART =
     '<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>' +
@@ -95,19 +142,55 @@
     '<div><div style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">Navigation</div>' +
     '<ul class="space-y-2" style="font-size:0.875rem;color:var(--muted)">' +
     '<li><a href="about.html" class="nav-link" style="display:inline;padding:0">À propos</a></li>' +
-    '<li><a href="bibliotheque.html" class="nav-link" style="display:inline;padding:0">Bibliothèque</a></li>' +
+    '<li><a href="shop.html" class="nav-link" style="display:inline;padding:0">Shop</a></li>' +
     '<li><a href="tribunes.html" class="nav-link" style="display:inline;padding:0">Tribunes</a></li>' +
     '<li><a href="coaching.html" class="nav-link" style="display:inline;padding:0">Coaching</a></li>' +
     '<li><a href="contact.html" class="nav-link" style="display:inline;padding:0">Contact</a></li></ul></div>' +
     '<div><div style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">Boutique</div>' +
     '<ul class="space-y-2" style="font-size:0.875rem;color:var(--muted)">' +
-    '<li><a href="bibliotheque.html" class="nav-link" style="display:inline;padding:0">Catalogue</a></li>' +
+    '<li><a href="shop.html" class="nav-link" style="display:inline;padding:0">Catalogue</a></li>' +
     '<li><a href="panier.html" class="nav-link" style="display:inline;padding:0">Panier</a></li>' +
     '<li><a href="checkout.html" class="nav-link" style="display:inline;padding:0">Checkout</a></li></ul></div></div>' +
-    '<div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between gap-4" style="border-top:1px solid rgba(196,146,42,0.12);padding-top:1.5rem">' +
+    '<div class="max-w-7xl mx-auto flex flex-col gap-6" style="border-top:1px solid rgba(196,146,42,0.12);padding-top:1.5rem">' +
+    '<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">' +
     '<p style="font-size:0.72rem;color:var(--muted)">© 2026 Mirichi Mbumba</p>' +
     '<div class="flex gap-4 flex-wrap" style="font-size:0.72rem;color:var(--muted)">' +
-    '<a href="#" style="color:var(--muted)">Mentions légales</a><a href="#" style="color:var(--muted)">CGV</a><a href="#" style="color:var(--muted)">Confidentialité</a></div></div></footer>';
+    '<a href="#" style="color:var(--muted)" target="_blank" rel="noopener noreferrer">Mentions légales</a>' +
+    '<a href="#" style="color:var(--muted)" target="_blank" rel="noopener noreferrer">CGV</a>' +
+    '<a href="#" style="color:var(--muted)" target="_blank" rel="noopener noreferrer">Confidentialité</a>' +
+    '</div></div>' +
+    '<div class="mm-footer-social" aria-label="Réseaux sociaux" style="display:flex;justify-content:flex-start;align-items:center;gap:16px;flex-wrap:wrap">' +
+    '<a href="https://www.instagram.com/channel/AbZhXJm9JcZ2LSdX/" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="Instagram (Chaîne)">' +
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8.7a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6z"/><path d="M17.8 6.2h.01"/></svg>' +
+    '</a>' +
+    '<a href="https://www.instagram.com/mirichy_22officiel" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="Instagram (Perso)">' +
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8.7a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6z"/><path d="M17.8 6.2h.01"/></svg>' +
+    '</a>' +
+    '<a href="https://whatsapp.com/channel/0029VbAOXW1EKyZJ1byMkJ1f" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="WhatsApp (Chaîne)">' +
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.9 7.3L3.5 20.5l1.7-4.1A8.5 8.5 0 1 1 20.5 11.5z"/><path d="M8.8 9.3c.3-.6.6-.6.9-.6h.7c.2 0 .5.1.7.5.2.4.8 1.4.8 1.4.1.2.1.5 0 .7-.1.2-.2.3-.4.5l-.3.3c-.1.1-.2.3-.1.5.1.2.6 1.1 1.5 1.8 1.1.9 2 .9 2.2.9.2 0 .3-.1.4-.2l.5-.6c.1-.2.3-.2.5-.2s1.3.6 1.5.7c.2.1.4.2.4.4s0 .6-.2.9c-.2.3-.8.8-1.2 1-1 .5-2.2.4-3.5-.1-1.3-.5-2.7-1.7-3.5-2.7-.8-1-1.3-2.1-1.2-3 .1-.7.3-1.3.5-1.7z"/></svg>' +
+    '</a>' +
+    '<a href="https://www.linkedin.com/in/mirichy-mbumba-86ba29317" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="LinkedIn">' +
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9.2V19.5"/><path d="M4.5 4.5h.01"/><path d="M9 19.5v-6.1c0-1.7 1-2.7 2.4-2.7 1.5 0 2.1 1.1 2.1 2.7v6.1"/><path d="M9 10.2v2"/></svg>' +
+    '</a>' +
+    '<a href="https://www.facebook.com/share/14e2FYMByHu/" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="Facebook">' +
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h2V5h-2c-2 0-3.5 1.6-3.5 3.7V11H8v3h2.5v7H14v-7h2.2l.3-3H14V9c0-.6.2-1 1-1z"/></svg>' +
+    '</a>' +
+    '<a href="https://x.com/emirmirichi" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="X (Twitter)">' +
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l16 16"/><path d="M20 4L4 20"/></svg>' +
+    '</a>' +
+    '<a href="mailto:Mirichimbumba@gmail.com" class="mm-footer-social-link" aria-label="Gmail">' +
+    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.5h15v11h-15z"/><path d="M5 7l7 6 7-6"/></svg>' +
+    '</a>' +
+    '</div>' +
+    '</div>' +
+    '<style>' +
+    '.mm-footer-social-link{color:rgba(245,240,232,0.8);transition:opacity 0.25s ease, transform 0.25s ease,color 0.25s ease;display:flex;align-items:center;}' +
+    '.mm-footer-social-link:hover{opacity:1;color:var(--gold-light);transform:translateY(-2px);}' +
+    '.mm-footer-social-link svg{display:block;}' +
+    '</style>' +
+    '</footer>';
+
+
 
   var navRoot = document.getElementById('mm-nav-root');
   if (navRoot) navRoot.innerHTML = NAV + MOBILE + OVERLAY;

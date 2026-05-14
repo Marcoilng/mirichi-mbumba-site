@@ -140,7 +140,8 @@
     var list = document.getElementById('checkout-lines');
     if (!list) return;
     if (cart.length === 0) {
-      list.innerHTML = '<p style="color:var(--muted);font-size:0.9rem">Panier vide — <a href="bibliotheque.html" style="color:var(--gold)">Bibliothèque</a></p>';
+      list.innerHTML = '<p style="color:var(--muted);font-size:0.9rem">Panier vide — <a href="shop.html" style="color:var(--gold)">Boutique</a></p>';
+
     } else {
       list.innerHTML = cart
         .map(function (i) {
