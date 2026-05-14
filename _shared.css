@@ -111,6 +111,14 @@ nav.scrolled { background: rgba(9,9,15,0.92); backdrop-filter: blur(20px); borde
 
 #mobile-menu { transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1); }
 #mobile-menu.open { transform: translateX(0); }
+
+/* Fix menu overlay / responsive */
+#site-menu-overlay.open { opacity: 1; pointer-events: all; }
+#site-menu-overlay { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+/* nav wrapper rounding */
+#navbar { border-radius: 0; }
+
 .full-divider { border: none; border-top: 1px solid rgba(196,146,42,0.12); }
 .faith-mark { font-family: 'Cormorant Garant', serif; color: var(--gold); opacity: 0.25; font-size: 4rem; font-weight: 300; line-height: 1; }
 .badge-release { background: linear-gradient(135deg, var(--crimson), #9B2335); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 5px 14px; font-family: 'DM Sans', sans-serif; font-weight: 600; }

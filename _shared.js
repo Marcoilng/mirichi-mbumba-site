@@ -250,9 +250,12 @@
     var o = document.getElementById('site-menu-overlay');
     if (o) {
       o.classList.add('open');
+      // important: sur mobile éviter que l'état précédent bloque le layout
+      o.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
     }
   };
+
 
   window.closeSiteMenu = function () {
     var o = document.getElementById('site-menu-overlay');
