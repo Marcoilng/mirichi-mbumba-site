@@ -25,57 +25,138 @@
       <span>→</span>
       <span class="current">2 Informations</span>
       <span>→</span>
-      <span>3 Livraison</span>
+      <span class="current">3 Livraison</span>
       <span>→</span>
-      <span>4 Paiement</span>
+      <span class="current">4 Paiement final Chariow</span>
     </div>
   </div>
 </section>
+
 <section class="section-main py-10 px-6 lg:px-12">
   <div class="max-w-6xl mx-auto grid lg:grid-cols-3 gap-10">
+    
     <div class="lg:col-span-2 space-y-8">
       <div class="card-dark p-6 lg:p-8">
         <p class="section-label mb-4">Informations personnelles</p>
         <div class="grid sm:grid-cols-2 gap-4">
-          <div><label class="form-label">Prénom</label><input class="form-input" placeholder="Jean"></div>
-          <div><label class="form-label">Nom</label><input class="form-input" placeholder="Dupont"></div>
-          <div class="sm:col-span-2"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="vous@email.com"></div>
+          <div><label class="form-label">Prénom</label><input id="chk-prenom" class="form-input" placeholder="Jean"></div>
+          <div><label class="form-label">Nom</label><input id="chk-nom" class="form-input" placeholder="Dupont"></div>
+          <div class="sm:col-span-2"><label class="form-label">Email</label><input id="chk-email" type="email" class="form-input" placeholder="vous@email.com"></div>
           <div class="sm:col-span-2"><label class="form-label">Téléphone</label><input class="form-input" placeholder="+243…"></div>
         </div>
       </div>
+      
       <div class="card-dark p-6 lg:p-8">
-        <p class="section-label mb-4">Adresse de livraison</p>
+        <p class="section-label mb-4">Adresse de livraison (Si format papier)</p>
         <div class="space-y-4">
           <div><label class="form-label">Adresse</label><input class="form-input" placeholder="Rue, numéro"></div>
           <div class="grid sm:grid-cols-2 gap-4">
-            <div><label class="form-label">Ville</label><input class="form-input"></div>
-            <div><label class="form-label">Code postal</label><input class="form-input"></div>
+            <div><label class="form-label">Ville</label><input class="form-input" placeholder="Lubumbashi"></div>
+            <div><label class="form-label">Code postal</label><input class="form-input" placeholder="0000"></div>
           </div>
           <div><label class="form-label">Pays</label><select class="form-input"><option>RDC</option><option>France</option><option>Belgique</option><option>Autre</option></select></div>
         </div>
       </div>
+      
       <div class="card-dark p-6 lg:p-8">
-        <p class="section-label mb-4">Méthode de paiement</p>
-        <label class="flex items-center gap-3 mb-3" style="cursor:pointer;font-size:0.9rem;color:var(--muted)"><input type="radio" name="pay" checked> Carte bancaire (Visa / Mastercard)</label>
-        <label class="flex items-center gap-3 mb-3" style="cursor:pointer;font-size:0.9rem;color:var(--muted)"><input type="radio" name="pay"> Mobile Money (M-Pesa, Orange Money…)</label>
-        <label class="flex items-center gap-3" style="cursor:pointer;font-size:0.9rem;color:var(--muted)"><input type="radio" name="pay"> PayPal</label>
+        <p class="section-label mb-4">Finalisation</p>
+        <p class="text-xs text-[var(--muted)] mb-4">Les détails analytiques ci-dessus sont préparés. Le traitement monétaire et le choix de la méthode exacte s'exécutent de manière sécurisée via notre passerelle Chariow.</p>
+        <button type="button" class="btn-gold" style="width:100%;padding:16px;font-size:0.78rem" onclick="executerPaiementFinal()">
+          Procéder au paiement sécurisé Chariow
+        </button>
       </div>
-      <button type="button" class="btn-gold" style="width:100%;padding:16px;font-size:0.78rem">Valider et payer (démo)</button>
     </div>
+    
     <aside class="card-dark p-6 h-fit lg:sticky" style="top:6rem" id="checkout-summary-root">
       <p class="section-label mb-4">Résumé</p>
       <div id="checkout-lines" class="mb-4"></div>
-      <div class="flex justify-between text-sm" style="color:var(--muted)"><span>Sous-total</span><span id="chk-subtotal">0,00 €</span></div>
-      <div class="flex justify-between text-sm mt-2" style="color:var(--muted)"><span>Livraison</span><span id="chk-shipping">0,00 €</span></div>
+      <div class="flex justify-between text-sm" style="color:var(--muted)"><span>Sous-total</span><span id="chk-subtotal">0,00 USD</span></div>
+      <div class="flex justify-between text-sm mt-2" style="color:var(--muted)"><span>Livraison</span><span id="chk-shipping">0,00 USD</span></div>
       <div class="full-divider my-4"></div>
-      <div class="flex justify-between"><span style="font-weight:600">Total</span><span id="chk-total" style="font-family:'Cormorant Garant',serif;font-size:1.35rem;color:var(--gold-light)">0,00 €</span></div>
+      <div class="flex justify-between"><span style="font-weight:600">Total</span><span id="chk-total" style="font-family:'Cormorant Garant',serif;font-size:1.35rem;color:var(--gold-light)">0,00 USD</span></div>
     </aside>
+
   </div>
 </section>
 </main>
 
+<div style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; overflow: hidden;">
+  <div id="wrapper-prd_4ihqi1">
+    <div class="chariow-widget" data-product-id="prd_4ihqi1" data-store-domain="ufhzjurh.mychariow.shop" data-style="tap" data-locale="fr" data-primary-color="#c4922a"></div>
+  </div>
+  <div id="wrapper-prd_ngrw8h">
+    <div class="chariow-widget" data-product-id="prd_ngrw8h" data-store-domain="ufhzjurh.mychariow.shop" data-style="tap" data-locale="fr" data-primary-color="#c4922a"></div>
+  </div>
+  <div id="wrapper-prd_p924em">
+    <div class="chariow-widget" data-product-id="prd_p924em" data-store-domain="ufhzjurh.mychariow.shop" data-style="tap" data-locale="fr" data-primary-color="#c4922a"></div>
+  </div>
+</div>
+
 <div id="mm-footer-root"></div>
 <div id="mm-cart-root"></div>
+
+<script>
+var currentProductId = "";
+
+function loadCheckoutSummary() {
+  var itemStr = localStorage.getItem('mm_cart_item');
+  var linesContainer = document.getElementById('checkout-lines');
+
+  if (!itemStr) {
+    linesContainer.innerHTML = '<p class="text-xs text-red-400">Aucun produit détecté. Veuillez retourner à la boutique.</p>';
+    return;
+  }
+
+  var item = JSON.parse(itemStr);
+  currentProductId = item.id; // On stocke l'ID produit actif pour l'achat final
+
+  linesContainer.innerHTML = `
+    <div class="flex justify-between items-center text-sm mb-2">
+      <div>
+        <p class="font-medium text-white">${item.title}</p>
+        <p class="text-xs text-muted" style="color:var(--muted);">${item.formatLabel}</p>
+      </div>
+      <span style="color:var(--gold-light);">${item.price},00 USD</span>
+    </div>
+  `;
+
+  document.getElementById('chk-subtotal').textContent = item.price + ',00 USD';
+  document.getElementById('chk-total').textContent = item.price + ',00 USD';
+}
+
+function executerPaiementFinal() {
+  if (!currentProductId) {
+    alert("Votre panier est vide.");
+    return;
+  }
+
+  // Cible le wrapper technique Chariow lié à l'ID produit courant
+  var container = document.getElementById('wrapper-' + currentProductId);
+  if (container) {
+    var clickTarget = container.querySelector('button') || container.querySelector('div') || container;
+    if (clickTarget) {
+      clickTarget.click(); // Ouvre la popup de paiement native Chariow !
+    } else {
+      alert("Erreur lors de l'initialisation de la passerelle. Veuillez réessayer.");
+    }
+  }
+}
+
+window.addEventListener('DOMContentLoaded', loadCheckoutSummary);
+</script>
+
+<script>
+(function() {
+  var script = document.createElement('script');
+  script.src = 'https://js.chariowcdn.com/v1/widget.min.js';
+  script.async = true;
+  document.head.appendChild(script);
+  var link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://js.chariowcdn.com/v1/widget.min.css';
+  document.head.appendChild(link);
+})();
+</script>
 <script src="site-chrome.js"></script>
 <script src="_shared.js"></script>
 </body>
