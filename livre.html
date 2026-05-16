@@ -10,6 +10,22 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="_shared.css">
+  <style>
+    /* Force le texte du menu déroulant en noir pour la lisibilité sur fond blanc */
+    #livre-format option {
+      color: #000000 !important;
+      background-color: #ffffff !important;
+    }
+    
+    .book-cover-container {
+      border-radius: 4px;
+      min-height: 520px;
+      overflow: hidden;
+      position: relative;
+      background: #1a1a1a;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+  </style>
 </head>
 <body>
 
@@ -26,20 +42,15 @@
 <section class="section-main py-8 px-6 lg:px-12">
   <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
     <div class="reveal">
-      <div class="book-cover" style="border-radius:4px;min-height:420px;overflow:hidden;position:relative;">
-        <img src="images/covertchrepreneur.jpeg" alt="Chrepreneur" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0.92;" onerror="this.style.display='none'" />
-        <div class="p-10 flex flex-col justify-between h-full" style="min-height:420px;position:relative;background:linear-gradient(180deg,rgba(0,0,0,0.10),rgba(0,0,0,0.68));">
-          <div>
-            <div style="font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);">Mirichi Mbumba</div>
-            <h1 style="font-family:'Cormorant Garant',serif;font-size:3rem;font-weight:700;margin-top:0.5rem">Chre<span style="color:var(--gold-light)">preneur</span></h1>
-            <p style="color:var(--muted);font-style:italic;margin-top:0.5rem">Chrétien et Entrepreneur</p>
-          </div>
-          <div style="font-size:5rem;color:rgba(196,146,42,0.06);font-family:'Cormorant Garant',serif;text-align:right">†</div>
-        </div>
+      <div class="book-cover-container">
+        <img src="images/covert chrepreneur.jpeg" alt="Couverture Chrepreneur" 
+             style="width:100%; height:100%; object-fit: contain; display: block;" 
+             onerror="this.src='https://via.placeholder.com/500x700?text=Couverture+Non+Trouvée'">
       </div>
     </div>
 
     <div class="reveal reveal-delay-2 space-y-6">
+      <h1 style="font-family:'Cormorant Garant',serif;font-size:3rem;font-weight:700;">Chre<span style="color:var(--gold-light)">preneur</span></h1>
       <p style="color:var(--muted);font-size:0.9rem">Auteur : <strong style="color:var(--white)">Mirichi Mbumba</strong></p>
       <div class="flex items-center gap-2" style="color:var(--gold-light)">★★★★★ <span style="color:var(--muted);font-size:0.8rem">(128 avis)</span></div>
       
@@ -142,15 +153,13 @@ function ajouterAuPanierLocal() {
     formatKey: format,
     formatLabel: label,
     price: price,
-    image: "images/covertchrepreneur.jpeg"
+    image: "images/covert chrepreneur.jpeg"
   };
 
-  // On stocke un seul item (ou plusieurs si tu veux étendre le panier plus tard)
   localStorage.setItem('mm_cart_item', JSON.stringify(item));
   window.location.href = 'panier.html';
 }
 
-// Gestion de la présélection via l'URL
 window.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const formatParam = urlParams.get('format');
