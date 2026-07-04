@@ -246,3 +246,48 @@ select.form-input { cursor: pointer; }
 .progress-bar { height: 2px; background: rgba(255, 255, 255, 0.08); }
 .progress-fill { height: 2px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); transition: width 1.5s ease; }
 
+/* Social & Contact styles */
+.mm-footer-social-link {
+  color: rgba(245, 240, 232, 0.8);
+  transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease;
+  display: flex;
+  align-items: center;
+}
+.mm-footer-social-link:hover {
+  opacity: 1;
+  color: var(--gold-light);
+  transform: translateY(-2px);
+}
+.mm-footer-social-link svg {
+  display: block;
+}
+
+.mm-contact-social-title {
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.mm-contact-social-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.mm-contact-social-list a {
+  color: rgba(245, 240, 232, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  text-decoration: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease;
+}
+.mm-contact-social-list a:hover {
+  opacity: 1;
+  color: var(--gold-light);
+  transform: translateY(-2px);
+}
+.mm-contact-social-icon svg {
+  display: block;
+}
+
+

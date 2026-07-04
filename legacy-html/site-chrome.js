@@ -111,7 +111,7 @@
     '.mm-overlay-social-link:hover{opacity:0.95;color:var(--gold-light)}' +
     '.mm-overlay-minimal a{border-bottom:none !important;text-decoration:none !important;}' +
     '.mm-overlay-minimal li{border-bottom:none !important;}' +
-    '</style>'
+    '</style>' +
     '</div>';
 
 
@@ -178,16 +178,11 @@
     '<a href="https://x.com/emirmirichi" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="X (Twitter)">' +
     '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l16 16"/><path d="M20 4L4 20"/></svg>' +
     '</a>' +
-    '<a href="mailto:Mirichimbumba@gmail.com" class="mm-footer-social-link" aria-label="Gmail">' +
+    '<a href="mailto:Mirichimbumba@gmail.com" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="Gmail">' +
     '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.5h15v11h-15z"/><path d="M5 7l7 6 7-6"/></svg>' +
     '</a>' +
     '</div>' +
     '</div>' +
-    '<style>' +
-    '.mm-footer-social-link{color:rgba(245,240,232,0.8);transition:opacity 0.25s ease, transform 0.25s ease,color 0.25s ease;display:flex;align-items:center;}' +
-    '.mm-footer-social-link:hover{opacity:1;color:var(--gold-light);transform:translateY(-2px);}' +
-    '.mm-footer-social-link svg{display:block;}' +
-    '</style>' +
     '</footer>';
 
 

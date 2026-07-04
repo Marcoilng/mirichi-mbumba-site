@@ -1,57 +1,97 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coaching — Business Mentor & Coach en développement personnel | Mirichi Mbumba</title>
-  <meta name="description" content="Coaching : accompagnement haute performance pour cadres et entrepreneurs — vision, discipline et optimisation de stratégie." />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="index, follow">
+  <title>Accompagnement 360° — Coaching & Mentoring | Mirichi Mbumba</title>
+  <meta name="description"
+    content="L'accompagnement 360° de Mirichi Mbumba : entrepreneurs, dirigeants et jeunes en quête de clarté. Plus de 500 personnes accompagnées.">
+  <meta property="og:title" content="Accompagnement 360° — Mirichi Mbumba">
+  <meta property="og:description"
+    content="Révélez votre potentiel. Clarté, leadership, impact — coaching & mentoring premium.">
+  <meta property="og:image" content="images/photo5.jpeg">
+  <meta property="og:type" content="website">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="_shared.css">
 </head>
+
 <body>
   <div id="mm-nav-root"></div>
 
   <style>
     /* Harmonisation totale avec index.html (classes & animations déjà portées par _shared.css) */
-    #hero .hero-name { font-size: clamp(3.2rem, 6.2vw, 6.6rem); }
-    .mm-h2 { font-size: clamp(2rem, 3.6vw, 3.6rem); font-weight: 300; line-height: 1.05; }
-    .mm-body { font-size: 1.125rem; line-height: 1.85; color: rgba(245,240,232,0.9); }
+    #hero .hero-name {
+      font-size: clamp(3.2rem, 6.2vw, 6.6rem);
+    }
+
+    .mm-h2 {
+      font-size: clamp(2rem, 3.6vw, 3.6rem);
+      font-weight: 300;
+      line-height: 1.05;
+    }
+
+    .mm-body {
+      font-size: 1.125rem;
+      line-height: 1.85;
+      color: rgba(245, 240, 232, 0.9);
+    }
 
     .mm-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(196,146,42,0.12);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(196, 146, 42, 0.12);
       border-radius: 18px;
       transition: all 0.4s ease;
     }
 
     .mm-card:hover {
-      background: rgba(255,255,255,0.05);
-      border-color: rgba(196,146,42,0.30);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(196, 146, 42, 0.30);
       transform: translateY(-4px);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
     }
 
     .mm-icon {
-      width: 54px; height: 54px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
-      border: 1px solid rgba(196,146,42,0.28);
-      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(196, 146, 42, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: var(--gold-light);
       font-size: 1.25rem;
     }
 
-    .mm-icon svg { width: 100%; height: 100%; display: block; }
+    .mm-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
-    .mm-fade-in { opacity: 0; transform: translateY(22px); transition: opacity 0.9s ease, transform 0.9s ease; }
-    .mm-fade-in.visible { opacity: 1; transform: translateY(0); }
+    .mm-fade-in {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .mm-fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     .mm-bg-textured {
       background-image:
-        radial-gradient(ellipse 120% 80% at 20% 0%, rgba(196,146,42,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 90% 70% at 80% 50%, rgba(123,29,41,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 120% 80% at 20% 0%, rgba(196, 146, 42, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 90% 70% at 80% 50%, rgba(123, 29, 41, 0.18) 0%, transparent 60%),
         var(--dark-2);
     }
   </style>
@@ -60,28 +100,40 @@
   <section id="hero" class="relative">
     <div class="wm-mm" aria-hidden="true">MM</div>
     <div class="hero-bg-circle" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-    <div class="hero-bg-circle" style="width:900px;height:900px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1s;opacity:0.3"></div>
+    <div class="hero-bg-circle"
+      style="width:900px;height:900px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1s;opacity:0.3">
+    </div>
 
     <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10 pt-24">
       <div class="grid lg:grid-cols-2 gap-14 items-center min-h-screen py-20 lg:py-24">
         <div class="space-y-8">
           <div class="flex items-center gap-3 reveal">
             <div class="gold-line"></div>
-            <span class="section-label">ACCOMPAGNEMENT HAUTE PERFORMANCE</span>
+            <span class="section-label">ACCOMPAGNEMENT 360°</span>
           </div>
 
-          <h1 class="hero-name reveal reveal-delay-1">Accompagnement haute performance</h1>
+          <h1 class="hero-name reveal reveal-delay-1">Accompagnement 360°</h1>
 
-          <p class="hero-quote reveal reveal-delay-2" style="font-style:normal; max-width:560px;">
-            « Le leadership ne se décrète pas, il se cultive. »
+          <p class="hero-quote reveal reveal-delay-2" style="max-width:560px;">
+            « Vous ne devenez pas quelqu’un d’autre. Vous révélez la personne que vous êtes destiné à devenir. »
           </p>
 
           <div class="hero-quote reveal reveal-delay-3" style="font-style:normal; max-width:620px;">
-            <p class="mm-body" style="margin:0; font-size:1.05rem;">
-              Le coaching s’adresse aux cadres et entrepreneurs qui souhaitent optimiser leur stratégie.
-              <br><br>
-              Nous faisons émerger une vision claire, structurons les décisions et installons une discipline intérieure capable de produire des résultats durables.
-            </p>
+            <div class="mm-body space-y-4" style="margin:0; font-size:1.02rem; text-align:left;">
+              <p class="mb-3">L’accompagnement 360° s’adresse aux entrepreneurs, dirigeants, entreprises, professionnels
+                et jeunes en quête de clarté, d’impact et d’accomplissement.</p>
+              <p class="mb-3">Chaque parcours est conçu pour révéler votre potentiel, renforcer votre leadership et
+                transformer vos ambitions en résultats concrets.</p>
+              <p class="mb-3">Nous vous aidons à retrouver une vision claire, à prendre les bonnes décisions et à
+                développer la discipline, la confiance et l’état d’esprit nécessaires pour réussir durablement.</p>
+              <p class="mb-3">Plus qu’un coach, votre mentor devient un miroir : celui qui vous aide à découvrir qui
+                vous êtes réellement, à reconnaître vos forces et à avancer avec conviction vers votre mission de vie.
+              </p>
+              <p class="mb-3">Qu’il s’agisse de développer une entreprise, de former des équipes, d’accompagner des
+                dirigeants ou d’aider les jeunes à trouver leur voie, l’objectif reste le même : révéler le meilleur de
+                chacun.</p>
+              <p class="font-semibold" style="color:var(--gold-light)">Plus de 500 personnes accompagnées...</p>
+            </div>
           </div>
 
           <div class="flex flex-wrap gap-4 reveal reveal-delay-4">
@@ -92,23 +144,33 @@
 
         <div class="relative lg:block reveal reveal-delay-2" aria-hidden="true">
           <div class="relative mx-auto" style="max-width:420px">
-            <div style="aspect-ratio:3/4;background:linear-gradient(160deg,var(--dark-3),var(--dark-2));border:2px solid rgba(196,146,42,0.45);position:relative;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.45)">
-              <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(196,146,42,0.03) 48px,rgba(196,146,42,0.03) 49px)"></div>
-              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;">
-                <img
-                  src="images/photo2.jpeg"
-                  alt="Photo de coaching"
-                  style="width:100%;height:100%;object-fit:cover;opacity:0.93;filter:saturate(1.05) contrast(1.08);"
-                  onerror="this.style.display='none'"
-                />
+            <div
+              style="aspect-ratio:3/4;background:linear-gradient(160deg,var(--dark-3),var(--dark-2));border:2px solid rgba(196,146,42,0.45);position:relative;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.45)">
+              <div
+                style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(196,146,42,0.03) 48px,rgba(196,146,42,0.03) 49px)">
               </div>
-              <div style="position:absolute;top:18px;left:18px;width:36px;height:36px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);opacity:0.5"></div>
-              <div style="position:absolute;bottom:18px;right:18px;width:36px;height:36px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);opacity:0.5"></div>
+              <div
+                style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;">
+                <img src="images/mirichi noir et blanc.jpeg" alt="Mirichi Mbumba — Portrait officiel"
+                  style="width:100%;height:100%;object-fit:cover;opacity:0.93;filter:saturate(1.05) contrast(1.08);"
+                  loading="eager" onerror="this.style.display='none'" />
+              </div>
+              <div
+                style="position:absolute;top:18px;left:18px;width:36px;height:36px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);opacity:0.5">
+              </div>
+              <div
+                style="position:absolute;bottom:18px;right:18px;width:36px;height:36px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);opacity:0.5">
+              </div>
             </div>
 
-            <div style="position:absolute;bottom:-18px;right:-12px;background:var(--dark-2);border:1px solid rgba(196,146,42,0.35);padding:16px 22px;border-radius:2px">
-              <div style="font-family:'Cormorant Garant',serif;font-size:1.75rem;font-weight:500;color:var(--gold-light);line-height:1">Coaching</div>
-              <div style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-top:4px">Vision &amp; stratégie</div>
+            <div
+              style="position:absolute;bottom:-18px;right:-12px;background:var(--dark-2);border:1px solid rgba(196,146,42,0.35);padding:16px 22px;border-radius:2px">
+              <div
+                style="font-family:'Cormorant Garant',serif;font-size:1.75rem;font-weight:500;color:var(--gold-light);line-height:1">
+                Coaching</div>
+              <div
+                style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-top:4px">
+                Vision &amp; stratégie</div>
             </div>
           </div>
         </div>
@@ -133,17 +195,28 @@
             </div>
             <h2 class="mm-h2" style="margin:0;">Décider avec clarté</h2>
             <div class="mm-body" style="font-size:1.05rem; margin-top:1rem;">
-              En tant que mentor, j’accompagne des entrepreneurs, porteurs de projets et professionnels dans la structuration et le développement de leurs activités.
+              En tant que mentor, j’accompagne des entrepreneurs, porteurs de projets et professionnels dans la
+              structuration et le développement de leurs activités.
             </div>
 
             <div class="mt-7 card-dark p-7">
               <div class="section-label mb-3">Mon rôle consiste à :</div>
               <ul class="space-y-3" style="color:rgba(245,240,232,0.9);line-height:1.7;font-size:1.02rem;">
-                <li class="flex gap-3"><span style="color:var(--gold-light);font-family:'Cormorant Garant',serif">—</span><span>aider à clarifier une vision entrepreneuriale</span></li>
-                <li class="flex gap-3"><span style="color:var(--gold-light);font-family:'Cormorant Garant',serif">—</span><span>structurer des idées en projets concrets et viables</span></li>
-                <li class="flex gap-3"><span style="color:var(--gold-light);font-family:'Cormorant Garant',serif">—</span><span>accompagner la prise de décision stratégique</span></li>
-                <li class="flex gap-3"><span style="color:var(--gold-light);font-family:'Cormorant Garant',serif">—</span><span>renforcer la compréhension des enjeux juridiques et économiques</span></li>
-                <li class="flex gap-3"><span style="color:var(--gold-light);font-family:'Cormorant Garant',serif">—</span><span>encourager une approche éthique et durable des affaires</span></li>
+                <li class="flex gap-3"><span
+                    style="color:var(--gold-light);font-family:'Cormorant Garant',serif">—</span><span>aider à clarifier
+                    une vision entrepreneuriale</span></li>
+                <li class="flex gap-3"><span
+                    style="color:var(--gold-light);font-family:'Cormorant Garant',serif">—</span><span>structurer des
+                    idées en projets concrets et viables</span></li>
+                <li class="flex gap-3"><span
+                    style="color:var(--gold-light);font-family:'Cormorant Garant',serif">—</span><span>accompagner la
+                    prise de décision stratégique</span></li>
+                <li class="flex gap-3"><span
+                    style="color:var(--gold-light);font-family:'Cormorant Garant',serif">—</span><span>renforcer la
+                    compréhension des enjeux juridiques et économiques</span></li>
+                <li class="flex gap-3"><span
+                    style="color:var(--gold-light);font-family:'Cormorant Garant',serif">—</span><span>encourager une
+                    approche éthique et durable des affaires</span></li>
               </ul>
             </div>
 
@@ -158,9 +231,11 @@
                 <div class="gold-line"></div>
                 <span class="section-label">Coaching en développement personnel</span>
               </div>
-              <h3 style="font-family:'Cormorant Garant',serif;font-size:1.7rem;font-weight:300;line-height:1.25;">Mentalité, discipline, vision</h3>
+              <h3 style="font-family:'Cormorant Garant',serif;font-size:1.7rem;font-weight:300;line-height:1.25;">
+                Mentalité, discipline, vision</h3>
               <p style="color:var(--muted);margin-top:1rem;line-height:1.9;font-size:1.02rem;">
-                Le coaching vise à renforcer la mentalité et à installer une discipline intérieure capable de tenir dans le temps.
+                Le coaching vise à renforcer la mentalité et à installer une discipline intérieure capable de tenir dans
+                le temps.
               </p>
 
               <div class="mt-7 space-y-4">
@@ -168,14 +243,17 @@
                   <div class="service-icon">1</div>
                   <div>
                     <div style="font-family:'Cormorant Garant',serif;font-size:1.25rem;font-weight:300;">Clarifier</div>
-                    <div style="color:var(--muted);line-height:1.8;font-size:0.98rem">Objectifs, priorités et direction.</div>
+                    <div style="color:var(--muted);line-height:1.8;font-size:0.98rem">Objectifs, priorités et direction.
+                    </div>
                   </div>
                 </div>
                 <div class="flex gap-3">
                   <div class="service-icon">2</div>
                   <div>
-                    <div style="font-family:'Cormorant Garant',serif;font-size:1.25rem;font-weight:300;">Structurer</div>
-                    <div style="color:var(--muted);line-height:1.8;font-size:0.98rem">Transformer l’intention en décisions actionnables.</div>
+                    <div style="font-family:'Cormorant Garant',serif;font-size:1.25rem;font-weight:300;">Structurer
+                    </div>
+                    <div style="color:var(--muted);line-height:1.8;font-size:0.98rem">Transformer l’intention en
+                      décisions actionnables.</div>
                   </div>
                 </div>
                 <div class="flex gap-3">
@@ -274,6 +352,5 @@
     })();
   </script>
 </body>
+
 </html>
-
-
