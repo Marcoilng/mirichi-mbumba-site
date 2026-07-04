@@ -5,6 +5,35 @@
  * puis charger ce fichier AVANT _shared.js.
  */
 (function () {
+  /* Icônes officielles (marques) — SVG remplis */
+  var SVG_IG =
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>';
+  var SVG_WA =
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>';
+  var SVG_LI =
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>';
+  var SVG_FB =
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>';
+  var SVG_X =
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.291 19.497h2.039L6.486 3.24H4.298l13.312 17.41z"/></svg>';
+  var SVG_GM =
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.278 24 3.434 24 5.457z"/></svg>';
+
+  function socialLink(href, label, icon, extraClass) {
+    var cls = 'mm-footer-social-link' + (extraClass ? ' ' + extraClass : '');
+    return (
+      '<a href="' +
+      href +
+      '" target="_blank" rel="noopener noreferrer" class="' +
+      cls +
+      '" aria-label="' +
+      label +
+      '">' +
+      icon +
+      '</a>'
+    );
+  }
+
   var NAV =
     '<nav id="navbar" class="py-5 px-6 lg:px-12">' +
     '<div class="max-w-7xl mx-auto flex items-center justify-between gap-4">' +
@@ -85,9 +114,18 @@
     '</div>' +
     '<div class="mm-overlay-social" aria-label="Réseaux sociaux">' +
     '<ul class="mm-overlay-social-list">' +
-    '<li><a href="#" class="mm-overlay-social-link">LI</a></li>' +
-    '<li><a href="#" class="mm-overlay-social-link">FB</a></li>' +
-    '<li><a href="#" class="mm-overlay-social-link">IG</a></li>' +
+    '<li>' +
+    socialLink('https://www.linkedin.com/in/mirichy-mbumba-86ba29317', 'LinkedIn', SVG_LI, 'mm-overlay-social-link') +
+    '</li>' +
+    '<li>' +
+    socialLink('https://www.facebook.com/share/14e2FYMByHu/', 'Facebook', SVG_FB, 'mm-overlay-social-link') +
+    '</li>' +
+    '<li>' +
+    socialLink('https://www.instagram.com/mirichy_22officiel', 'Instagram', SVG_IG, 'mm-overlay-social-link') +
+    '</li>' +
+    '<li>' +
+    socialLink('https://x.com/emirmirichi', 'X', SVG_X, 'mm-overlay-social-link') +
+    '</li>' +
     '</ul>' +
     '</div>' +
     '</div>' +
@@ -106,9 +144,9 @@
     '.mm-overlay-title{font-family:"Cormorant Garant",serif;font-size:1.7rem;color:var(--gold-light);font-weight:300;line-height:1.2;margin:0 0 0.5rem 0}' +
     '.mm-overlay-muted{color:rgba(245,240,232,0.7);font-size:0.95rem;line-height:1.6;margin:0}' +
     '.mm-overlay-social{align-self:flex-end;margin-top:auto}' +
-    '.mm-overlay-social-list{list-style:none;display:flex;gap:14px;padding:0;margin:0;}' +
-    '.mm-overlay-social-link{color:rgba(245,240,232,0.72);text-decoration:none;font-size:0.8rem;letter-spacing:0.18em;text-transform:uppercase;font-family:"DM Sans",sans-serif;transition:opacity 0.2s ease, color 0.2s ease;}' +
-    '.mm-overlay-social-link:hover{opacity:0.95;color:var(--gold-light)}' +
+    '.mm-overlay-social-list{list-style:none;display:flex;gap:12px;padding:0;margin:0;flex-wrap:wrap}' +
+    '.mm-overlay-social-link.mm-footer-social-link{width:44px;height:44px;border-radius:50%;border:1px solid rgba(196,146,42,0.22);display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.03);transition:all 0.25s ease}' +
+    '.mm-overlay-social-link.mm-footer-social-link:hover{border-color:rgba(232,184,75,0.55);color:var(--gold-light);transform:translateY(-2px)}' +
     '.mm-overlay-minimal a{border-bottom:none !important;text-decoration:none !important;}' +
     '.mm-overlay-minimal li{border-bottom:none !important;}' +
     '</style>' +
@@ -159,28 +197,14 @@
     '<a href="#" style="color:var(--muted)" target="_blank" rel="noopener noreferrer">CGV</a>' +
     '<a href="#" style="color:var(--muted)" target="_blank" rel="noopener noreferrer">Confidentialité</a>' +
     '</div></div>' +
-    '<div class="mm-footer-social" aria-label="Réseaux sociaux" style="display:flex;justify-content:flex-start;align-items:center;gap:16px;flex-wrap:wrap">' +
-    '<a href="https://www.instagram.com/channel/AbZhXJm9JcZ2LSdX/" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="Instagram (Chaîne)">' +
-    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8.7a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6z"/><path d="M17.8 6.2h.01"/></svg>' +
-    '</a>' +
-    '<a href="https://www.instagram.com/mirichy_22officiel" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="Instagram (Perso)">' +
-    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8.7a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6z"/><path d="M17.8 6.2h.01"/></svg>' +
-    '</a>' +
-    '<a href="https://whatsapp.com/channel/0029VbAOXW1EKyZJ1byMkJ1f" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="WhatsApp (Chaîne)">' +
-    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.9 7.3L3.5 20.5l1.7-4.1A8.5 8.5 0 1 1 20.5 11.5z"/><path d="M8.8 9.3c.3-.6.6-.6.9-.6h.7c.2 0 .5.1.7.5.2.4.8 1.4.8 1.4.1.2.1.5 0 .7-.1.2-.2.3-.4.5l-.3.3c-.1.1-.2.3-.1.5.1.2.6 1.1 1.5 1.8 1.1.9 2 .9 2.2.9.2 0 .3-.1.4-.2l.5-.6c.1-.2.3-.2.5-.2s1.3.6 1.5.7c.2.1.4.2.4.4s0 .6-.2.9c-.2.3-.8.8-1.2 1-1 .5-2.2.4-3.5-.1-1.3-.5-2.7-1.7-3.5-2.7-.8-1-1.3-2.1-1.2-3 .1-.7.3-1.3.5-1.7z"/></svg>' +
-    '</a>' +
-    '<a href="https://www.linkedin.com/in/mirichy-mbumba-86ba29317" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="LinkedIn">' +
-    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 9.2V19.5"/><path d="M4.5 4.5h.01"/><path d="M9 19.5v-6.1c0-1.7 1-2.7 2.4-2.7 1.5 0 2.1 1.1 2.1 2.7v6.1"/><path d="M9 10.2v2"/></svg>' +
-    '</a>' +
-    '<a href="https://www.facebook.com/share/14e2FYMByHu/" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="Facebook">' +
-    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 8h2V5h-2c-2 0-3.5 1.6-3.5 3.7V11H8v3h2.5v7H14v-7h2.2l.3-3H14V9c0-.6.2-1 1-1z"/></svg>' +
-    '</a>' +
-    '<a href="https://x.com/emirmirichi" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="X (Twitter)">' +
-    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l16 16"/><path d="M20 4L4 20"/></svg>' +
-    '</a>' +
-    '<a href="mailto:Mirichimbumba@gmail.com" target="_blank" rel="noopener noreferrer" class="mm-footer-social-link" aria-label="Gmail">' +
-    '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.5h15v11h-15z"/><path d="M5 7l7 6 7-6"/></svg>' +
-    '</a>' +
+    '<div class="mm-footer-social" aria-label="Réseaux sociaux" style="display:flex;justify-content:flex-start;align-items:center;gap:12px;flex-wrap:wrap">' +
+    socialLink('https://www.instagram.com/channel/AbZhXJm9JcZ2LSdX/', 'Instagram (Chaîne)', SVG_IG) +
+    socialLink('https://www.instagram.com/mirichy_22officiel', 'Instagram (Perso)', SVG_IG) +
+    socialLink('https://whatsapp.com/channel/0029VbAOXW1EKyZJ1byMkJ1f', 'WhatsApp (Chaîne)', SVG_WA) +
+    socialLink('https://www.linkedin.com/in/mirichy-mbumba-86ba29317', 'LinkedIn', SVG_LI) +
+    socialLink('https://www.facebook.com/share/14e2FYMByHu/', 'Facebook', SVG_FB) +
+    socialLink('https://x.com/emirmirichi', 'X (Twitter)', SVG_X) +
+    socialLink('mailto:Mirichimbumba@gmail.com', 'Gmail', SVG_GM) +
     '</div>' +
     '</div>' +
     '</footer>';

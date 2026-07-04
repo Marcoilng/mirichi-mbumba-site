@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://mirichimbumba.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://mirichimbumba.com/about.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://mirichimbumba.com/coaching.html</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://mirichimbumba.com/shop.html</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://mirichimbumba.com/livre.html</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://mirichimbumba.com/tribunes.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mirichimbumba.com/foi-valeurs.html</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://mirichimbumba.com/clinique.html</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://mirichimbumba.com/temoignages.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mirichimbumba.com/contact.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mirichimbumba.com/reservation.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+</urlset>

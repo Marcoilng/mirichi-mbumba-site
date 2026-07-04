@@ -138,8 +138,59 @@ nav.scrolled { background: rgba(9,9,15,0.92); backdrop-filter: blur(20px); borde
 .cart-overlay.open { opacity: 1; pointer-events: all; }
 .clinique-pill { border: 1px solid rgba(196,146,42,0.3); padding: 6px 16px; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); font-family: 'DM Sans', sans-serif; font-weight: 500; }
 @media (max-width: 768px) {
-  .hero-name { font-size: 3.5rem; }
+  .hero-name { font-size: clamp(2.5rem, 12vw, 3.5rem); }
   nav .desktop-nav { display: none; }
+  #hero .grid { min-height: auto; }
+  #hero .min-h-screen { min-height: auto; }
+  .page-shell { padding-top: 5rem; }
+  .btn-gold, .btn-outline {
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .flex-col .btn-gold,
+  .flex-col .btn-outline,
+  .flex.flex-col .btn-gold,
+  .flex.flex-col .btn-outline {
+    width: 100%;
+    text-align: center;
+  }
+  #cart-drawer {
+    width: 100%;
+    max-width: 100%;
+  }
+  .mm-overlay-minimal {
+    grid-template-columns: 1fr !important;
+    padding: 5.5rem 1.25rem 3rem;
+    gap: 2.5rem;
+  }
+  .mm-overlay-right { min-height: auto; }
+  .site-menu-close {
+    top: max(1rem, env(safe-area-inset-top));
+    right: max(1rem, env(safe-area-inset-right));
+  }
+  nav {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  .book-cover { max-height: 420px; }
+  .mm-h2 { font-size: clamp(1.75rem, 7vw, 2.5rem); }
+}
+
+.mm-h2 {
+  font-size: clamp(2rem, 3.6vw, 3.6rem);
+  font-weight: 300;
+  line-height: 1.05;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* Page shell (fixed nav offset) */
@@ -248,14 +299,22 @@ select.form-input { cursor: pointer; }
 
 /* Social & Contact styles */
 .mm-footer-social-link {
-  color: rgba(245, 240, 232, 0.8);
-  transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease;
+  color: rgba(245, 240, 232, 0.85);
+  transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(196, 146, 42, 0.22);
+  background: rgba(255, 255, 255, 0.03);
 }
 .mm-footer-social-link:hover {
   opacity: 1;
   color: var(--gold-light);
+  border-color: rgba(232, 184, 75, 0.55);
+  background: rgba(196, 146, 42, 0.08);
   transform: translateY(-2px);
 }
 .mm-footer-social-link svg {

@@ -262,6 +262,7 @@
     var o = document.getElementById('site-menu-overlay');
     if (o) {
       o.classList.remove('open');
+      o.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
     }
   };
