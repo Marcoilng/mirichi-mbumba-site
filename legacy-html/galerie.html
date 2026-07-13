@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="robots" content="index, follow">
+    <title>Galerie &amp; Citations — Mirichi Mbumba</title>
+    <meta name="description"
+        content="Découvrez la galerie officielle de Mirichi Mbumba et parcourez ses citations inspirantes sur la foi, l'audace, le leadership et l'entrepreneuriat chrétien.">
+    <meta property="og:title" content="Galerie &amp; Citations — Mirichi Mbumba">
+    <meta property="og:description"
+        content="Découvrez la galerie officielle de Mirichi Mbumba et parcourez ses citations inspirantes.">
+    <meta property="og:image" content="/images/photo6.jpeg">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="canonical" href="https://mirichimbumba.com/galerie.html">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="_shared.css">
+
+    <style>
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid rgba(196, 146, 42, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            background: var(--dark-3);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            width: 100%;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #09090f;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: auto;
+            max-height: 520px;
+            object-fit: contain;
+            opacity: 0.95;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(15, 15, 26, 0.85);
+            border: 1px solid rgba(196, 146, 42, 0.3);
+            color: var(--gold-light);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold-light);
+            box-shadow: 0 0 15px rgba(196, 146, 42, 0.4);
+        }
+
+        .carousel-btn.prev {
+            left: 15px;
+        }
+
+        .carousel-btn.next {
+            right: 15px;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(245, 240, 232, 0.2);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: var(--gold-light);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Gallery Grid & Lightbox Styles */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            border: 1px solid rgba(196, 146, 42, 0.15);
+            background: var(--dark-2);
+            aspect-ratio: 3/4;
+            cursor: pointer;
+            transform: translateY(0);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-8px);
+            border-color: rgba(196, 146, 42, 0.4);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(9, 9, 15, 0.9) 0%, rgba(9, 9, 15, 0.2) 60%, transparent 100%);
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 24px;
+            transition: opacity 0.4s ease;
+        }
+
+        .gallery-item:hover class {
+            opacity: 1;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        /* Lightbox modal */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(5, 5, 10, 0.98);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .lightbox.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border: 1px solid rgba(196, 146, 42, 0.25);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            border-radius: 4px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -45px;
+            right: 0;
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .lightbox-close:hover {
+            color: var(--gold-light);
+        }
+
+        .lightbox-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(15, 15, 26, 0.7);
+            border: 1px solid rgba(196, 146, 42, 0.2);
+            color: var(--white);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lightbox-arrow:hover {
+            background: var(--gold);
+            color: var(--dark);
+            border-color: var(--gold-light);
+        }
+
+        .lightbox-arrow.prev {
+            left: -60px;
+        }
+
+        .lightbox-arrow.next {
+            right: -60px;
+        }
+
+        @media (max-width: 768px) {
+            .lightbox-arrow.prev {
+                left: 10px;
+            }
+
+            .lightbox-arrow.next {
+                right: 10px;
+            }
+
+            .lightbox-close {
+                right: 10px;
+                top: -50px;
+            }
+
+            .carousel-btn {
+                width: 36px;
+                height: 36px;
+            }
+
+            .carousel-btn.prev {
+                left: 8px;
+            }
+
+            .carousel-btn.next {
+                right: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="mm-nav-root"></div>
+
+    <main class="page-shell">
+
+        <!-- HEADER -->
+        <section class="section-alt py-16 px-6 lg:px-12">
+            <div class="max-w-7xl mx-auto">
+                <p class="breadcrumb mb-6"><a href="index.html">Accueil</a> · Galerie</p>
+                <div class="section-label flex items-center gap-3 mb-4 reveal">
+                    <div class="gold-line"></div>Médiathèque
+                </div>
+                <h1 class="reveal reveal-delay-1"
+                    style="font-size:clamp(2.25rem,4vw,3.25rem);font-weight:300;line-height:1.15">
+                    Galerie &amp; <span style="color:var(--gold-light);font-style:italic">Pensées</span>
+                </h1>
+                <p class="reveal reveal-delay-2"
+                    style="color:var(--muted);max-width:640px;margin-top:1rem;line-height:1.8">
+                    Un espace de réflexion et d'images. Parcourez les citations inspirantes de Mirichi Mbumba et
+                    explorez sa galerie de portraits et moments d'impact.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION CITATIONS (CAROUSEL) -->
+        <section class="section-main py-20 px-6 lg:px-12">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12 reveal">
+                    <span class="section-label">Paroles d'Impact</span>
+                    <h2 class="mm-h2 mt-2" style="font-size:clamp(1.8rem,2.8vw,2.5rem);font-weight:300;">Citations &amp;
+                        Enseignements</h2>
+                    <div class="gold-line-center mt-4"></div>
+                </div>
+
+                <div class="reveal reveal-delay-1">
+                    <div class="carousel-container">
+                        <div class="carousel-track" id="carousel-track">
+                            <!-- Quote 12 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo12.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="eager" />
+                            </div>
+                            <!-- Quote 13 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo13.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 14 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo14.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 15 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo15.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 16 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo16.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 20 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo20.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 21 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo21.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 22 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo22.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 23 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo23.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 24 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo24.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 25 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo25.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 27 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo27.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 28 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo28.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 29 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo29.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 30 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo30.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 31 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo31.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 32 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo32.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 33 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo33.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                            <!-- Quote 34 -->
+                            <div class="carousel-slide">
+                                <img src="images/caroussels/photo34.jpeg" alt="Citation Mirichi Mbumba"
+                                    loading="lazy" />
+                            </div>
+                        </div>
+
+                        <button class="carousel-btn prev" id="carousel-prev" aria-label="Citation précédente">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                            </svg>
+                        </button>
+                        <button class="carousel-btn next" id="carousel-next" aria-label="Citation suivante">
+                            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="carousel-dots" id="carousel-dots"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION GALERIE GRID (PORTRAITS UNUSED) -->
+        <section class="section-alt py-20 px-6 lg:px-12">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16 reveal">
+                    <span class="section-label">Galerie d'Images</span>
+                    <h2 class="mm-h2 mt-2" style="font-size:clamp(1.8rem,2.8vw,2.5rem);font-weight:300;">Portraits &amp;
+                        Présence</h2>
+                    <div class="gold-line-center mt-4"></div>
+                </div>
+
+                <div class="gallery-grid reveal reveal-delay-2">
+                    <!-- Item 1: photo6 -->
+                    <div class="gallery-item" onclick="openLightbox(0)">
+                        <img src="images/photo6.jpeg" alt="Mirichi Mbumba — Portrait" loading="lazy" />
+                        <div class="gallery-overlay">
+                            <span class="section-label">Vision</span>
+                            <h3 style="font-size: 1.25rem; font-weight:300; margin-top:4px;">Mirichi Mbumba</h3>
+                        </div>
+                    </div>
+                    <!-- Item 2: photo7 -->
+                    <div class="gallery-item" onclick="openLightbox(1)">
+                        <img src="images/photo7.jpeg" alt="Mirichi Mbumba — Leadership" loading="lazy" />
+                        <div class="gallery-overlay">
+                            <span class="section-label">Leadership</span>
+                            <h3 style="font-size: 1.25rem; font-weight:300; margin-top:4px;">Confiance &amp; Excellence
+                            </h3>
+                        </div>
+                    </div>
+                    <!-- Item 3: photo9 -->
+                    <div class="gallery-item" onclick="openLightbox(2)">
+                        <img src="images/photo9.jpeg" alt="Mirichi Mbumba — Entrepreneuriat" loading="lazy" />
+                        <div class="gallery-overlay">
+                            <span class="section-label">Entrepreneuriat</span>
+                            <h3 style="font-size: 1.25rem; font-weight:300; margin-top:4px;">Leitmotiv d'impact</h3>
+                        </div>
+                    </div>
+                    <!-- Item 4: photo10 -->
+                    <div class="gallery-item" onclick="openLightbox(3)">
+                        <img src="images/photo10.jpeg" alt="Mirichi Mbumba — Méditation" loading="lazy" />
+                        <div class="gallery-overlay">
+                            <span class="section-label">Réflexion</span>
+                            <h3 style="font-size: 1.25rem; font-weight:300; margin-top:4px;">Inspiration théologique
+                            </h3>
+                        </div>
+                    </div>
+                    <!-- Item 5: photo11 -->
+                    <div class="gallery-item" onclick="openLightbox(4)">
+                        <img src="images/photo11.jpeg" alt="Mirichi Mbumba &mdash; Cabinet" loading="lazy" />
+                        <div class="gallery-overlay">
+                            <span class="section-label">Cabinet</span>
+                            <h3 style="font-size: 1.25rem; font-weight:300; margin-top:4px;">Stratégie d'affaires</h3>
+                        </div>
+                    </div>
+                    <!-- Item 6: photo17 -->
+                    <div class="gallery-item" onclick="openLightbox(5)">
+                        <img src="images/photo17.jpeg" alt="Mirichi Mbumba — Perspective" loading="lazy" />
+                        <div class="gallery-overlay">
+                            <span class="section-label">Perspective</span>
+                            <h3 style="font-size: 1.25rem; font-weight:300; margin-top:4px;">Bâtisseur d'industrie</h3>
+                        </div>
+                    </div>
+                    <!-- Item 7: photo18 -->
+                    <div class="gallery-item" onclick="openLightbox(6)">
+                        <img src="images/photo18.jpeg" alt="Mirichi Mbumba — Foi" loading="lazy" />
+                        <div class="gallery-overlay">
+                            <span class="section-label">Action</span>
+                            <h3 style="font-size: 1.25rem; font-weight:300; margin-top:4px;">La foi par l'action</h3>
+                        </div>
+                    </div>
+                    <!-- Item 8: photo19 -->
+                    <div class="gallery-item" onclick="openLightbox(7)">
+                        <img src="images/photo19.jpeg" alt="Mirichi Mbumba — Ambition" loading="lazy" />
+                        <div class="gallery-overlay">
+                            <span class="section-label">Ambition</span>
+                            <h3 style="font-size: 1.25rem; font-weight:300; margin-top:4px;">Conquête &amp; Destinée
+                            </h3>
+                        </div>
+                    </div>
+                    <!-- Item 9: photo26 -->
+                    <div class="gallery-item" onclick="openLightbox(8)">
+                        <img src="images/photo26.jpeg" alt="Mirichi Mbumba — Rigueur" loading="lazy" />
+                        <div class="gallery-overlay">
+                            <span class="section-label">Rigueur</span>
+                            <h3 style="font-size: 1.25rem; font-weight:300; margin-top:4px;">Ingénierie juridique</h3>
+                        </div>
+                    </div>
+                    <!-- Item 10: photo36 -->
+                    <div class="gallery-item" onclick="openLightbox(9)">
+                        <img src="images/photo36.jpeg" alt="Mirichi Mbumba — Portrait officiel" loading="lazy" />
+                        <div class="gallery-overlay">
+                            <span class="section-label">Éditorial</span>
+                            <h3 style="font-size: 1.25rem; font-weight:300; margin-top:4px;">Prestige &amp; Autorité
+                            </h3>
+                        </div>
+                    </div>
+                    <!-- Item 11: photo37 -->
+                    <div class="gallery-item" onclick="openLightbox(10)">
+                        <img src="images/photo37.jpeg" alt="Mirichi Mbumba" loading="lazy" />
+                        <div class="gallery-overlay">
+                            <span class="section-label">Souveraineté</span>
+                            <h3 style="font-size: 1.25rem; font-weight:300; margin-top:4px;">Renaissance africaine</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIGHTBOX OVERLAY -->
+        <div class="lightbox" id="lightbox">
+            <div class="lightbox-content">
+                <button class="lightbox-close" id="lightbox-close" aria-label="Fermer la vue plein écran">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <button class="lightbox-arrow prev" id="lightbox-prev" aria-label="Image précédente">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+
+                <img class="lightbox-img" id="lightbox-img" src="" alt="Vue agrandie" />
+
+                <button class="lightbox-arrow next" id="lightbox-next" aria-label="Image suivante">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="mm-footer-root"></div>
+    <div id="mm-cart-root"></div>
+
+    <script src="site-chrome.js"></script>
+    <script src="_shared.js"></script>
+
+    <script>
+        // Carousel Implementation
+        (function () {
+            const track = document.getElementById('carousel-track');
+            const slides = Array.from(track.children);
+            const nextButton = document.getElementById('carousel-next');
+            const prevButton = document.getElementById('carousel-prev');
+            const dotsContainer = document.getElementById('carousel-dots');
+
+            let currentIndex = 0;
+            let autoPlayInterval;
+
+            // Create Dot Indicators
+            slides.forEach((_, index) => {
+                const dot = document.createElement('button');
+                dot.classList.add('carousel-dot');
+                if (index === 0) dot.classList.add('active');
+                dot.setAttribute('aria-label', `Aller à la diapositive ${index + 1}`);
+                dot.addEventListener('click', () => {
+                    goToSlide(index);
+                    resetAutoPlay();
+                });
+                dotsContainer.appendChild(dot);
+            });
+
+            const dots = Array.from(dotsContainer.children);
+
+            function updateDots(targetIndex) {
+                dots.forEach(dot => dot.classList.remove('active'));
+                dots[targetIndex].classList.add('active');
+            }
+
+            function goToSlide(index) {
+                if (index < 0) index = slides.length - 1;
+                if (index >= slides.length) index = 0;
+
+                currentIndex = index;
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                updateDots(currentIndex);
+            }
+
+            nextButton.addEventListener('click', () => {
+                goToSlide(currentIndex + 1);
+                resetAutoPlay();
+            });
+
+            prevButton.addEventListener('click', () => {
+                goToSlide(currentIndex - 1);
+                resetAutoPlay();
+            });
+
+            function startAutoPlay() {
+                autoPlayInterval = setInterval(() => {
+                    goToSlide(currentIndex + 1);
+                }, 5000); // changes quote every 5 seconds
+            }
+
+            function resetAutoPlay() {
+                clearInterval(autoPlayInterval);
+                startAutoPlay();
+            }
+
+            startAutoPlay();
+
+            // Touch gestures support for mobile sliding
+            let startX = 0;
+            let isSwiping = false;
+
+            track.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isSwiping = true;
+            }, { passive: true });
+
+            track.addEventListener('touchmove', (e) => {
+                if (!isSwiping) return;
+                const diffX = e.touches[0].clientX - startX;
+                if (Math.abs(diffX) > 50) {
+                    if (diffX > 0) {
+                        goToSlide(currentIndex - 1);
+                    } else {
+                        goToSlide(currentIndex + 1);
+                    }
+                    isSwiping = false;
+                    resetAutoPlay();
+                }
+            }, { passive: true });
+
+            track.addEventListener('touchend', () => {
+                isSwiping = false;
+            });
+        })();
+
+        // Lightbox Implementation
+        const galleryImages = [
+            "images/photo6.jpeg",
+            "images/photo7.jpeg",
+            "images/photo9.jpeg",
+            "images/photo10.jpeg",
+            "images/photo11.jpeg",
+            "images/photo17.jpeg",
+            "images/photo18.jpeg",
+            "images/photo19.jpeg",
+            "images/photo26.jpeg",
+            "images/photo36.jpeg",
+            "images/photo37.jpeg"
+        ];
+
+        let currentGalleryIndex = 0;
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const closeBtn = document.getElementById('lightbox-close');
+        const prevBtn = document.getElementById('lightbox-prev');
+        const nextBtn = document.getElementById('lightbox-next');
+
+        function openLightbox(index) {
+            currentGalleryIndex = index;
+            lightboxImg.src = galleryImages[currentGalleryIndex];
+            lightbox.classList.add('open');
+            document.body.style.overflow = 'hidden'; // Lock background scrolling
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('open');
+            document.body.style.overflow = ''; // Restore background scrolling
+        }
+
+        function navigateLightbox(direction) {
+            currentGalleryIndex += direction;
+            if (currentGalleryIndex < 0) currentGalleryIndex = galleryImages.length - 1;
+            if (currentGalleryIndex >= galleryImages.length) currentGalleryIndex = 0;
+            lightboxImg.src = galleryImages[currentGalleryIndex];
+        }
+
+        closeBtn.addEventListener('click', closeLightbox);
+        prevBtn.addEventListener('click', () => navigateLightbox(-1));
+        nextBtn.addEventListener('click', () => navigateLightbox(1));
+
+        // Close on overlay click
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('open')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') navigateLightbox(-1);
+            if (e.key === 'ArrowRight') navigateLightbox(1);
+        });
+    </script>
+</body>
+
+</html>

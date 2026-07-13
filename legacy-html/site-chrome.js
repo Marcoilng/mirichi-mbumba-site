@@ -49,6 +49,7 @@
     '<a href="coaching.html" class="nav-link">Coaching</a>' +
     '<a href="clinique.html" class="nav-link">La Clinique</a>' +
     '<a href="temoignages.html" class="nav-link">Témoignages</a>' +
+    '<a href="galerie.html" class="nav-link">Galerie</a>' +
     '<a href="contact.html" class="nav-link">Contact</a></div>' +
     '<div class="flex items-center gap-2 sm:gap-3 shrink-0">' +
     '<button type="button" onclick="toggleCart()" class="relative p-2" aria-label="Panier">' +
@@ -72,6 +73,7 @@
     '<a href="coaching.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Coaching</a>' +
     '<a href="clinique.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">La Clinique</a>' +
     '<a href="temoignages.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Témoignages</a>' +
+    '<a href="galerie.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Galerie</a>' +
     '<a href="contact.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Contact</a>' +
     '<a href="panier.html" onclick="closeMenu()" class="nav-link mt-4">Panier</a></div></div>';
 
@@ -98,8 +100,10 @@
     '<span class="nav-num">06</span><span class="nav-big">Coaching</span></a>' +
     '<a href="clinique.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
     '<span class="nav-num">07</span><span class="nav-big">La Clinique</span></a>' +
+    '<a href="galerie.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
+    '<span class="nav-num">08</span><span class="nav-big">Galerie</span></a>' +
     '<a href="contact.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
-    '<span class="nav-num">08</span><span class="nav-big">Contact</span></a>' +
+    '<span class="nav-num">09</span><span class="nav-big">Contact</span></a>' +
     '</nav>' +
     '</div>' +
     // Right: Info + Socials
@@ -183,6 +187,7 @@
     '<li><a href="shop.html" class="nav-link" style="display:inline;padding:0">Shop</a></li>' +
     '<li><a href="tribunes.html" class="nav-link" style="display:inline;padding:0">Tribunes</a></li>' +
     '<li><a href="coaching.html" class="nav-link" style="display:inline;padding:0">Coaching</a></li>' +
+    '<li><a href="galerie.html" class="nav-link" style="display:inline;padding:0">Galerie</a></li>' +
     '<li><a href="contact.html" class="nav-link" style="display:inline;padding:0">Contact</a></li></ul></div>' +
     '<div><div style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">Boutique</div>' +
     '<ul class="space-y-2" style="font-size:0.875rem;color:var(--muted)">' +
