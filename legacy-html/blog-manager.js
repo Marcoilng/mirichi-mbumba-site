@@ -267,9 +267,9 @@
             await fetchArticles();
             renderTribunesPage();
 
-            // If we are on the article.html page, redirect to tribunes list
-            if (window.location.pathname.includes('article.html')) {
-                window.location.href = 'tribunes.html';
+            // If we are on the article page, redirect to tribunes list
+            if (window.location.pathname.includes('article')) {
+                window.location.href = window.location.pathname.includes('legacy-html') ? 'tribunes.html' : 'tribunes';
             }
             return true;
         }
@@ -360,7 +360,7 @@
         updateAdminUI();
         renderTribunesPage();
         // reload if on article detail page to hide edit bars
-        if (window.location.pathname.includes('article.html')) {
+        if (window.location.pathname.includes('article')) {
             window.location.reload();
         }
     }
@@ -818,7 +818,7 @@
                 initDB();
                 await fetchArticles();
                 window.mmCloseModal();
-                if (window.location.pathname.includes('tribunes.html')) {
+                if (window.location.pathname.includes('tribunes')) {
                     renderTribunesPage();
                 } else {
                     renderDetailPage();
@@ -836,7 +836,7 @@
             initDB();
             fetchArticles().then(() => {
                 window.mmCloseModal();
-                if (window.location.pathname.includes('tribunes.html')) {
+                if (window.location.pathname.includes('tribunes')) {
                     renderTribunesPage();
                 } else {
                     renderDetailPage();
@@ -880,11 +880,12 @@
         await fetchArticles();
 
         // 3. Render page specific layout
-        if (window.location.pathname.includes('tribunes.html') || window.location.pathname.endsWith('/') || window.location.pathname.endsWith('/index.html')) {
+        const path = window.location.pathname;
+        if (path.includes('tribunes') || path.endsWith('/') || path.endsWith('/index.html') || path.endsWith('/index')) {
             renderTribunesPage();
         }
 
-        if (window.location.pathname.includes('article.html')) {
+        if (path.includes('article')) {
             renderDetailPage();
         }
 
