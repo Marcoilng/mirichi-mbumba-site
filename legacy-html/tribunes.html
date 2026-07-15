@@ -39,7 +39,8 @@
             <div class="gold-line"></div>Tribunes
           </div>
           <h1 class="reveal reveal-delay-1" style="font-size:clamp(2.25rem,4vw,3.25rem);font-weight:300">La Tribune de
-            <span style="color:var(--gold-light);font-style:italic">Mirichi</span></h1>
+            <span style="color:var(--gold-light);font-style:italic">Mirichi</span>
+          </h1>
           <p class="reveal reveal-delay-2" style="color:var(--muted);max-width:560px;margin-top:1rem;line-height:1.85">
             Réflexions exclusives sur l'entrepreneuriat, la foi et le leadership — pour éclairer vos décisions.</p>
         </div>
@@ -55,18 +56,20 @@
 
     <section class="section-main py-14 px-6 lg:px-12">
       <div id="articles-list-container" class="max-w-4xl mx-auto space-y-6">
-        <article class="card-dark p-8 reveal">
-          <p class="article-date">Foi &amp; Business · 15 jan. 2026</p>
-          <h2
-            style="font-family:'Cormorant Garant',serif;font-size:1.65rem;font-weight:400;margin-top:0.75rem;line-height:1.25">
-            <a href="article.html" class="hover:text-[var(--gold-light)]">L'Église et la formation des entrepreneurs :
-              foi et responsabilité économique</a>
-          </h2>
-          <p style="color:var(--muted);margin-top:0.75rem;line-height:1.8;font-size:0.95rem">La Bible ne sépare pas la
-            foi de l'action, ni la spiritualité de la gestion des talents et des ressources.</p>
-          <a href="article.html" class="nav-link inline-block mt-4" style="padding:0;color:var(--gold)">Lire l'article
-            →</a>
-        </article>
+        <!-- Skeleton de chargement — remplacé immédiatement par le JS -->
+        <div id="articles-loading-skeleton" style="display:flex;flex-direction:column;gap:1.5rem;">
+          <div class="card-dark p-8" style="opacity:0.5;">
+            <div style="width:30%;height:12px;background:rgba(196,146,42,0.15);border-radius:4px;margin-bottom:1rem;">
+            </div>
+            <div
+              style="width:80%;height:22px;background:rgba(255,255,255,0.06);border-radius:4px;margin-bottom:0.75rem;">
+            </div>
+            <div
+              style="width:95%;height:14px;background:rgba(255,255,255,0.04);border-radius:4px;margin-bottom:0.5rem;">
+            </div>
+            <div style="width:70%;height:14px;background:rgba(255,255,255,0.04);border-radius:4px;"></div>
+          </div>
+        </div>
       </div>
     </section>
   </main>

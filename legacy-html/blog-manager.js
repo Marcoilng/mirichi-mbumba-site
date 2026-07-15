@@ -445,15 +445,44 @@
         });
     }
 
-    function renderDetailPage() {
+    async function renderDetailPage() {
         const params = new URLSearchParams(window.location.search);
         const artId = params.get('id');
-        if (!artId) return; // Fallback: keep static HTML contents intact for indexability
+        if (!artId) return; // Pas d'ID → conserver le contenu statique par défaut
 
-        // Find article
-        const art = articles.find(a => a.id === artId);
+        // Chercher dans le cache local d'abord
+        let art = articles.find(a => a.id === artId);
+
+        // Si non trouvé localement, tenter une requête directe sur Supabase
+        if (!art && dbType === 'supabase' && supabaseInstance) {
+            try {
+                const { data, error } = await supabaseInstance
+                    .from('articles')
+                    .select('*')
+                    .eq('id', artId)
+                    .single();
+                if (!error && data) {
+                    art = {
+                        id: data.id,
+                        title: data.title,
+                        category: data.category,
+                        description: data.description,
+                        content: data.content,
+                        image: data.image,
+                        date: data.date,
+                        associatedBook: data.associated_book || '',
+                        readTime: data.read_time || '3 min'
+                    };
+                    // Ajouter au cache pour les prochaines recherches
+                    if (!articles.find(a => a.id === art.id)) articles.push(art);
+                }
+            } catch (e) {
+                console.error("Impossible de charger l'article depuis Supabase :", e);
+            }
+        }
+
         if (!art) {
-            console.warn(`Article ID ${artId} was not found, showing default content instead.`);
+            console.warn(`Article ID "${artId}" introuvable.`);
             return;
         }
 
@@ -908,7 +937,7 @@
         }
 
         if (path.includes('article')) {
-            renderDetailPage();
+            await renderDetailPage();
         }
 
         updateAdminUI();
