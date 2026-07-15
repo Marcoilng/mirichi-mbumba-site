@@ -196,7 +196,165 @@ async function fetchAllData() {
     }
 }
 
-// Tab Switching Routing
+// Global State for Chart instances
+let newsChartInstance = null;
+let bookingsChartInstance = null;
+
+// Helper to animate metric numbers
+function animateCount(elemId, targetVal) {
+    const el = document.getElementById(elemId);
+    if (!el) return;
+    const startVal = parseInt(el.textContent, 10) || 0;
+    if (startVal === targetVal) {
+        el.textContent = targetVal;
+        return;
+    }
+    const duration = 800; // 0.8s count duration
+    const startTimestamp = performance.now();
+
+    function step(timestamp) {
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const easeOut = progress * (2 - progress); // easeOutQuad
+        const currentVal = Math.floor(easeOut * (targetVal - startVal) + startVal);
+        el.textContent = currentVal;
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        } else {
+            el.textContent = targetVal;
+        }
+    }
+    window.requestAnimationFrame(step);
+}
+
+// Render dynamic Chart.js visualizations
+function renderCharts() {
+    if (typeof Chart === 'undefined') {
+        console.warn("Chart.js is not loaded yet.");
+        return;
+    }
+
+    // --- LINE CHART (Subscribers Growth) ---
+    const ctxNews = document.getElementById('chart-newsletter');
+    if (ctxNews) {
+        if (newsChartInstance) newsChartInstance.destroy();
+
+        // Aggregate by date (group newsletter subs)
+        const dateCounts = {};
+        cachedNewsletter.forEach(sub => {
+            const dateStr = new Date(sub.created_at || Date.now()).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' });
+            dateCounts[dateStr] = (dateCounts[dateStr] || 0) + 1;
+        });
+
+        let labels = Object.keys(dateCounts);
+        let dataPoints = Object.values(dateCounts);
+
+        if (labels.length === 0) {
+            labels = ['Aucune donnée'];
+            dataPoints = [0];
+        } else {
+            // Last 7 days
+            labels = labels.slice(-7);
+            dataPoints = dataPoints.slice(-7);
+        }
+
+        const ctx2d = ctxNews.getContext('2d');
+        const gradient = ctx2d.createLinearGradient(0, 0, 0, 200);
+        gradient.addColorStop(0, 'rgba(196, 146, 42, 0.25)');
+        gradient.addColorStop(1, 'rgba(196, 146, 42, 0.01)');
+
+        newsChartInstance = new Chart(ctxNews, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Abonnés',
+                    data: dataPoints,
+                    borderColor: '#E8B84B',
+                    backgroundColor: gradient,
+                    borderWidth: 2.5,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#C4922A',
+                    pointBorderColor: '#09090F',
+                    pointHoverRadius: 6,
+                    pointHoverBackgroundColor: '#E8B84B'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(196, 146, 42, 0.08)' },
+                        ticks: { color: 'rgba(245, 240, 232, 0.5)', font: { size: 10 } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: 'rgba(245, 240, 232, 0.5)', font: { size: 10 } }
+                    }
+                }
+            }
+        });
+    }
+
+    // --- DOUGHNUT CHART (Bookings distribution) ---
+    const ctxBookings = document.getElementById('chart-bookings');
+    if (ctxBookings) {
+        if (bookingsChartInstance) bookingsChartInstance.destroy();
+
+        const typeCounts = {};
+        cachedBookings.forEach(res => {
+            const t = res.session_type || 'Accompagnement';
+            typeCounts[t] = (typeCounts[t] || 0) + 1;
+        });
+
+        let labels = Object.keys(typeCounts);
+        let dataPoints = Object.values(typeCounts);
+
+        if (labels.length === 0) {
+            labels = ['Aucune réservation'];
+            dataPoints = [0];
+        }
+
+        bookingsChartInstance = new Chart(ctxBookings, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: dataPoints,
+                    backgroundColor: [
+                        '#C4922A',
+                        '#E8B84B',
+                        '#7B1D29',
+                        'rgba(196, 146, 42, 0.15)',
+                        'rgba(245, 240, 232, 0.3)'
+                    ],
+                    borderColor: '#09090F',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: 'rgba(245, 240, 232, 0.75)',
+                            padding: 15,
+                            font: { size: 9, family: 'DM Sans' }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Tab Switching Routing with Transition Animation
 function switchTab(tabId) {
     activeTab = tabId;
 
@@ -208,22 +366,32 @@ function switchTab(tabId) {
     const activeBtn = document.getElementById('tab-' + tabId);
     if (activeBtn) activeBtn.classList.add('active');
 
-    // Hide panels
+    // Hide panels and animate out
     document.querySelectorAll('.tab-panel').forEach(panel => {
         panel.classList.add('hidden');
+        panel.style.transform = 'translateY(12px)';
+        panel.style.opacity = '0';
     });
+
     // Show active panel
     const targetedPanel = document.getElementById('panel-' + tabId);
-    if (targetedPanel) targetedPanel.classList.remove('hidden');
+    if (targetedPanel) {
+        targetedPanel.classList.remove('hidden');
+        setTimeout(() => {
+            targetedPanel.style.transition = 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+            targetedPanel.style.transform = 'translateY(0)';
+            targetedPanel.style.opacity = '1';
+        }, 20);
+    }
 }
 window.switchTab = switchTab;
 
 // 1. Render Stats Overview
 function renderOverviewStats() {
-    document.getElementById('stat-bookings').textContent = cachedBookings.length;
-    document.getElementById('stat-messages').textContent = cachedMessages.length;
-    document.getElementById('stat-subs').textContent = cachedNewsletter.length;
-    document.getElementById('stat-courses').textContent = cachedFormations.length;
+    animateCount('stat-bookings', cachedBookings.length);
+    animateCount('stat-messages', cachedMessages.length);
+    animateCount('stat-subs', cachedNewsletter.length);
+    animateCount('stat-courses', cachedFormations.length);
 
     // Render recent bookings summary (limit 5)
     const bookingsList = document.getElementById('overview-bookings-list');
@@ -269,6 +437,9 @@ function renderOverviewStats() {
             `;
         });
     }
+
+    // Trigger Chart rendering
+    renderCharts();
 }
 
 // 2. Booking Managers

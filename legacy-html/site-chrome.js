@@ -63,7 +63,7 @@
     '<span class="w-6 h-px bg-white block transition-all" id="bar2"></span>' +
     '<span class="w-6 h-px bg-white block transition-all" id="bar3"></span></button></div></div></nav>';
 
-  var MOBILE_OVERLAY = '<div id="mobile-menu-overlay" onclick="closeMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:199;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);"></div>';
+  var MOBILE_OVERLAY = '<div id="mobile-menu-overlay" onclick="closeMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:199;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:opacity 0.4s ease;opacity:0;"></div>';
 
   var MOBILE =
     '<div id="mobile-menu" class="fixed inset-y-0 right-0 w-full max-w-xs flex flex-col lg:hidden" style="background:var(--dark-2);border-left:1px solid rgba(196,146,42,0.15);">' +

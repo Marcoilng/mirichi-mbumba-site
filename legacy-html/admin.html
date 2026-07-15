@@ -10,6 +10,7 @@
     <title>Cabinet Mirichi Mbumba — Espace d'Administration</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -39,6 +40,14 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(196, 146, 42, 0.15);
             border-radius: 6px;
+            backdrop-filter: blur(8px);
+            transition: all 0.35s ease;
+        }
+
+        .admin-card:hover {
+            border-color: rgba(196, 146, 42, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(196, 146, 42, 0.05);
         }
 
         .admin-table th {
@@ -46,10 +55,11 @@
             letter-spacing: 0.15em;
             text-transform: uppercase;
             color: var(--gold);
-            padding: 12px 16px;
+            padding: 14px 16px;
             text-align: left;
             font-weight: 600;
             border-bottom: 2px solid rgba(196, 146, 42, 0.2);
+            background: rgba(15, 15, 26, 0.8);
         }
 
         .admin-table td {
@@ -57,10 +67,11 @@
             font-size: 0.85rem;
             border-bottom: 1px solid rgba(196, 146, 42, 0.08);
             color: rgba(245, 240, 232, 0.85);
+            transition: background 0.2s;
         }
 
         .admin-table tr:hover td {
-            background: rgba(255, 255, 255, 0.015);
+            background: rgba(255, 255, 255, 0.025);
         }
 
         .badge-status {
@@ -70,24 +81,28 @@
             text-transform: uppercase;
             font-weight: 600;
             letter-spacing: 0.05em;
+            display: inline-block;
         }
 
         .badge-status.active {
-            background: rgba(34, 197, 94, 0.15);
+            background: rgba(34, 197, 94, 0.12);
             color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.3);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.08);
         }
 
         .badge-status.pending {
-            background: rgba(234, 179, 8, 0.15);
+            background: rgba(234, 179, 8, 0.12);
             color: #facc15;
-            border: 1px solid rgba(234, 179, 8, 0.3);
+            border: 1px solid rgba(234, 179, 8, 0.25);
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.08);
         }
 
         .badge-status.cancelled {
-            background: rgba(239, 68, 68, 0.15);
+            background: rgba(239, 68, 68, 0.12);
             color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            box-shadow: 0 0 10px rgba(248, 113, 113, 0.08);
         }
 
         .form-input-admin {
@@ -105,6 +120,17 @@
         .form-input-admin:focus {
             border-color: var(--gold);
             background: #0e0e18;
+            box-shadow: 0 0 8px rgba(196, 146, 42, 0.2);
+        }
+
+        /* Smooth Tab Animations */
+        .tab-panel {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        /* Metric Card Glows */
+        .glow-gold {
+            text-shadow: 0 0 12px rgba(232, 184, 75, 0.3);
         }
     </style>
 </head>
@@ -172,7 +198,7 @@
                     <button onclick="window.location.href='/'" class="btn-outline"
                         style="padding: 10px 18px; font-size:0.7rem">Voir le Site</button>
                     <button onclick="logoutAdmin()"
-                        class="bg-red-950 text-red-300 border border-red-800 hover:border-red-500 hover:text-white px-5 py-2.5 text-xs text-center uppercase tracking-wider font-semibold"
+                        class="bg-red-950/80 text-red-300 border border-red-900/60 hover:border-red-500 hover:text-white px-5 py-2.5 text-xs text-center uppercase tracking-wider font-semibold"
                         style="transition:0.3s; cursor:pointer;">Déconnexion</button>
                 </div>
             </div>
@@ -193,7 +219,6 @@
                 <button onclick="switchTab('articles')" id="tab-articles"
                     class="admin-tab-btn px-4 py-3 text-xs md:text-sm font-semibold tracking-wider uppercase border-b-2">Articles
                     de Blog</button>
-
             </div>
 
             <!-- Tab Content Area -->
@@ -201,37 +226,80 @@
 
                 <!-- 1. OVERVIEW TAB -->
                 <div id="panel-overview" class="tab-panel hidden space-y-8">
-                    <div class="grid md:grid-cols-4 gap-6">
-                        <div class="admin-card p-6 flex flex-col justify-between">
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                        <div class="admin-card p-6 flex flex-col justify-between relative overflow-hidden group">
+                            <div
+                                class="absolute right-4 top-4 text-amber-500/10 text-4xl group-hover:scale-110 transition duration-300">
+                                📅</div>
                             <div>
                                 <span class="section-label">Coaching</span>
-                                <h3 class="text-4xl font-normal text-amber-200 mt-2" id="stat-bookings">0</h3>
+                                <h3 class="text-4xl md:text-5xl font-normal text-amber-200 mt-2 glow-gold font-serif"
+                                    id="stat-bookings">0</h3>
                             </div>
-                            <p class="text-xs text-gray-500 mt-4">Réservations de sessions enregistrées</p>
+                            <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-wider">Réservations</p>
                         </div>
 
-                        <div class="admin-card p-6 flex flex-col justify-between">
+                        <div class="admin-card p-6 flex flex-col justify-between relative overflow-hidden group">
+                            <div
+                                class="absolute right-4 top-4 text-amber-500/10 text-4xl group-hover:scale-110 transition duration-300">
+                                ✉️</div>
                             <div>
                                 <span class="section-label">Boîte de Réception</span>
-                                <h3 class="text-4xl font-normal text-amber-200 mt-2" id="stat-messages">0</h3>
+                                <h3 class="text-4xl md:text-5xl font-normal text-amber-200 mt-2 glow-gold font-serif"
+                                    id="stat-messages">0</h3>
                             </div>
-                            <p class="text-xs text-gray-500 mt-4">Messages reçus via le formulaire de contact</p>
+                            <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-wider">Messages reçus</p>
                         </div>
 
-                        <div class="admin-card p-6 flex flex-col justify-between">
+                        <div class="admin-card p-6 flex flex-col justify-between relative overflow-hidden group">
+                            <div
+                                class="absolute right-4 top-4 text-amber-500/10 text-4xl group-hover:scale-110 transition duration-300">
+                                👥</div>
                             <div>
-                                <span class="section-label">Abonnés Newsletter</span>
-                                <h3 class="text-4xl font-normal text-amber-200 mt-2" id="stat-subs">0</h3>
+                                <span class="section-label">La Tribune</span>
+                                <h3 class="text-4xl md:text-5xl font-normal text-amber-200 mt-2 glow-gold font-serif"
+                                    id="stat-subs">0</h3>
                             </div>
-                            <p class="text-xs text-gray-500 mt-4">Emails inscrits à la Tribune de Mirichi</p>
+                            <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-wider">Abonnés Newsletter</p>
                         </div>
 
-                        <div class="admin-card p-6 flex flex-col justify-between">
+                        <div class="admin-card p-6 flex flex-col justify-between relative overflow-hidden group">
+                            <div
+                                class="absolute right-4 top-4 text-amber-500/10 text-4xl group-hover:scale-110 transition duration-300">
+                                🎓</div>
                             <div>
                                 <span class="section-label">Formations Pro</span>
-                                <h3 class="text-4xl font-normal text-amber-200 mt-2" id="stat-courses">0</h3>
+                                <h3 class="text-4xl md:text-5xl font-normal text-amber-200 mt-2 glow-gold font-serif"
+                                    id="stat-courses">0</h3>
                             </div>
-                            <p class="text-xs text-gray-500 mt-4">Cours publiés répartis par modules</p>
+                            <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-wider">Cours en ligne</p>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+                        <div class="admin-card p-6 lg:col-span-7 flex flex-col justify-between">
+                            <div>
+                                <span class="section-label">Activité récente</span>
+                                <h3 class="text-lg font-normal mb-6 text-[var(--gold-light)] font-serif">Inscriptions à
+                                    la Tribune (Newsletter)</h3>
+                            </div>
+                            <div class="relative w-full h-[260px]">
+                                <canvas id="chart-newsletter"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="admin-card p-6 lg:col-span-5 flex flex-col justify-between">
+                            <div>
+                                <span class="section-label">Analytique Coaching</span>
+                                <h3 class="text-lg font-normal mb-6 text-[var(--gold-light)] font-serif">Structure de la
+                                    Demande</h3>
+                            </div>
+                            <div class="relative w-full h-[260px] flex items-center justify-center">
+                                <canvas id="chart-bookings" class="max-h-[240px]"></canvas>
+                            </div>
                         </div>
                     </div>
 
@@ -239,16 +307,21 @@
                     <div class="grid lg:grid-cols-2 gap-8">
                         <!-- Recent Bookings -->
                         <div class="admin-card p-6">
-                            <h3 class="text-lg font-normal mb-4 text-[var(--gold-light)]"
-                                style="font-family:'Cormorant Garant',serif;">Dernières Réservations</h3>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-normal text-[var(--gold-light)] font-serif">Dernières
+                                    Réservations</h3>
+                                <button onclick="switchTab('bookings')"
+                                    class="text-xs text-[var(--gold)] hover:underline uppercase tracking-wider font-semibold">Gérer
+                                    →</button>
+                            </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left" style="font-size:0.8rem">
                                     <thead>
-                                        <tr class="border-b border-[rgba(196,146,42,0.1)] text-amber-200">
-                                            <th class="py-2">Date/Heure</th>
-                                            <th class="py-2">Client</th>
-                                            <th class="py-2">Type</th>
-                                            <th class="py-2">Status</th>
+                                        <tr class="border-b border-[rgba(196,146,42,0.15)] text-amber-200">
+                                            <th class="py-3 font-semibold">Date/Heure</th>
+                                            <th class="py-3 font-semibold">Client</th>
+                                            <th class="py-3 font-semibold">Type</th>
+                                            <th class="py-3 font-semibold">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody id="overview-bookings-list">
@@ -260,16 +333,21 @@
 
                         <!-- Recent Messages -->
                         <div class="admin-card p-6">
-                            <h3 class="text-lg font-normal mb-4 text-[var(--gold-light)]"
-                                style="font-family:'Cormorant Garant',serif;">Derniers Messages Contact</h3>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-normal text-[var(--gold-light)] font-serif">Derniers Messages
+                                    Contact</h3>
+                                <button onclick="switchTab('members')"
+                                    class="text-xs text-[var(--gold)] hover:underline uppercase tracking-wider font-semibold">Boîte
+                                    de réception →</button>
+                            </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left" style="font-size:0.8rem">
                                     <thead>
-                                        <tr class="border-b border-[rgba(196,146,42,0.1)] text-amber-200">
-                                            <th class="py-2">Date</th>
-                                            <th class="py-2">Expéditeur</th>
-                                            <th class="py-2">Objet</th>
-                                            <th class="py-2 text-right">Détails</th>
+                                        <tr class="border-b border-[rgba(196,146,42,0.15)] text-amber-200">
+                                            <th class="py-3 font-semibold">Date</th>
+                                            <th class="py-3 font-semibold">Expéditeur</th>
+                                            <th class="py-3 font-semibold">Objet</th>
+                                            <th class="py-3 font-semibold text-right">Détails</th>
                                         </tr>
                                     </thead>
                                     <tbody id="overview-messages-list">
@@ -290,7 +368,7 @@
                             <p class="text-xs text-gray-500">Planification des coachings et affectation des liens Zoom /
                                 Meet</p>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 w-full md:w-auto">
                             <input type="text" id="booking-search" oninput="renderBookings()"
                                 class="form-input-admin py-2 text-xs" style="max-width:260px"
                                 placeholder="Rechercher par nom ou email...">
@@ -410,8 +488,6 @@
                         </div>
                     </div>
                 </div>
-
-
 
             </div>
         </div>
