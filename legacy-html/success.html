@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Paiement confirmé — Mirichi Mbumba</title>
+    <meta name="description" content="Votre commande a été confirmée. Merci pour votre achat.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="_shared.css">
+    <style>
+        @keyframes checkDraw {
+            from {
+                stroke-dashoffset: 100;
+            }
+
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes circlePulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes goldShimmer {
+            0% {
+                background-position: -200% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        .success-circle {
+            animation: circlePulse 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+
+        .check-path {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: checkDraw 0.6s ease 0.8s forwards;
+        }
+
+        .fade-up {
+            animation: fadeSlideUp 0.6s ease both;
+        }
+
+        .fade-up-1 {
+            animation-delay: 1.0s;
+        }
+
+        .fade-up-2 {
+            animation-delay: 1.15s;
+        }
+
+        .fade-up-3 {
+            animation-delay: 1.3s;
+        }
+
+        .fade-up-4 {
+            animation-delay: 1.45s;
+        }
+
+        .gold-shimmer-text {
+            background: linear-gradient(90deg, #c4922a 0%, #e8b84b 40%, #fff8e1 50%, #e8b84b 60%, #c4922a 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: goldShimmer 3s linear 1.2s infinite;
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(196, 146, 42, 0.15);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.875rem;
+            transition: border-color 0.25s;
+        }
+
+        .step-card:hover {
+            border-color: rgba(196, 146, 42, 0.4);
+        }
+
+        .step-num {
+            font-family: 'Cormorant Garant', serif;
+            color: var(--gold);
+            font-size: 1.4rem;
+            font-weight: 300;
+            line-height: 1;
+            min-width: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="mm-nav-root"></div>
+
+    <main class="page-shell">
+        <section class="section-main py-16 px-6 lg:px-12" style="min-height: 80vh; display:flex; align-items:center;">
+            <div class="max-w-2xl mx-auto w-full text-center">
+
+                <!-- Success Icon -->
+                <div class="success-circle"
+                    style="width: 96px; height: 96px; margin: 0 auto 2rem; background: radial-gradient(circle, rgba(196,146,42,0.18) 0%, transparent 70%); border: 2px solid rgba(196,146,42,0.4); border-radius: 50%; display:flex; align-items:center; justify-content:center;">
+                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c4922a" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path class="check-path" d="M20 6L9 17l-5-5" />
+                    </svg>
+                </div>
+
+                <!-- Heading -->
+                <p class="section-label fade-up fade-up-1" style="color:var(--gold); letter-spacing:0.2em;">PAIEMENT
+                    CONFIRMÉ</p>
+                <h1 class="fade-up fade-up-1"
+                    style="font-family:'Cormorant Garant',serif; font-size: clamp(2.25rem,5vw,3.25rem); font-weight:300; margin-top:0.5rem; line-height:1.15;">
+                    Merci pour votre <span class="gold-shimmer-text">achat</span>
+                </h1>
+                <p class="fade-up fade-up-2"
+                    style="color:var(--muted); font-size:0.95rem; line-height:1.8; margin-top:1rem; max-width:480px; margin-left:auto; margin-right:auto;">
+                    Votre transaction a été validée avec succès. Vous allez recevoir une confirmation par e-mail dans
+                    les prochaines minutes.
+                </p>
+
+                <!-- Order recap -->
+                <div id="success-order-recap" class="fade-up fade-up-2 card-dark p-6 text-left mt-10"
+                    style="border: 1px solid rgba(196,146,42,0.2);">
+                    <!-- Injected by JS -->
+                </div>
+
+                <!-- Next steps -->
+                <div class="fade-up fade-up-3 mt-8 text-left space-y-3">
+                    <p class="section-label" style="text-align:center; margin-bottom:1rem;">Prochaines étapes</p>
+                    <div class="step-card">
+                        <span class="step-num">01</span>
+                        <div>
+                            <p style="font-size:0.85rem; font-weight:500; color:var(--white); margin-bottom:2px;">
+                                Vérifiez votre boîte e-mail</p>
+                            <p style="font-size:0.78rem; color:var(--muted);">Un e-mail de confirmation vous a été
+                                envoyé avec votre reçu et vos instructions de livraison.</p>
+                        </div>
+                    </div>
+                    <div class="step-card" id="step-pdf" style="display:none;">
+                        <span class="step-num">02</span>
+                        <div>
+                            <p style="font-size:0.85rem; font-weight:500; color:var(--white); margin-bottom:2px;">
+                                Téléchargez votre e-book</p>
+                            <p style="font-size:0.78rem; color:var(--muted);">Le lien de téléchargement unique pour
+                                votre PDF est inclus dans l'e-mail de confirmation.</p>
+                        </div>
+                    </div>
+                    <div class="step-card" id="step-paper" style="display:none;">
+                        <span class="step-num">02</span>
+                        <div>
+                            <p style="font-size:0.85rem; font-weight:500; color:var(--white); margin-bottom:2px;">
+                                Livraison à Kinshasa</p>
+                            <p style="font-size:0.78rem; color:var(--muted);">Notre équipe vous contactera sous 24h pour
+                                organiser la livraison ou le retrait de votre livre papier.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <span class="step-num">03</span>
+                        <div>
+                            <p style="font-size:0.85rem; font-weight:500; color:var(--white); margin-bottom:2px;">Besoin
+                                d'aide ?</p>
+                            <p style="font-size:0.78rem; color:var(--muted);">
+                                Écrivez-nous sur
+                                <a href="https://wa.me/243991633526" target="_blank"
+                                    style="color:var(--gold-light); text-decoration:none;">WhatsApp</a>
+                                ou via la page <a href="contact.html"
+                                    style="color:var(--gold-light); text-decoration:none;">Contact</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="fade-up fade-up-4 flex flex-wrap gap-4 justify-center mt-10">
+                    <a href="index.html" class="btn-gold"
+                        style="padding:13px 28px; font-size:0.78rem; display:flex; align-items:center; gap:6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M3 12L12 3l9 9M5 10v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V10" />
+                        </svg>
+                        Retour à l'accueil
+                    </a>
+                    <a href="shop.html" class="btn-outline"
+                        style="padding:12px 28px; font-size:0.78rem; display:flex; align-items:center; gap:6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" />
+                        </svg>
+                        Continuer vos achats
+                    </a>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <div id="mm-footer-root"></div>
+    <div id="mm-cart-root"></div>
+
+    <script>
+        (function () {
+            var raw = localStorage.getItem('mm_cart_item');
+            var recap = document.getElementById('success-order-recap');
+            var stepPdf = document.getElementById('step-pdf');
+            var stepPaper = document.getElementById('step-paper');
+
+            if (raw) {
+                try {
+                    var item = JSON.parse(raw);
+                    recap.innerHTML =
+                        '<p class="section-label" style="margin-bottom:0.75rem;">Récapitulatif de votre commande</p>' +
+                        '<div style="display:flex;align-items:center;gap:1rem;">' +
+                        '<img src="' + item.image + '" alt="' + item.title + '" style="width:56px;height:72px;object-fit:cover;border-radius:2px;border:1px solid rgba(196,146,42,0.2);">' +
+                        '<div style="flex:1;">' +
+                        '<p style="font-family:\'Cormorant Garant\',serif;font-size:1.3rem;color:var(--white);">' + item.title + '</p>' +
+                        '<p style="font-size:0.78rem;color:var(--muted);margin-top:3px;">Format : ' + item.formatLabel + '</p>' +
+                        '</div>' +
+                        '<span style="font-family:\'Cormorant Garant\',serif;font-size:1.5rem;color:var(--gold-light);white-space:nowrap;">' + item.price + ' USD</span>' +
+                        '</div>';
+
+                    if (item.formatKey === 'pdf') {
+                        stepPdf.style.display = 'flex';
+                    } else {
+                        stepPaper.style.display = 'flex';
+                    }
+
+                    // Clear the cart so it won't show again on refresh
+                    localStorage.removeItem('mm_cart_item');
+                } catch (e) {
+                    recap.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">Commande traitée avec succès.</p>';
+                }
+            } else {
+                recap.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">Votre commande a été enregistrée. Consultez votre e-mail pour les détails.</p>';
+            }
+        })();
+    </script>
+
+    <script src="site-chrome.js"></script>
+    <script src="_shared.js"></script>
+</body>
+
+</html>

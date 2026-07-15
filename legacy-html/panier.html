@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,81 +9,93 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="_shared.css">
 </head>
+
 <body>
 
-<div id="mm-nav-root"></div>
+  <div id="mm-nav-root"></div>
 
-<main class="page-shell">
-<section class="section-alt py-14 px-6 lg:px-12">
-  <div class="max-w-7xl mx-auto">
-    <p class="breadcrumb mb-6"><a href="index.html">Accueil</a> · Panier</p>
-    <h1 style="font-size:clamp(2rem,3vw,2.75rem);font-weight:300">Votre <span style="color:var(--gold-light);font-style:italic">panier</span></h1>
-    <p style="color:var(--muted);margin-top:0.5rem;font-size:0.9rem">Boutique agréée — paiement sécurisé</p>
-  </div>
-</section>
-
-<section class="section-main py-10 px-6 lg:px-12" id="panier-page-root">
-  <div class="max-w-5xl mx-auto grid lg:grid-cols-3 gap-10">
-    
-    <div class="lg:col-span-2 space-y-4">
-      <div id="panier-empty" class="card-dark p-10 text-center" style="display:none;">
-        <p style="color:var(--muted)">Votre panier est vide.</p>
-        <a href="shop.html" class="btn-gold inline-block mt-6" style="padding:12px 24px;font-size:0.75rem">Voir la boutique</a>
+  <main class="page-shell">
+    <section class="section-alt py-14 px-6 lg:px-12">
+      <div class="max-w-7xl mx-auto">
+        <p class="breadcrumb mb-6"><a href="index.html">Accueil</a> · Panier</p>
+        <h1 style="font-size:clamp(2rem,3vw,2.75rem);font-weight:300">Votre <span
+            style="color:var(--gold-light);font-style:italic">panier</span></h1>
+        <p style="color:var(--muted);margin-top:0.5rem;font-size:0.9rem">Boutique agréée — paiement sécurisé</p>
       </div>
-      <div id="panier-lines" class="space-y-4"></div>
-    </div>
+    </section>
 
-    <aside id="panier-summary-box" class="card-dark p-6 h-fit lg:sticky" style="top:6rem">
-      <p class="section-label mb-4">Récapitulatif</p>
-      <div class="flex justify-between py-2" style="font-size:0.9rem;color:var(--muted)"><span>Sous-total</span><span id="panier-subtotal">0,00 USD</span></div>
-      <div class="flex justify-between py-2" style="font-size:0.9rem;color:var(--muted)"><span>Livraison (estim.)</span><span id="panier-shipping">0,00 USD</span></div>
-      <div class="full-divider my-4"></div>
-      <div class="flex justify-between py-2"><span style="font-weight:600">Total TTC</span><span id="panier-total" style="font-family:'Cormorant Garant',serif;font-size:1.5rem;color:var(--gold-light)">0,00 USD</span></div>
-      
-      <label class="form-label mt-4">Code promo</label>
-      <div class="flex gap-2">
-        <input id="promo-input" class="form-input" placeholder="MIRICHI10">
-        <button type="button" class="btn-outline" style="padding:12px 16px;font-size:0.65rem;white-space:nowrap" onclick="applyPromo()">Appliquer</button>
+    <section class="section-main py-10 px-6 lg:px-12" id="panier-page-root">
+      <div class="max-w-5xl mx-auto grid lg:grid-cols-3 gap-10">
+
+        <div class="lg:col-span-2 space-y-4">
+          <div id="panier-empty" class="card-dark p-10 text-center" style="display:none;">
+            <p style="color:var(--muted)">Votre panier est vide.</p>
+            <a href="shop.html" class="btn-gold inline-block mt-6" style="padding:12px 24px;font-size:0.75rem">Voir la
+              boutique</a>
+          </div>
+          <div id="panier-lines" class="space-y-4"></div>
+        </div>
+
+        <aside id="panier-summary-box" class="card-dark p-6 h-fit lg:sticky" style="top:6rem">
+          <p class="section-label mb-4">Récapitulatif</p>
+          <div class="flex justify-between py-2" style="font-size:0.9rem;color:var(--muted)">
+            <span>Sous-total</span><span id="panier-subtotal">0,00 USD</span></div>
+          <div class="flex justify-between py-2" style="font-size:0.9rem;color:var(--muted)"><span>Livraison
+              (estim.)</span><span id="panier-shipping">0,00 USD</span></div>
+          <div class="full-divider my-4"></div>
+          <div class="flex justify-between py-2"><span style="font-weight:600">Total TTC</span><span id="panier-total"
+              style="font-family:'Cormorant Garant',serif;font-size:1.5rem;color:var(--gold-light)">0,00 USD</span>
+          </div>
+
+          <label class="form-label mt-4">Code promo</label>
+          <div class="flex gap-2">
+            <input id="promo-input" class="form-input" placeholder="MIRICHI10">
+            <button type="button" class="btn-outline" style="padding:12px 16px;font-size:0.65rem;white-space:nowrap"
+              onclick="applyPromo()">Appliquer</button>
+          </div>
+          <p id="promo-msg" style="font-size:0.75rem;color:var(--gold);margin-top:0.5rem;min-height:1.25rem"></p>
+
+          <a href="checkout.html" class="btn-gold w-full text-center block mt-6"
+            style="padding:14px;font-size:0.75rem">Passer à la caisse</a>
+          <p style="font-size:0.72rem;color:var(--muted);margin-top:1rem;text-align:center">Paiement sécurisé · Suivi ·
+            Retours 30j</p>
+        </aside>
+
       </div>
-      <p id="promo-msg" style="font-size:0.75rem;color:var(--gold);margin-top:0.5rem;min-height:1.25rem"></p>
-      
-      <a href="checkout.html" class="btn-gold w-full text-center block mt-6" style="padding:14px;font-size:0.75rem">Passer à la caisse</a>
-      <p style="font-size:0.72rem;color:var(--muted);margin-top:1rem;text-align:center">Paiement sécurisé · Suivi · Retours 30j</p>
-    </aside>
+    </section>
+  </main>
 
-  </div>
-</section>
-</main>
+  <div id="mm-footer-root"></div>
+  <div id="mm-cart-root"></div>
 
-<div id="mm-footer-root"></div>
-<div id="mm-cart-root"></div>
+  <script>
+    function renderPanier() {
+      var itemStr = localStorage.getItem('mm_cart_item');
+      var linesContainer = document.getElementById('panier-lines');
+      var emptyBlock = document.getElementById('panier-empty');
+      var summaryBox = document.getElementById('panier-summary-box');
 
-<script>
-function renderPanier() {
-  var itemStr = localStorage.getItem('mm_cart_item');
-  var linesContainer = document.getElementById('panier-lines');
-  var emptyBlock = document.getElementById('panier-empty');
-  var summaryBox = document.getElementById('panier-summary-box');
+      if (!itemStr) {
+        emptyBlock.style.display = 'block';
+        linesContainer.innerHTML = '';
+        summaryBox.style.opacity = '0.3';
+        summaryBox.style.pointerEvents = 'none';
+        document.getElementById('panier-subtotal').textContent = '0,00 USD';
+        document.getElementById('panier-total').textContent = '0,00 USD';
+        return;
+      }
 
-  if (!itemStr) {
-    emptyBlock.style.display = 'block';
-    linesContainer.innerHTML = '';
-    summaryBox.style.style.opacity = '0.3';
-    summaryBox.style.pointerEvents = 'none';
-    document.getElementById('panier-subtotal').textContent = '0,00 USD';
-    document.getElementById('panier-total').textContent = '0,00 USD';
-    return;
-  }
+      emptyBlock.style.display = 'none';
+      summaryBox.style.opacity = '1';
+      summaryBox.style.pointerEvents = 'auto';
+      var item = JSON.parse(itemStr);
 
-  emptyBlock.style.display = 'none';
-  summaryBox.style.opacity = '1';
-  summaryBox.style.pointerEvents = 'auto';
-  var item = JSON.parse(itemStr);
-
-  linesContainer.innerHTML = `
+      linesContainer.innerHTML = `
     <div class="card-dark p-4 flex gap-4 items-center justify-between">
       <div class="flex items-center gap-4">
         <img src="${item.image}" alt="${item.title}" style="width:60px; height:80px; object-fit:cover; border-radius:2px;">
@@ -98,31 +111,32 @@ function renderPanier() {
     </div>
   `;
 
-  document.getElementById('panier-subtotal').textContent = item.price + ',00 USD';
-  document.getElementById('panier-total').textContent = item.price + ',00 USD';
-}
+      document.getElementById('panier-subtotal').textContent = item.price + ',00 USD';
+      document.getElementById('panier-total').textContent = item.price + ',00 USD';
+    }
 
-function supprimerArticle() {
-  localStorage.removeItem('mm_cart_item');
-  renderPanier();
-}
+    function supprimerArticle() {
+      localStorage.removeItem('mm_cart_item');
+      renderPanier();
+    }
 
-function applyPromo() {
-  var input = document.getElementById('promo-input').value.trim();
-  var msg = document.getElementById('promo-msg');
-  if(input === 'MIRICHI10') {
-    msg.textContent = "Code appliqué : -10% sur votre commande !";
-    msg.style.color = "var(--gold)";
-  } else {
-    msg.textContent = "Code promo inconnu.";
-    msg.style.color = "#ef4444";
-  }
-}
+    function applyPromo() {
+      var input = document.getElementById('promo-input').value.trim();
+      var msg = document.getElementById('promo-msg');
+      if (input === 'MIRICHI10') {
+        msg.textContent = "Code appliqué : -10% sur votre commande !";
+        msg.style.color = "var(--gold)";
+      } else {
+        msg.textContent = "Code promo inconnu.";
+        msg.style.color = "#ef4444";
+      }
+    }
 
-window.addEventListener('DOMContentLoaded', renderPanier);
-</script>
+    window.addEventListener('DOMContentLoaded', renderPanier);
+  </script>
 
-<script src="site-chrome.js"></script>
-<script src="_shared.js"></script>
+  <script src="site-chrome.js"></script>
+  <script src="_shared.js"></script>
 </body>
+
 </html>

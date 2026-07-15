@@ -39,7 +39,8 @@
             style="color:var(--gold-light);font-style:italic">Shop</span></h1>
         <p class="reveal reveal-delay-2" style="color:var(--muted);max-width:640px;margin-top:1rem;line-height:1.8">⚠️
           <strong style="color:var(--gold-light)">La seule boutique en ligne agréée</strong> pour acquérir les ouvrages
-          de Mirichi Mbumba.</p>
+          de Mirichi Mbumba.
+        </p>
       </div>
     </section>
 
@@ -86,8 +87,12 @@
                     style="font-size:0.55rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.05em">Version
                     E-book</span>
                 </div>
-                <a href="livre.html?format=pdf" class="btn-outline" style="padding:6px 12px; font-size:0.65rem;">Option
-                  PDF</a>
+                <button type="button" onclick="acheterProduit('pdf')" class="btn-outline"
+                  style="padding:6px 14px; font-size:0.65rem; display:flex; align-items:center; gap:5px;">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>Acheter PDF
+                </button>
               </div>
 
               <div class="flex items-center justify-between"
@@ -99,20 +104,25 @@
                     style="font-size:0.55rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.05em">Livre
                     Papier</span>
                 </div>
-                <a href="livre.html?format=broche" class="btn-outline"
-                  style="padding:6px 12px; font-size:0.65rem;">Option Papier</a>
+                <button type="button" onclick="acheterProduit('broche')" class="btn-outline"
+                  style="padding:6px 14px; font-size:0.65rem; display:flex; align-items:center; gap:5px;">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>Acheter Papier
+                </button>
               </div>
 
               <div class="flex items-center justify-between"
                 style="padding-top:8px; border-top: 1px dashed rgba(196,146,42,0.1)">
                 <div class="flex flex-col">
-                  <span style="font-family:'Cormorant Garant',serif;color:var(--gold-light);font-size:1.1rem">Cash</span>
+                  <span
+                    style="font-family:'Cormorant Garant',serif;color:var(--gold-light);font-size:1.1rem">Cash</span>
                   <span
                     style="font-size:0.55rem;text-transform:uppercase;color:var(--muted);letter-spacing:0.05em">Paiement
                     en espèces</span>
                 </div>
-                <a href="https://wa.me/243991633526?text=Bonjour,%20je%20souhaite%20acheter%20le%20livre%20Chrepreneur%20en%20cash." target="_blank" class="btn-gold"
-                  style="padding:6px 12px; font-size:0.65rem;">Achat en cash</a>
+                <a href="https://wa.me/243991633526?text=Bonjour,%20je%20souhaite%20acheter%20le%20livre%20Chrepreneur%20en%20cash."
+                  target="_blank" class="btn-gold" style="padding:6px 12px; font-size:0.65rem;">Achat en cash</a>
               </div>
 
             </div>
@@ -138,6 +148,21 @@
   <div id="mm-cart-root"></div>
 
   <script>
+    function acheterProduit(format) {
+      var label = format === 'pdf' ? 'PDF num\u00e9rique (E-book)' : 'Broch\u00e9 (Livre Papier)';
+      var price = format === 'pdf' ? 10 : 20;
+      var productId = format === 'pdf' ? 'prd_ngrw8h' : 'prd_4ihqi1';
+      localStorage.setItem('mm_cart_item', JSON.stringify({
+        id: productId,
+        title: 'Chrepreneur',
+        formatKey: format,
+        formatLabel: label,
+        price: price,
+        image: 'images/covert chrepreneur.jpeg'
+      }));
+      window.location.href = 'checkout.html';
+    }
+
     function filterBooks(category, btn) {
       var items = document.querySelectorAll('.book-item');
       var buttons = document.querySelectorAll('.filter-btn');

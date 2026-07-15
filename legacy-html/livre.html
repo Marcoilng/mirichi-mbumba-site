@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="_shared.css">
   <style>
     /* Force le texte du menu déroulant en noir pour la lisibilité sur fond blanc */
@@ -16,176 +19,200 @@
       color: #000000 !important;
       background-color: #ffffff !important;
     }
-    
+
     .book-cover-container {
       border-radius: 4px;
       min-height: 520px;
       overflow: hidden;
       position: relative;
       background: #1a1a1a;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
   </style>
 </head>
+
 <body>
 
-<div id="mm-nav-root"></div>
+  <div id="mm-nav-root"></div>
 
-<main class="page-shell">
-<section class="section-alt py-12 px-6 lg:px-12">
-  <div class="max-w-7xl mx-auto">
-    <p class="breadcrumb mb-6"><a href="index.html">Accueil</a> · <a href="shop.html">Shop</a> · Chrepreneur</p>
-    <div class="section-label mb-2">Détail livre</div>
-  </div>
-</section>
-
-<section class="section-main py-8 px-6 lg:px-12">
-  <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
-    <div class="reveal">
-      <div class="book-cover-container">
-        <img src="images/covert chrepreneur.jpeg" alt="Couverture Chrepreneur" 
-             style="width:100%; height:100%; object-fit: contain; display: block;" 
-             onerror="this.src='https://via.placeholder.com/500x700?text=Couverture+Non+Trouvée'">
+  <main class="page-shell">
+    <section class="section-alt py-12 px-6 lg:px-12">
+      <div class="max-w-7xl mx-auto">
+        <p class="breadcrumb mb-6"><a href="index.html">Accueil</a> · <a href="shop.html">Shop</a> · Chrepreneur</p>
+        <div class="section-label mb-2">Détail livre</div>
       </div>
-    </div>
+    </section>
 
-    <div class="reveal reveal-delay-2 space-y-6">
-      <h1 style="font-family:'Cormorant Garant',serif;font-size:3rem;font-weight:700;">Chre<span style="color:var(--gold-light)">preneur</span></h1>
-      <p style="color:var(--muted);font-size:0.9rem">Auteur : <strong style="color:var(--white)">Mirichi Mbumba</strong></p>
-      <div class="flex items-center gap-2" style="color:var(--gold-light)">★★★★★ <span style="color:var(--muted);font-size:0.8rem">(128 avis)</span></div>
-      
-      <div class="flex items-baseline gap-3">
-        <span id="livre-prix-affichage" style="font-family:'Cormorant Garant',serif;font-size:2.25rem;color:var(--gold-light)">20 USD</span>
-      </div>
-      
-      <div>
-        <label class="form-label">Format</label>
-        <select id="livre-format" class="form-input" onchange="changerFormatLivre()">
-          <option value="broche">Broché (Livre Papier) — 20 USD</option>
-          <option value="pdf">PDF numérique (E-book) — 10 USD</option>
-          <option value="pack">Pack papier + numérique — 25 USD</option>
-        </select>
-      </div>
-      
-      <div class="flex flex-wrap gap-3 relative">
-        <button type="button" id="btn-acheter-master" class="btn-gold" style="padding:12px 28px; font-size:0.85rem;" onclick="declencherAchatChariow()">
-          Acheter maintenant
-        </button>
-        <button type="button" class="btn-outline" style="padding:12px 28px; font-size:0.85rem;" onclick="ajouterAuPanierLocal()">
-          Ajouter au panier
-        </button>
-
-        <div style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; overflow: hidden;">
-          <div id="chariow-widget-broche">
-            <div class="chariow-widget" data-product-id="prd_4ihqi1" data-store-domain="ufhzjurh.mychariow.shop" data-style="tap" data-locale="fr" data-primary-color="#c4922a"></div>
+    <section class="section-main py-8 px-6 lg:px-12">
+      <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
+        <div class="reveal">
+          <div class="book-cover-container">
+            <img src="images/covert chrepreneur.jpeg" alt="Couverture Chrepreneur"
+              style="width:100%; height:100%; object-fit: contain; display: block;"
+              onerror="this.src='https://via.placeholder.com/500x700?text=Couverture+Non+Trouvée'">
           </div>
-          <div id="chariow-widget-pdf">
-            <div class="chariow-widget" data-product-id="prd_ngrw8h" data-store-domain="ufhzjurh.mychariow.shop" data-style="tap" data-locale="fr" data-primary-color="#c4922a"></div>
+        </div>
+
+        <div class="reveal reveal-delay-2 space-y-6">
+          <h1 style="font-family:'Cormorant Garant',serif;font-size:3rem;font-weight:700;">Chre<span
+              style="color:var(--gold-light)">preneur</span></h1>
+          <p style="color:var(--muted);font-size:0.9rem">Auteur : <strong style="color:var(--white)">Mirichi
+              Mbumba</strong></p>
+          <div class="flex items-center gap-2" style="color:var(--gold-light)">★★★★★ <span
+              style="color:var(--muted);font-size:0.8rem">(128 avis)</span></div>
+
+          <div class="flex items-baseline gap-3">
+            <span id="livre-prix-affichage"
+              style="font-family:'Cormorant Garant',serif;font-size:2.25rem;color:var(--gold-light)">20 USD</span>
           </div>
-          <div id="chariow-widget-pack">
-            <div class="chariow-widget" data-product-id="prd_p924em" data-store-domain="ufhzjurh.mychariow.shop" data-style="tap" data-locale="fr" data-primary-color="#c4922a"></div>
+
+          <div>
+            <label class="form-label">Format</label>
+            <select id="livre-format" class="form-input" onchange="changerFormatLivre()">
+              <option value="broche">Broché (Livre Papier) — 20 USD</option>
+              <option value="pdf">PDF numérique (E-book) — 10 USD</option>
+              <option value="pack">Pack papier + numérique — 25 USD</option>
+            </select>
+          </div>
+
+          <div class="flex flex-wrap gap-3 relative">
+            <button type="button" id="btn-acheter-master" class="btn-gold" style="padding:12px 28px; font-size:0.85rem;"
+              onclick="declencherAchatChariow()">
+              Acheter maintenant
+            </button>
+            <button type="button" class="btn-outline" style="padding:12px 28px; font-size:0.85rem;"
+              onclick="ajouterAuPanierLocal()">
+              Ajouter au panier
+            </button>
+
+            <div style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; overflow: hidden;">
+              <div id="chariow-widget-broche">
+                <div class="chariow-widget" data-product-id="prd_4ihqi1" data-store-domain="ufhzjurh.mychariow.shop"
+                  data-style="tap" data-locale="fr" data-primary-color="#c4922a"></div>
+              </div>
+              <div id="chariow-widget-pdf">
+                <div class="chariow-widget" data-product-id="prd_ngrw8h" data-store-domain="ufhzjurh.mychariow.shop"
+                  data-style="tap" data-locale="fr" data-primary-color="#c4922a"></div>
+              </div>
+              <div id="chariow-widget-pack">
+                <div class="chariow-widget" data-product-id="prd_p924em" data-store-domain="ufhzjurh.mychariow.shop"
+                  data-style="tap" data-locale="fr" data-primary-color="#c4922a"></div>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size:0.78rem;color:var(--muted)">Livraison suivie · PDF téléchargeable · Garantie 30 jours</p>
+          <div style="padding:1rem;border-left:2px solid var(--gold);background:rgba(196,146,42,0.06)">
+            <p
+              style="font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.25rem">
+              Boutique agréée</p>
+            <p style="font-size:0.85rem;color:var(--muted)">Seule plateforme officielle pour les ouvrages de l'auteur.
+            </p>
           </div>
         </div>
       </div>
-      
-      <p style="font-size:0.78rem;color:var(--muted)">Livraison suivie · PDF téléchargeable · Garantie 30 jours</p>
-      <div style="padding:1rem;border-left:2px solid var(--gold);background:rgba(196,146,42,0.06)">
-        <p style="font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.25rem">Boutique agréée</p>
-        <p style="font-size:0.85rem;color:var(--muted)">Seule plateforme officielle pour les ouvrages de l'auteur.</p>
+    </section>
+
+    <section class="section-alt py-16 px-6 lg:px-12">
+      <div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-10">
+        <div class="lg:col-span-2 space-y-4 reveal">
+          <h2 style="font-family:'Cormorant Garant',serif;font-size:1.75rem;font-weight:400">Résumé</h2>
+          <p style="color:var(--muted);line-height:1.9">Cet ouvrage explore l'intersection entre foi chrétienne et
+            entrepreneuriat : vision, intégrité, stewardship et impact mesurable.</p>
+          <p style="color:var(--muted);line-height:1.9">Des études de cas, des repères bibliques appliqués, et des
+            outils pour passer de la conviction à l'action.</p>
+        </div>
+        <aside class="card-dark p-6 reveal">
+          <p class="section-label mb-4">Détails</p>
+          <ul style="color:var(--muted);font-size:0.88rem;line-height:2">
+            <li>Pages : 129</li>
+            <li>Langue : français</li>
+            <li>Édition : 2026</li>
+          </ul>
+        </aside>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
+  </main>
 
-<section class="section-alt py-16 px-6 lg:px-12">
-  <div class="max-w-7xl mx-auto grid lg:grid-cols-3 gap-10">
-    <div class="lg:col-span-2 space-y-4 reveal">
-      <h2 style="font-family:'Cormorant Garant',serif;font-size:1.75rem;font-weight:400">Résumé</h2>
-      <p style="color:var(--muted);line-height:1.9">Cet ouvrage explore l'intersection entre foi chrétienne et entrepreneuriat : vision, intégrité, stewardship et impact mesurable.</p>
-      <p style="color:var(--muted);line-height:1.9">Des études de cas, des repères bibliques appliqués, et des outils pour passer de la conviction à l'action.</p>
-    </div>
-    <aside class="card-dark p-6 reveal">
-      <p class="section-label mb-4">Détails</p>
-      <ul style="color:var(--muted);font-size:0.88rem;line-height:2">
-        <li>Pages : 129</li>
-        <li>Langue : français</li>
-        <li>Édition : 2026</li>
-      </ul>
-    </aside>
-  </div>
-</section>
-</main>
+  <div id="mm-footer-root"></div>
+  <div id="mm-cart-root"></div>
 
-<div id="mm-footer-root"></div>
-<div id="mm-cart-root"></div>
+  <script>
+    function changerFormatLivre() {
+      var select = document.getElementById('livre-format');
+      var prixAffichage = document.getElementById('livre-prix-affichage');
+      var format = select.value;
 
-<script>
-function changerFormatLivre() {
-  var select = document.getElementById('livre-format');
-  var prixAffichage = document.getElementById('livre-prix-affichage');
-  var format = select.value;
-
-  if (format === 'broche') prixAffichage.textContent = '20 USD';
-  if (format === 'pdf') prixAffichage.textContent = '10 USD';
-  if (format === 'pack') prixAffichage.textContent = '25 USD';
-}
-
-function declencherAchatChariow() {
-  var format = document.getElementById('livre-format').value;
-  var targetWrapperId = 'chariow-widget-' + format;
-  var container = document.getElementById(targetWrapperId);
-  if (container) {
-    var clickTarget = container.querySelector('button') || container.querySelector('div') || container;
-    if (clickTarget) clickTarget.click();
-  }
-}
-
-function ajouterAuPanierLocal() {
-  var select = document.getElementById('livre-format');
-  var format = select.value;
-  var label = select.options[select.selectedIndex].text.split('—')[0].trim();
-  var price = format === 'pdf' ? 10 : (format === 'broche' ? 20 : 25);
-  var productId = format === 'pdf' ? 'prd_ngrw8h' : (format === 'broche' ? 'prd_4ihqi1' : 'prd_p924em');
-
-  var item = {
-    id: productId,
-    title: "Chrepreneur",
-    formatKey: format,
-    formatLabel: label,
-    price: price,
-    image: "images/covert chrepreneur.jpeg"
-  };
-
-  localStorage.setItem('mm_cart_item', JSON.stringify(item));
-  window.location.href = 'panier.html';
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const formatParam = urlParams.get('format');
-  if (formatParam) {
-    var select = document.getElementById('livre-format');
-    if(select.querySelector(`option[value="${formatParam}"]`)) {
-      select.value = formatParam;
-      changerFormatLivre();
+      if (format === 'broche') prixAffichage.textContent = '20 USD';
+      if (format === 'pdf') prixAffichage.textContent = '10 USD';
+      if (format === 'pack') prixAffichage.textContent = '25 USD';
     }
-  }
-});
-</script>
 
-<script>
-(function() {
-  var script = document.createElement('script');
-  script.src = 'https://js.chariowcdn.com/v1/widget.min.js';
-  script.async = true;
-  document.head.appendChild(script);
-  var link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = 'https://js.chariowcdn.com/v1/widget.min.css';
-  document.head.appendChild(link);
-})();
-</script>
-<script src="site-chrome.js"></script>
-<script src="_shared.js"></script>
+    function declencherAchatChariow() {
+      var select = document.getElementById('livre-format');
+      var format = select.value;
+      var label = select.options[select.selectedIndex].text.split('\u2014')[0].trim();
+      var price = format === 'pdf' ? 10 : (format === 'broche' ? 20 : 25);
+      var productId = format === 'pdf' ? 'prd_ngrw8h' : (format === 'broche' ? 'prd_4ihqi1' : 'prd_p924em');
+
+      localStorage.setItem('mm_cart_item', JSON.stringify({
+        id: productId,
+        title: 'Chrepreneur',
+        formatKey: format,
+        formatLabel: label,
+        price: price,
+        image: 'images/covert chrepreneur.jpeg'
+      }));
+      window.location.href = 'checkout.html';
+    }
+
+    function ajouterAuPanierLocal() {
+      var select = document.getElementById('livre-format');
+      var format = select.value;
+      var label = select.options[select.selectedIndex].text.split('—')[0].trim();
+      var price = format === 'pdf' ? 10 : (format === 'broche' ? 20 : 25);
+      var productId = format === 'pdf' ? 'prd_ngrw8h' : (format === 'broche' ? 'prd_4ihqi1' : 'prd_p924em');
+
+      var item = {
+        id: productId,
+        title: "Chrepreneur",
+        formatKey: format,
+        formatLabel: label,
+        price: price,
+        image: "images/covert chrepreneur.jpeg"
+      };
+
+      localStorage.setItem('mm_cart_item', JSON.stringify(item));
+      window.location.href = 'panier.html';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const formatParam = urlParams.get('format');
+      if (formatParam) {
+        var select = document.getElementById('livre-format');
+        if (select.querySelector(`option[value="${formatParam}"]`)) {
+          select.value = formatParam;
+          changerFormatLivre();
+        }
+      }
+    });
+  </script>
+
+  <script>
+    (function () {
+      var script = document.createElement('script');
+      script.src = 'https://js.chariowcdn.com/v1/widget.min.js';
+      script.async = true;
+      document.head.appendChild(script);
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://js.chariowcdn.com/v1/widget.min.css';
+      document.head.appendChild(link);
+    })();
+  </script>
+  <script src="site-chrome.js"></script>
+  <script src="_shared.js"></script>
 </body>
+
 </html>

@@ -71,9 +71,13 @@
 
         <!-- Avancement -->
         <div class="flex items-center gap-2 text-xs text-[var(--muted)]">
-          <span class="text-emerald-400">✓ Panier</span>
+          <span class="text-emerald-400" style="display:flex;align-items:center;gap:3px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>Panier
+          </span>
           <span class="opacity-40">→</span>
-          <span class="text-[var(--gold-light)] font-medium">Paiement & Infos</span>
+          <span class="text-[var(--gold-light)] font-medium">Paiement &amp; Infos</span>
         </div>
       </div>
     </section>
@@ -95,7 +99,13 @@
 
             <div class="space-y-4 text-xs font-light leading-relaxed text-gray-300">
               <div>
-                <h4 class="font-medium text-[var(--gold-light)] mb-1">📱 Paiement par Mobile Money (RDC/Afrique)</h4>
+                <h4 class="font-medium text-[var(--gold-light)] mb-1" style="display:flex;align-items:center;gap:6px">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="5" y="2" width="14" height="20" rx="2" />
+                    <line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3" />
+                  </svg>
+                  Paiement par Mobile Money (RDC/Afrique)
+                </h4>
                 <p>Cliquez sur le bouton de paiement Chariow ci-contre, puis sélectionnez votre opérateur
                   (<strong>M-Pesa, Orange Money, Airtel Money</strong>). Saisissez votre numéro de téléphone et validez.
                   Vous recevrez instantanément une notification push sur votre téléphone pour saisir votre code PIN
@@ -103,13 +113,24 @@
               </div>
               <div class="full-divider my-2"></div>
               <div>
-                <h4 class="font-medium text-[var(--gold-light)] mb-1">💳 Cartes de crédit, PayPal & International</h4>
+                <h4 class="font-medium text-[var(--gold-light)] mb-1" style="display:flex;align-items:center;gap:6px">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="5" width="20" height="14" rx="2" />
+                    <line x1="2" y1="10" x2="22" y2="10" />
+                  </svg>
+                  Cartes de crédit, PayPal &amp; International
+                </h4>
                 <p>Si vous êtes à l'étranger ou préférez régler par carte bancaire, l'interface sécurisée de paiement
                   Chariow accepte sans problème les cartes Visa, Mastercard ainsi que les comptes PayPal.</p>
               </div>
               <div class="full-divider my-2"></div>
               <div>
-                <h4 class="font-medium text-[var(--gold-light)] mb-1">📦 Livraison des livres</h4>
+                <h4 class="font-medium text-[var(--gold-light)] mb-1" style="display:flex;align-items:center;gap:6px">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12H19M12 5l7 7-7 7" />
+                  </svg>
+                  Livraison des livres
+                </h4>
                 <p><strong>Version E-book (PDF)</strong> : Un e-mail de confirmation contenant votre lien de
                   téléchargement unique vous sera immédiatement envoyé après la validation du paiement.</p>
                 <p class="mt-1"><strong>Version Papier / Broché</strong> : Après votre achat, notre équipe à Kinshasa
@@ -151,7 +172,13 @@
             <p class="text-[11px] text-gray-300">Paiement ultra-sécurisé via notre passerelle agréée :</p>
 
             <div id="chariow-injection-point">
-              <p class="text-xs text-gray-500">Chargement de la passerelle...</p>
+              <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  style="color:#c4922a;animation:spin 1s linear infinite">
+                  <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0" />
+                </svg>
+                <p style="font-size:0.75rem;color:#9ca3af">Chargement de la passerelle...</p>
+              </div>
             </div>
 
             <p class="text-[9px] text-gray-400 font-light">En cliquant, vous ouvrez le formulaire sécurisé Chariow pour
@@ -163,12 +190,48 @@
             <p class="text-[10px] text-gray-500 uppercase tracking-widest text-center mb-3">Moyens de paiement acceptés
             </p>
             <div class="grid grid-cols-3 gap-2">
-              <div class="payment-badge">📈 M-Pesa RDC</div>
-              <div class="payment-badge">🍊 Orange Money</div>
-              <div class="payment-badge">🔴 Airtel Money</div>
-              <div class="payment-badge">💳 Carte Bancaire</div>
-              <div class="payment-badge">🌐 Paypal</div>
-              <div class="payment-badge">🛡️ SSL Sécurisé</div>
+              <div class="payment-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  style="margin-right:4px">
+                  <rect x="5" y="2" width="14" height="20" rx="2" />
+                  <line x1="12" y1="18" x2="12" y2="18" />
+                </svg>M-Pesa
+              </div>
+              <div class="payment-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  style="margin-right:4px">
+                  <rect x="5" y="2" width="14" height="20" rx="2" />
+                  <line x1="12" y1="18" x2="12" y2="18" />
+                </svg>Orange Money
+              </div>
+              <div class="payment-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  style="margin-right:4px">
+                  <rect x="5" y="2" width="14" height="20" rx="2" />
+                  <line x1="12" y1="18" x2="12" y2="18" />
+                </svg>Airtel
+              </div>
+              <div class="payment-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  style="margin-right:4px">
+                  <rect x="2" y="5" width="20" height="14" rx="2" />
+                  <line x1="2" y1="10" x2="22" y2="10" />
+                </svg>Carte
+              </div>
+              <div class="payment-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  style="margin-right:4px">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
+                </svg>PayPal
+              </div>
+              <div class="payment-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  style="margin-right:4px">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>SSL
+              </div>
             </div>
           </div>
 
@@ -234,12 +297,12 @@
       // Chargement officiel du widget Chariow
       if (injectionPoint) {
         injectionPoint.innerHTML = `
-      <div id="chariow-widget" 
+      <div class="chariow-widget"
            data-product-id="${targetProductId}"
            data-store-domain="ufhzjurh.mychariow.shop"
            data-style="tap"
            data-border-style="rounded"
-           data-cta-width="xs"
+           data-cta-width="full"
            data-background-color="#c4922a"
            data-cta-animation="shine"
            data-locale="fr"
@@ -266,6 +329,18 @@
       link.href = 'https://js.chariowcdn.com/v1/widget.min.css';
       document.head.appendChild(link);
     }
+
+    // Écoute les messages postMessage de l'iframe Chariow pour détecter un paiement réussi
+    window.addEventListener('message', function (event) {
+      try {
+        var msg = typeof event.data === 'string' ? event.data : JSON.stringify(event.data || '');
+        var lower = msg.toLowerCase();
+        if (lower.includes('success') || lower.includes('paid') || lower.includes('completed') || lower.includes('sale')) {
+          localStorage.removeItem('mm_cart_item');
+          window.location.href = 'success.html';
+        }
+      } catch (e) { }
+    });
 
     window.addEventListener('DOMContentLoaded', loadCheckoutSummary);
   </script>

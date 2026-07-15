@@ -2,10 +2,10 @@
  * Database client abstractor for Mirichi Mbumba Website
  * Wraps Supabase and local storage fallbacks under a single data API.
  *
- * SECURITY: Supabase credentials are NOT hardcoded here.
- * They are injected via HTML meta tags at deploy time (Vercel env vars)
- * or via the admin config panel (localStorage mm_supabase_config).
- * This prevents exposing keys in the public JS bundle history.
+ * Credential priority:
+ * 1. Admin-saved config (localStorage mm_supabase_config)
+ * 2. Meta tags injected at build time (Vercel env vars via prepare-deploy.mjs)
+ * 3. Project defaults (Supabase project credentials) — enables Supabase locally too
  */
 (function () {
     // Read credentials from meta tags injected by the build process
@@ -118,10 +118,16 @@
             }
         }
 
-        // Fallback to meta tags from server-side inject
+        // Fallback 2: meta tags from server-side inject (Vercel)
         if (!url && META_SUPABASE_URL && META_SUPABASE_KEY) {
             url = META_SUPABASE_URL;
             key = META_SUPABASE_KEY;
+        }
+
+        // Fallback 3: project defaults (always connects to Supabase, even locally)
+        if (!url) {
+            url = 'https://eldvuhjcnelggnaidrgi.supabase.co';
+            key = 'sb_publishable_er1EIIBjyDdjLI9reWsZ0A_fCOgmweU';
         }
 
         if (url && key) {

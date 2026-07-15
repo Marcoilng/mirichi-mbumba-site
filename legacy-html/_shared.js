@@ -32,7 +32,7 @@
     if (itemsEl) {
       if (cart.length === 0) {
         itemsEl.innerHTML =
-          '<div style="text-align:center;color:var(--muted);padding:3rem 0"><div style="font-size:2rem;margin-bottom:1rem;opacity:0.3">📚</div><p style="font-size:0.875rem">Votre panier est vide</p></div>';
+          '<div style="text-align:center;color:var(--muted);padding:3rem 0"><div style="margin-bottom:1rem;opacity:0.3;display:flex;justify-content:center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 004 22h16V2H6.5A2.5 2.5 0 004 4.5v15z"/></svg></div><p style="font-size:0.875rem">Votre panier est vide</p></div>';
         if (footer) footer.style.display = 'none';
       } else {
         itemsEl.innerHTML = cart
