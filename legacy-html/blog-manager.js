@@ -39,6 +39,14 @@
         }
     ];
 
+    // ==========================================================
+    // ⚙️ CONFIGURATION SUPABASE (À REMPLIR POUR LA PRODUCTION)
+    // Renseignez l'URL et la clé anonyme de votre projet ci-dessous.
+    // Si elles sont laissées vides "", le système basculera par défaut en Mode Local.
+    // ==========================================================
+    const SUPABASE_URL = "https://eldvuhjcnelggnaidrgi.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_er1EIIBjyDdjLI9reWsZ0A_fCOgmweU";
+
     // Global state variables
     let dbType = 'local'; // 'local' or 'supabase'
     let supabaseInstance = null;
@@ -47,19 +55,33 @@
 
     // --- Initialize Database & Settings ---
     function initDB() {
-        const savedConfig = localStorage.getItem('mm_supabase_config');
-        if (savedConfig) {
-            try {
-                const config = JSON.parse(savedConfig);
-                if (config.url && config.key) {
-                    dbType = 'supabase';
-                    if (window.supabase) {
-                        supabaseInstance = window.supabase.createClient(config.url, config.key);
-                    }
+        let url = SUPABASE_URL;
+        let key = SUPABASE_ANON_KEY;
+
+        // Si non renseigné dans le code, on regarde dans le localStorage
+        if (!url || !key) {
+            const savedConfig = localStorage.getItem('mm_supabase_config');
+            if (savedConfig) {
+                try {
+                    const config = JSON.parse(savedConfig);
+                    url = config.url || '';
+                    key = config.key || '';
+                } catch (e) {
+                    console.error("Invalid database config loaded from localStorage", e);
                 }
-            } catch (e) {
-                console.error("Invalid database config loaded", e);
             }
+        }
+
+        if (url && key) {
+            dbType = 'supabase';
+            if (window.supabase) {
+                supabaseInstance = window.supabase.createClient(url, key);
+            }
+            console.log("Blog Manager initié en Mode : SUPABASE");
+        } else {
+            dbType = 'local';
+            supabaseInstance = null;
+            console.log("Blog Manager initié en Mode : LOCAL");
         }
 
         // Attempt local session check
@@ -861,7 +883,7 @@
     // --- Initialize on Startup ---
     async function startup() {
         // 1. Inject Supabase JS Library if configured but not yet loaded
-        const hasConfig = localStorage.getItem('mm_supabase_config');
+        const hasConfig = localStorage.getItem('mm_supabase_config') || (SUPABASE_URL && SUPABASE_ANON_KEY);
         if (hasConfig && !window.supabase) {
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
