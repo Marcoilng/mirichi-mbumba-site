@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Bind forms
     document.getElementById('admin-login-form').onsubmit = handleLoginSubmit;
-    document.getElementById('db-secrets-form').onsubmit = handleConfigSubmit;
 });
 
 // Gating authentications
@@ -44,16 +43,6 @@ async function initAdminAuth() {
             } else {
                 infoNode.innerHTML = `DATABASE STATUS: <span class="badge-status pending">LOCAL STORAGE (MOCK)</span> — Vos modifications sont stockées dans le navigateur local sur cet ordinateur.`;
             }
-        }
-
-        // Populate settings fields values
-        const configRaw = localStorage.getItem('mm_supabase_config');
-        if (configRaw) {
-            try {
-                const p = JSON.parse(configRaw);
-                document.getElementById('db-url-field').value = p.url || '';
-                document.getElementById('db-key-field').value = p.key || '';
-            } catch (e) { }
         }
 
         // Load data
@@ -92,7 +81,7 @@ async function handleLoginSubmit(e) {
             sessionStorage.setItem('mm_admin_session', 'authenticated');
             await initAdminAuth();
         } else {
-            alert("Identifiants de secours incorrects en mode local. \nUtilisateur : admin@mirichimbumba.com\nMot de passe : " + savedPass);
+            alert("Identifiants incorrects. Vérifiez l'email et le mot de passe administrateur.");
         }
     }
 }
@@ -881,97 +870,9 @@ async function deleteArticleConfirm(id) {
     }
 }
 
-// 6. DB Secrets Configuration Handling
-async function handleConfigSubmit(e) {
-    e.preventDefault();
-    const url = document.getElementById('db-url-field').value.trim();
-    const key = document.getElementById('db-key-field').value.trim();
-
-    if (url && key) {
-        localStorage.setItem('mm_supabase_config', JSON.stringify({ url, key }));
-        alert("Paramètres Supabase mis à jour avec succès! Tentative de reconnexion en cours...");
-        window.location.reload();
-    }
-}
-
-function resetDbSettingsToLocal() {
-    if (confirm("Voules-vous déconnecter Supabase et retourner en stockage local navigateur ?")) {
-        localStorage.removeItem('mm_supabase_config');
-        alert("Retour au mode de stockage local.");
-        window.location.reload();
-    }
-}
-window.resetDbSettingsToLocal = resetDbSettingsToLocal;
-
-function saveLocalPassword() {
-    const pw = document.getElementById('local-pass-field').value.trim();
-    if (pw) {
-        localStorage.setItem('mm_admin_password', pw);
-        alert("Mot de passe local mis à jour: " + pw);
-        document.getElementById('local-pass-field').value = '';
-    } else {
-        alert("Veuillez saisir un mot de passe.");
-    }
-}
-window.saveLocalPassword = saveLocalPassword;
-
-// Helper Canvas Base64 Compression
-function resizeImageBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (e) => {
-            const img = new Image();
-            img.src = e.target.result;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                let width = img.width;
-                let height = img.height;
-                const maxWidth = 800;
-                const maxHeight = 600;
-
-                if (width > height) {
-                    if (width > maxWidth) {
-                        height = Math.round((height * maxWidth) / width);
-                        width = maxWidth;
-                    }
-                } else {
-                    if (height > maxHeight) {
-                        width = Math.round((width * maxHeight) / height);
-                        height = maxHeight;
-                    }
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-
-                // Compressed JPEG
-                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
-                window.adminCompressedImage = compressedDataUrl;  // save locally for submitting
-                resolve(compressedDataUrl);
-            };
-            img.onerror = reject;
-        };
-        reader.onerror = reject;
-    });
-}
-
 // Global modal utilities
 function closeAdminModal() {
     const root = document.getElementById('admin-modal-root');
     if (root) root.innerHTML = '';
 }
 window.closeAdminModal = closeAdminModal;
-
-function copySqlCode() {
-    const text = document.getElementById('sql-migration-box').textContent;
-    navigator.clipboard.writeText(text).then(() => {
-        alert("Script SQL copié dans le presse-papier !");
-    }).catch(() => {
-        alert("Impossible de copier automatiquement. Veuillez sélectionner le texte manuellement.");
-    });
-}
-window.copySqlCode = copySqlCode;

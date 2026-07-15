@@ -193,9 +193,7 @@
                 <button onclick="switchTab('articles')" id="tab-articles"
                     class="admin-tab-btn px-4 py-3 text-xs md:text-sm font-semibold tracking-wider uppercase border-b-2">Articles
                     de Blog</button>
-                <button onclick="switchTab('db-settings')" id="tab-db-settings"
-                    class="admin-tab-btn px-4 py-3 text-xs md:text-sm font-semibold tracking-wider uppercase border-b-2">Base
-                    de données</button>
+
             </div>
 
             <!-- Tab Content Area -->
@@ -413,146 +411,7 @@
                     </div>
                 </div>
 
-                <!-- 6. DB CONFIGURATION & SETUP TAB -->
-                <div id="panel-db-settings" class="tab-panel hidden space-y-6">
-                    <div class="admin-card p-8 space-y-6">
-                        <div>
-                            <h2 class="text-2xl font-normal text-[var(--gold-light)] mb-2"
-                                style="font-family:'Cormorant Garant',serif;">Paramétrage de Supabase & Initialisation
-                            </h2>
-                            <p class="text-xs text-gray-400">Configurez l'URL et les clés de votre base de données ou
-                                recopiez le schéma SQL.</p>
-                        </div>
 
-                        <!-- Credentials setup -->
-                        <form id="db-secrets-form" class="space-y-4 max-w-2xl">
-                            <div class="grid md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="form-label">Supabase URL</label>
-                                    <input type="url" id="db-url-field" class="form-input-admin"
-                                        placeholder="https://xxx.supabase.co" required>
-                                </div>
-                                <div>
-                                    <label class="form-label">Supabase Anon Key</label>
-                                    <input type="password" id="db-key-field" class="form-input-admin"
-                                        placeholder="eyJhbGciOiJIUzI1..." required>
-                                </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <button type="submit" class="btn-gold font-normal py-2 px-6"
-                                    style="font-size:0.7rem">Sauvegarder les paramètres</button>
-                                <button type="button" onclick="resetDbSettingsToLocal()"
-                                    class="bg-red-950 text-red-300 border border-red-800 px-4 py-2 text-xs hover:border-red-500 hover:text-white"
-                                    style="cursor:pointer;">Réinitialiser (Stockage Local)</button>
-                            </div>
-                        </form>
-
-                        <div class="full-divider my-6"></div>
-
-                        <!-- SQL Scripts helper -->
-                        <div class="space-y-4">
-                            <h3 class="text-lg font-normal text-amber-200"
-                                style="font-family:'Cormorant Garant',serif;">Initialisation des Tables (SQL Supabase)
-                            </h3>
-                            <p class="text-xs text-gray-400">Pour basculer du stockage local temporaire à votre propre
-                                instance Supabase, copiez le code SQL ci-dessous et insérez-le dans l'éditeur de
-                                requêtes SQL (SQL Editor) sur le portail de votre console Supabase :</p>
-
-                            <div class="relative">
-                                <button onclick="copySqlCode()"
-                                    class="absolute top-3 right-3 text-xs bg-[#16162a]/90 hover:bg-[#20203a] border border-amber-500/25 px-2 py-1 text-amber-200 hover:text-white rounded"
-                                    style="transition: 0.2s;">
-                                    Copier
-                                </button>
-                                <pre class="bg-black/90 p-4 text-xs font-mono text-amber-100 overflow-x-auto max-h-[350px] border border-amber-600/10 rounded"
-                                    style="font-size: 0.72rem; line-height: 1.5;" id="sql-migration-box">
--- Copiez tout ce bloc et exécutez-le dans Supabase SQL Editor :
-
--- 1. Table Articles (Blog)
-CREATE TABLE IF NOT EXISTS articles (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  title text NOT NULL,
-  category text,
-  description text,
-  content text,
-  image text,
-  date text,
-  associated_book text,
-  read_time text,
-  created_at timestamp with time zone DEFAULT timezone('utc'::text, now())
-);
-
--- 2. Table Messages (Contact)
-CREATE TABLE IF NOT EXISTS messages (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  first_name text,
-  last_name text,
-  email text NOT NULL,
-  subject text,
-  message text,
-  is_read boolean DEFAULT false,
-  created_at timestamp with time zone DEFAULT timezone('utc'::text, now())
-);
-
--- 3. Table Newsletter (Tribune)
-CREATE TABLE IF NOT EXISTS newsletter (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  email text UNIQUE NOT NULL,
-  created_at timestamp with time zone DEFAULT timezone('utc'::text, now())
-);
-
--- 4. Table Reservations (Coaching)
-CREATE TABLE IF NOT EXISTS reservations (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  session_type text,
-  date text,
-  time text,
-  first_name text,
-  last_name text,
-  email text,
-  zoom_link text,
-  status text DEFAULT 'confirmée',
-  created_at timestamp with time zone DEFAULT timezone('utc'::text, now())
-);
-
--- 5. Table Formations (Modules & Supports)
-CREATE TABLE IF NOT EXISTS formations (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  module_name text NOT NULL,
-  module_order integer DEFAULT 1,
-  title text NOT NULL,
-  description text,
-  type text, -- 'video', 'pdf', 'live'
-  media_url text,
-  schedule_date timestamp with time zone,
-  duration text,
-  order_index integer DEFAULT 1,
-  created_at timestamp with time zone DEFAULT timezone('utc'::text, now())
-);
-                </pre>
-                            </div>
-                        </div>
-
-                        <div class="full-divider my-6"></div>
-
-                        <!-- Local Password configuration -->
-                        <div class="space-y-4 max-w-lg">
-                            <h3 class="text-lg font-normal text-amber-200"
-                                style="font-family:'Cormorant Garant',serif;">Mot de Passe de secours (Mode Local)</h3>
-                            <p class="text-xs text-gray-400">Si les variables Supabase ne sont pas configurées, le
-                                système basculera en mode local. Vous pouvez modifier le mot de passe requis pour
-                                accéder à l'administration en mode local (de base : <code
-                                    class="text-amber-200">mirichi2026</code>).</p>
-                            <div class="flex gap-2">
-                                <input type="password" id="local-pass-field" class="form-input-admin"
-                                    style="max-width:260px" placeholder="Nouveau mot de passe">
-                                <button type="button" onclick="saveLocalPassword()"
-                                    class="btn-outline font-normal py-2 px-5"
-                                    style="font-size:0.7rem; padding: 10px 18px">Enregistrer</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
             </div>
         </div>
