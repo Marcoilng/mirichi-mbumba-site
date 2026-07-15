@@ -91,6 +91,7 @@
     // Bottom CTA
     '<div style="padding:1.25rem 1.5rem;border-top:1px solid rgba(196,146,42,0.1);display:flex;flex-direction:column;gap:0.75rem;">' +
     '<a href="reservation.html" onclick="closeMenu()" class="btn-gold" style="padding:14px;font-size:0.72rem;text-align:center;display:block;">Réserver une session</a>' +
+    '<a href="admin.html" onclick="closeMenu()" style="text-align:center;font-size:0.65rem;color:rgba(196,146,42,0.5);letter-spacing:0.1em;text-transform:uppercase;padding:4px 0;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold)\'" onmouseout="this.style.color=\'rgba(196,146,42,0.5)\'">Dashboard Admin</a>' +
     '</div>' +
     '</div>';
 
@@ -221,6 +222,7 @@
     '<a href="#" style="color:var(--muted)" target="_blank" rel="noopener noreferrer">Mentions légales</a>' +
     '<a href="#" style="color:var(--muted)" target="_blank" rel="noopener noreferrer">CGV</a>' +
     '<a href="#" style="color:var(--muted)" target="_blank" rel="noopener noreferrer">Confidentialité</a>' +
+    '<a href="admin.html" style="color:rgba(196,146,42,0.45);transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold)\'" onmouseout="this.style.color=\'rgba(196,146,42,0.45)\'">Admin ↗</a>' +
     '</div></div>' +
     '<div class="mm-footer-social" aria-label="Réseaux sociaux" style="display:flex;justify-content:flex-start;align-items:center;gap:12px;flex-wrap:wrap">' +
     socialLink('https://www.instagram.com/channel/AbZhXJm9JcZ2LSdX/', 'Instagram (Chaîne)', SVG_IG) +
