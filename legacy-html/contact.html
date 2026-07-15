@@ -39,16 +39,25 @@
     </section>
     <section class="section-main py-12 px-6 lg:px-12">
       <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12">
-        <div class="card-dark p-8 lg:p-10 reveal">
+        <form id="contact-form" class="card-dark p-8 lg:p-10 reveal">
           <p class="section-label mb-4">Message</p>
           <div class="grid sm:grid-cols-2 gap-4 mb-4">
-            <div><label class="form-label">Prénom</label><input class="form-input" placeholder="Jean"></div>
-            <div><label class="form-label">Nom</label><input class="form-input" placeholder="Dupont"></div>
+            <div>
+              <label class="form-label">Prénom</label>
+              <input id="contact-firstname" class="form-input" placeholder="Jean" required>
+            </div>
+            <div>
+              <label class="form-label">Nom</label>
+              <input id="contact-lastname" class="form-input" placeholder="Dupont" required>
+            </div>
           </div>
-          <div class="mb-4"><label class="form-label">Email</label><input type="email" class="form-input"
-              placeholder="vous@email.com"></div>
-          <div class="mb-4"><label class="form-label">Objet</label>
-            <select class="form-input">
+          <div class="mb-4">
+            <label class="form-label">Email</label>
+            <input type="email" id="contact-email" class="form-input" placeholder="vous@email.com" required>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">Objet</label>
+            <select id="contact-subject" class="form-input" style="background-color: var(--dark-3);">
               <option>Commander un livre</option>
               <option>Réserver une session de coaching</option>
               <option>Inviter comme conférencier</option>
@@ -56,14 +65,16 @@
               <option>Autre demande</option>
             </select>
           </div>
-          <div class="mb-4"><label class="form-label">Message</label><textarea class="form-input" rows="5"
-              placeholder="Votre message…"></textarea></div>
-          <button type="button" class="btn-gold" style="width:100%;padding:14px;font-size:0.75rem">Envoyer mon
+          <div class="mb-4">
+            <label class="form-label">Message</label>
+            <textarea id="contact-message" class="form-input" rows="5" placeholder="Votre message…" required></textarea>
+          </div>
+          <button type="submit" class="btn-gold" style="width:100%;padding:14px;font-size:0.75rem">Envoyer mon
             message</button>
           <p style="font-size:0.75rem;color:var(--muted);margin-top:1rem">Réponse sous 48h ouvrées.</p>
-        </div>
+        </form>
         <div class="reveal reveal-delay-2">
-          <div class="card-dark p-8 lg:p-10 mb-8"
+          <form id="newsletter-form" class="card-dark p-8 lg:p-10 mb-8"
             style="background:linear-gradient(135deg,rgba(196,146,42,0.08),rgba(123,29,41,0.08))">
             <div class="mb-6">
               <img src="images/photo2.jpeg" alt="Mirichi Mbumba — Contact"
@@ -78,11 +89,11 @@
             <p style="font-size:0.8rem;color:var(--gold);margin-bottom:1rem">Rejoignez 12 000 abonnés (objectif
               éditorial)</p>
             <div class="flex flex-col sm:flex-row gap-2">
-              <input type="email" class="form-input" placeholder="votre@email.com">
-              <button type="button" class="btn-gold"
+              <input type="email" id="newsletter-email" class="form-input" placeholder="votre@email.com" required>
+              <button type="submit" class="btn-gold"
                 style="padding:14px 22px;font-size:0.7rem;white-space:nowrap">S'abonner</button>
             </div>
-          </div>
+          </form>
           <div class="space-y-6" style="color:var(--muted);font-size:0.9rem">
             <div>
               <p class="section-label mm-contact-social-title" style="margin-bottom:0.75rem">Réseaux sociaux</p>
@@ -191,6 +202,76 @@
   <div id="mm-cart-root"></div>
   <script src="site-chrome.js"></script>
   <script src="_shared.js"></script>
+  <script src="db-client.js"></script>
+
+  <script>
+    // Submissions Form Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      // Contact submission
+      const contactForm = document.getElementById('contact-form');
+      if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const btnSubmit = contactForm.querySelector('button[type="submit"]');
+          const originalText = btnSubmit.textContent;
+          btnSubmit.textContent = "Envoi en cours...";
+          btnSubmit.disabled = true;
+
+          const data = {
+            first_name: document.getElementById('contact-firstname').value.trim(),
+            last_name: document.getElementById('contact-lastname').value.trim(),
+            email: document.getElementById('contact-email').value.trim(),
+            subject: document.getElementById('contact-subject').value,
+            message: document.getElementById('contact-message').value.trim()
+          };
+
+          try {
+            if (window.supabaseDb) {
+              await window.supabaseDb.saveMessage(data);
+              alert("Votre message a été transmis avec succès. Mirichi Mbumba ou son équipe vous recontactera sous 48 heures.");
+              contactForm.reset();
+            } else {
+              throw new Error("Base de données non initialisée");
+            }
+          } catch (err) {
+            alert("Une erreur s'est produite lors de l'envoi : " + err.message);
+          } finally {
+            btnSubmit.textContent = originalText;
+            btnSubmit.disabled = false;
+          }
+        });
+      }
+
+      // Newsletter submission
+      const newsForm = document.getElementById('newsletter-form');
+      if (newsForm) {
+        newsForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const btnSubmit = newsForm.querySelector('button[type="submit"]');
+          const originalText = btnSubmit.textContent;
+          btnSubmit.textContent = "Inscription...";
+          btnSubmit.disabled = true;
+
+          const email = document.getElementById('newsletter-email').value.trim();
+
+          try {
+            if (window.supabaseDb) {
+              await window.supabaseDb.saveNewsletter(email);
+              alert("Merci pour votre inscription à la Tribune de Mirichi ! Vous recevrez nos futurs courriels hebdomadaires.");
+              newsForm.reset();
+            } else {
+              throw new Error("Base de données non initialisée");
+            }
+          } catch (err) {
+            alert("Une erreur s'est produite : " + err.message);
+          } finally {
+            btnSubmit.textContent = originalText;
+            btnSubmit.disabled = false;
+          }
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>

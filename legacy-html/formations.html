@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="robots" content="index, follow">
+    <title>Formations &amp; Masterclasses — Cabinet Mirichi Mbumba</title>
+    <meta name="description"
+        content="Découvrez nos modules de formation : supports de cours, vidéos exclusives & webinaires en direct.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="_shared.css">
+
+    <style>
+        #hero .hero-name {
+            font-size: clamp(3.2rem, 6.2vw, 6.6rem);
+        }
+
+        .mm-h2 {
+            font-size: clamp(2rem, 3.6vw, 3.6rem);
+            font-weight: 300;
+            line-height: 1.05;
+        }
+
+        .mm-body {
+            font-size: 1.125rem;
+            line-height: 1.85;
+            color: rgba(245, 240, 232, 0.9);
+        }
+
+        .mm-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(196, 146, 42, 0.12);
+            border-radius: 18px;
+            transition: all 0.4s ease;
+        }
+
+        .mm-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(196, 146, 42, 0.30);
+            transform: translateY(-4px);
+        }
+
+        .badge-formation {
+            padding: 4px 12px;
+            font-size: 0.68rem;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+
+<body class="bg-[#09090F] min-h-screen text-[#F5F0E8] overflow-x-hidden">
+
+    <div id="mm-nav-root"></div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative">
+        <div class="wm-mm" aria-hidden="true">MM</div>
+        <div class="hero-bg-circle" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%)">
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 relative z-10 pt-24">
+            <div class="grid lg:grid-cols-2 gap-14 items-center min-h-screen py-20 lg:py-24">
+                <div class="space-y-8">
+                    <div class="flex items-center gap-3 reveal">
+                        <div class="gold-line"></div>
+                        <span class="section-label">PROGRAMME ACADÉMIQUE DE HAUT NIVEAU</span>
+                    </div>
+
+                    <h1 class="hero-name reveal reveal-delay-1">Formations &amp; Masterclasses</h1>
+
+                    <p class="hero-quote reveal reveal-delay-2" style="max-width:560px;">
+                        « L’acquisition de compétences stratégiques et l’ingénierie mentale sont les premiers boucliers
+                        de votre réussite. »
+                    </p>
+
+                    <div class="hero-quote reveal reveal-delay-3" style="font-style:normal; max-width:620px;">
+                        <div class="mm-body space-y-4" style="margin:0; font-size:1.02rem; text-align:left;">
+                            <p>Explorez notre portail de formation continue conçu pour les entrepreneurs chrétiens, les
+                                dirigeants d’affaires et les juristes en quête de perfectionnement.</p>
+                            <p>Accédez à nos supports de cours complets au format PDF, d’explications vidéos ciblées et
+                                assistez à nos sessions interactives animées en direct par Mirichi Mbumba.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4 reveal reveal-delay-4">
+                        <a href="#catalogue" class="btn-gold inline-block">Consulter les Modules</a>
+                        <a href="contact.html" class="btn-outline inline-block">S'inscrire à une Masterclass</a>
+                    </div>
+                </div>
+
+                <div class="relative lg:block reveal reveal-delay-2" aria-hidden="true">
+                    <div class="relative mx-auto" style="max-width:420px">
+                        <div
+                            style="aspect-ratio:3/4;background:linear-gradient(160deg,var(--dark-3),var(--dark-2));border:2px solid rgba(196,146,42,0.45);position:relative;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.45)">
+                            <div
+                                style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(196,146,42,0.03) 48px,rgba(196,146,42,0.03) 49px)">
+                            </div>
+                            <div
+                                style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;">
+                                <!-- Re-uses photo5.jpeg for training themes -->
+                                <img src="/images/photo5.jpeg" alt="Formations Mirichi Mbumba"
+                                    style="width:100%;height:100%;object-fit:cover;opacity:0.93;filter:saturate(1.05) contrast(1.08);"
+                                    onerror="this.style.display='none'" />
+                            </div>
+                        </div>
+                        <div
+                            style="position:absolute;bottom:-18px;right:-12px;background:var(--dark-2);border:1px solid rgba(196,146,42,0.35);padding:16px 22px;border-radius:2px">
+                            <div
+                                style="font-family:'Cormorant Garant',serif;font-size:1.75rem;font-weight:500;color:var(--gold-light);line-height:1">
+                                E-Learning</div>
+                            <div
+                                style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-top:4px">
+                                Théorie &amp; Pratique</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Access Code Verification Gate -->
+    <section class="section-main py-10 border-y border-[rgba(196,146,42,0.12)]">
+        <div class="max-w-xl mx-auto px-6 text-center space-y-4">
+            <span class="section-label">🔑 PORTAIL D'ACCÈS SÉCURISÉ</span>
+            <h3 class="text-xl font-normal text-amber-200" style="font-family:'Cormorant Garant',serif;">Entrer votre
+                code d'accès étudiant</h3>
+            <p class="text-xs text-gray-400">Pour débloquer les supportsPDF, visionner les tutoriels vidéos ou rejoindre
+                les webinaires Zoom, veuillez saisir le code d'accès fourni par notre secrétariat. (Code Démo : <code
+                    class="text-amber-300 bg-amber-950/40 px-1 py-0.5 font-mono">EXCELLENCE2026</code>)</p>
+
+            <div class="flex gap-2 justify-center max-w-sm mx-auto pt-2">
+                <input type="password" id="gate-code" class="form-input text-center text-xs" style="background:#0c0c14"
+                    placeholder="Saisir le code...">
+                <button onclick="verifyAccessCode()" class="btn-gold"
+                    style="padding:10px 18px; font-size:0.75rem">Accéder</button>
+            </div>
+            <p id="gate-status" class="text-xs font-semibold"></p>
+        </div>
+    </section>
+
+    <!-- Trainings Catalogue Section -->
+    <main id="catalogue" class="py-20 px-6 lg:px-12">
+        <div class="max-w-7xl mx-auto space-y-12">
+
+            <div class="text-center space-y-3">
+                <span class="section-label">CURRICULUM</span>
+                <h2 class="mm-h2">Le Catalogue Académique</h2>
+                <p class="text-sm text-gray-400 max-w-xl mx-auto">Parcourez les modules de notre écosystème de
+                    formation. Déverrouillez les supports en saisisant votre clé d'accès.</p>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading-catalogue-indicator" class="text-center py-20">
+                <div
+                    class="inline-block w-8 h-8 border-4 border-amber-600/40 border-t-amber-500 rounded-full animate-spin">
+                </div>
+                <p class="text-xs text-gray-500 mt-2 font-mono">Mise en relation avec la base de données...</p>
+            </div>
+
+            <!-- Grid of Modules -->
+            <div id="public-modules-container" class="grid lg:grid-cols-2 gap-8 hidden">
+                <!-- Dynamic Modules rendered here -->
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Video Lightbox / Meet Link popups container -->
+    <div id="media-lightbox-root"></div>
+
+    <!-- Footers -->
+    <div id="mm-footer-root"></div>
+    <div id="mm-cart-root"></div>
+
+    <script src="site-chrome.js"></script>
+    <script src="_shared.js"></script>
+    <script src="db-client.js"></script>
+
+    <script>
+        let isAccessGranted = false;
+        let cachedCoursesList = [];
+
+        // Check if previously unlocked
+        if (localStorage.getItem('mm_training_unlocked') === 'true') {
+            isAccessGranted = true;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Trigger initial loader
+            setTimeout(async () => {
+                if (window.supabaseDb) {
+                    await loadPortalFormations();
+                } else {
+                    setTimeout(loadPortalFormations, 800);
+                }
+            }, 300);
+
+            if (isAccessGranted) {
+                updateGateStatusView(true, "Accès déverrouillé avec succès.");
+            }
+        });
+
+        async function loadPortalFormations() {
+            const loading = document.getElementById('loading-catalogue-indicator');
+            const container = document.getElementById('public-modules-container');
+
+            try {
+                cachedCoursesList = await window.supabaseDb.getFormations();
+                renderCatalogue();
+
+                if (loading) loading.classList.add('hidden');
+                if (container) container.classList.remove('hidden');
+            } catch (err) {
+                console.error(err);
+                if (loading) loading.innerHTML = `<p class="color-red-400 text-xs">Erreur lors de la récupération des modules : ${err.message}</p>`;
+            }
+        }
+
+        function verifyAccessCode() {
+            const codeVal = document.getElementById('gate-code').value.trim();
+            const gateStatus = document.getElementById('gate-status');
+
+            if (codeVal === 'EXCELLENCE2026') {
+                isAccessGranted = true;
+                localStorage.setItem('mm_training_unlocked', 'true');
+                updateGateStatusView(true, "Code d'accès vérifié. Tous les modules de formation sont déverrouillés.");
+                renderCatalogue();
+            } else {
+                isAccessGranted = false;
+                updateGateStatusView(false, "Code d'accès incorrect. Veuillez contacter notre administration.");
+            }
+        }
+
+        function updateGateStatusView(success, text) {
+            const input = document.getElementById('gate-code');
+            const status = document.getElementById('gate-status');
+
+            if (!status) return;
+
+            status.textContent = text;
+            if (success) {
+                status.style.color = '#4ade80';
+                if (input) input.disabled = true;
+            } else {
+                status.style.color = '#f87171';
+            }
+        }
+
+        function renderCatalogue() {
+            const container = document.getElementById('public-modules-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (cachedCoursesList.length === 0) {
+                container.innerHTML = `
+              <div class="col-span-full text-center py-10 mm-card p-8">
+                 <p class="text-sm text-gray-500">Aucun module académique n'est disponible actuellement.</p>
+              </div>
+            `;
+                return;
+            }
+
+            // Group courses by modules
+            const modules = {};
+            cachedCoursesList.forEach(course => {
+                const modName = course.module_name || 'Module Général';
+                if (!modules[modName]) {
+                    modules[modName] = {
+                        order: course.module_order || 99,
+                        courses: []
+                    };
+                }
+                modules[modName].courses.push(course);
+            });
+
+            // Sorted keys
+            const sortedModNames = Object.keys(modules).sort((a, b) => modules[a].order - modules[b].order);
+
+            sortedModNames.forEach(moduleName => {
+                const mod = modules[moduleName];
+                mod.courses.sort((a, b) => (a.order_index || 1) - (b.order_index || 1));
+
+                let modCardHtml = `
+              <div class="mm-card p-6 lg:p-8 space-y-6">
+                <div>
+                   <span class="section-label">Module ${mod.order}</span>
+                   <h3 class="text-2xl font-normal text-amber-100" style="font-family:'Cormorant Garant',serif;">${moduleName}</h3>
+                </div>
+                
+                <div class="space-y-4">
+            `;
+
+                mod.courses.forEach(course => {
+                    let badgeClass = 'bg-[#16162a] text-amber-200 border border-amber-500/20';
+                    let typeText = 'Vidéos Pédagogiques';
+                    if (course.type === 'pdf') {
+                        badgeClass = 'bg-stone-900 text-stone-200 border border-stone-800';
+                        typeText = 'Support PDF';
+                    }
+                    if (course.type === 'live') {
+                        badgeClass = 'bg-[#3b1c1c] text-red-300 border border-red-800';
+                        typeText = 'Direct / Zoom';
+                    }
+
+                    // Lock overlay protection
+                    let btnActionHtml = '';
+                    if (!isAccessGranted) {
+                        btnActionHtml = `
+                      <button onclick="alert('Veuillez entrer votre Code d\\\'accès étudiant ci-dessus pour déverrouiller ce support.')" class="btn-outline w-full text-center py-2 relative flex items-center justify-center gap-2" style="font-size:0.7rem;">
+                        <span>🔒 Accès Verrouillé</span>
+                      </button>
+                    `;
+                    } else {
+                        if (course.type === 'pdf') {
+                            btnActionHtml = `
+                           <a href="${course.media_url || course.mediaUrl}" target="_blank" class="btn-gold w-full text-center py-2 flex items-center justify-center gap-2" style="font-size:0.7rem;">
+                             <span>📄 Télécharger le PDF (${course.duration || 'N/A'})</span>
+                           </a>
+                        `;
+                        } else if (course.type === 'video') {
+                            btnActionHtml = `
+                           <button onclick="playVideoLightbox('${course.title.replace(/'/g, "\\'")}', '${course.media_url || course.mediaUrl}')" class="btn-gold w-full text-center py-2 flex items-center justify-center gap-2" style="font-size:0.7rem;">
+                             <span>▶ Visionner la Leçon (${course.duration || 'N/A'})</span>
+                           </button>
+                        `;
+                        } else if (course.type === 'live') {
+                            const dateFormatted = course.schedule_date ?
+                                new Date(course.schedule_date).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'À planifier';
+
+                            btnActionHtml = `
+                           <a href="${course.media_url || course.mediaUrl}" target="_blank" class="bg-red-950 py-2 border border-red-700 hover:border-red-500 text-red-200 text-center w-full font-semibold transition uppercase tracking-wider block" style="font-size:0.7rem;">
+                             <span>📡 Rejoindre le Direct (${dateFormatted})</span>
+                           </a>
+                        `;
+                        }
+                    }
+
+                    modCardHtml += `
+                  <div class="bg-black/25 border border-[rgba(196,146,42,0.06)] p-5 rounded-md space-y-3">
+                     <div class="flex items-center justify-between gap-4">
+                        <span class="badge-formation ${badgeClass}">${typeText}</span>
+                        <span class="text-[10px] text-gray-500 font-mono">${course.duration || ''}</span>
+                     </div>
+                     
+                     <h4 class="text-base font-semibold text-gray-100">${course.title}</h4>
+                     <p class="text-xs text-gray-400 font-light leading-relaxed">${course.description || ''}</p>
+                     
+                     <div class="pt-1">
+                       ${btnActionHtml}
+                     </div>
+                  </div>
+                `;
+                });
+
+                modCardHtml += `
+                 </div>
+              </div>
+            `;
+
+                container.innerHTML += modCardHtml;
+            });
+        }
+
+        // Media lightbox utilities
+        function playVideoLightbox(title, url) {
+            const root = document.getElementById('media-lightbox-root');
+
+            // Check YouTube link conversion
+            let embeddedUrl = url;
+            if (url.includes('youtube.com/watch') || url.includes('youtu.be')) {
+                let vidId = '';
+                if (url.includes('watch?v=')) {
+                    vidId = url.split('watch?v=')[1].split('&')[0];
+                } else if (url.includes('youtu.be/')) {
+                    vidId = url.split('youtu.be/')[1].split('?')[0];
+                }
+                if (vidId) {
+                    embeddedUrl = `https://www.youtube.com/embed/${vidId}?autoplay=1`;
+                }
+            } else if (url.includes('vimeo.com/')) {
+                const vidId = url.split('vimeo.com/')[1].split('?')[0];
+                if (vidId) {
+                    embeddedUrl = `https://player.vimeo.com/video/${vidId}?autoplay=1`;
+                }
+            }
+
+            root.innerHTML = `
+          <div id="video-lightbox" class="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/95 backdrop-blur-md">
+             <div class="max-w-4xl w-full relative">
+                <button onclick="closeLightbox()" class="absolute -top-10 right-0 text-gray-500 hover:text-white" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">✕ Fermer</button>
+                <div style="font-family:'Cormorant Garant',serif;" class="text-lg text-[var(--gold-light)] mb-3">${title}</div>
+                <div class="aspect-video bg-black border border-amber-500/20">
+                   <iframe src="${embeddedUrl}" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+             </div>
+          </div>
+        `;
+        }
+        window.playVideoLightbox = playVideoLightbox;
+
+        function closeLightbox() {
+            const root = document.getElementById('media-lightbox-root');
+            if (root) root.innerHTML = '';
+        }
+        window.closeLightbox = closeLightbox;
+    </script>
+</body>
+
+</html>
