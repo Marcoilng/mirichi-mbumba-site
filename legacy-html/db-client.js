@@ -1,13 +1,39 @@
 /**
  * Database client abstractor for Mirichi Mbumba Website
  * Wraps Supabase and local storage fallbacks under a single data API.
+ *
+ * SECURITY: Supabase credentials are NOT hardcoded here.
+ * They are injected via HTML meta tags at deploy time (Vercel env vars)
+ * or via the admin config panel (localStorage mm_supabase_config).
+ * This prevents exposing keys in the public JS bundle history.
  */
 (function () {
-    const DEFAULT_SUPABASE_URL = "https://eldvuhjcnelggnaidrgi.supabase.co";
-    const DEFAULT_SUPABASE_ANON_KEY = "sb_publishable_er1EIIBjyDdjLI9reWsZ0A_fCOgmweU";
+    // Read credentials from meta tags injected by the build process
+    // (set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Vercel env)
+    function _getMetaContent(name) {
+        const el = document.querySelector(`meta[name="${name}"]`);
+        return el ? el.getAttribute('content') : null;
+    }
+    const META_SUPABASE_URL = _getMetaContent('supabase-url');
+    const META_SUPABASE_KEY = _getMetaContent('supabase-anon-key');
 
     let dbType = 'local';
     let supabaseInstance = null;
+
+    // --- XSS Sanitizer (global utility) ---
+    // Escapes HTML special chars to prevent XSS when inserting user data into innerHTML
+    window.sanitizeText = function (str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/\//g, '&#x2F;');
+    };
+    // Alias for internal use
+    const sx = window.sanitizeText;
 
     // Default mock data in case storage is empty
     const DEFAULT_ARTICLES = [
@@ -73,10 +99,13 @@
 
     // Initialize Database
     async function initDB() {
-        let configSaved = localStorage.getItem('mm_supabase_config');
-        let url = DEFAULT_SUPABASE_URL;
-        let key = DEFAULT_SUPABASE_ANON_KEY;
+        // Priority 1: Admin-saved config (localStorage)
+        // Priority 2: Meta tags injected at build time (Vercel env vars)
+        // Priority 3: Local-only mode
+        let url = null;
+        let key = null;
 
+        const configSaved = localStorage.getItem('mm_supabase_config');
         if (configSaved) {
             try {
                 const parsed = JSON.parse(configSaved);
@@ -87,6 +116,12 @@
             } catch (e) {
                 console.error("Error reading saved Supabase config:", e);
             }
+        }
+
+        // Fallback to meta tags from server-side inject
+        if (!url && META_SUPABASE_URL && META_SUPABASE_KEY) {
+            url = META_SUPABASE_URL;
+            key = META_SUPABASE_KEY;
         }
 
         if (url && key) {
@@ -293,15 +328,16 @@
         async saveReservation(resData) {
             if (dbType === 'supabase' && supabaseInstance) {
                 try {
+                    // Sanitize and limit input lengths before DB write
                     const dbRecord = {
-                        session_type: resData.session_type || resData.sessionType || '',
-                        date: resData.date || '',
-                        time: resData.time || '',
-                        first_name: resData.first_name || resData.firstName || '',
-                        last_name: resData.last_name || resData.lastName || '',
-                        email: resData.email || '',
-                        zoom_link: resData.zoom_link || resData.zoomLink || '',
-                        status: resData.status || 'confirmée'
+                        session_type: String(resData.session_type || resData.sessionType || '').slice(0, 100),
+                        date: String(resData.date || '').slice(0, 10),
+                        time: String(resData.time || '').slice(0, 5),
+                        first_name: String(resData.first_name || resData.firstName || '').slice(0, 80),
+                        last_name: String(resData.last_name || resData.lastName || '').slice(0, 80),
+                        email: String(resData.email || '').slice(0, 254),
+                        zoom_link: String(resData.zoom_link || resData.zoomLink || '').slice(0, 500),
+                        status: String(resData.status || 'confirmée').slice(0, 20)
                     };
 
                     if (resData.id) {
@@ -384,12 +420,13 @@
         async saveMessage(msgData) {
             if (dbType === 'supabase' && supabaseInstance) {
                 try {
+                    // Sanitize and limit input lengths before DB write
                     const dbRecord = {
-                        first_name: msgData.first_name || msgData.firstName || '',
-                        last_name: msgData.last_name || msgData.lastName || '',
-                        email: msgData.email || '',
-                        subject: msgData.subject || '',
-                        message: msgData.message || '',
+                        first_name: String(msgData.first_name || msgData.firstName || '').slice(0, 80),
+                        last_name: String(msgData.last_name || msgData.lastName || '').slice(0, 80),
+                        email: String(msgData.email || '').slice(0, 254),
+                        subject: String(msgData.subject || '').slice(0, 200),
+                        message: String(msgData.message || '').slice(0, 5000),
                         is_read: msgData.is_read || false
                     };
                     if (msgData.id) {

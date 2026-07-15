@@ -205,6 +205,24 @@
   <script src="db-client.js"></script>
 
   <script>
+    // --- Rate limit config (client-side anti-spam) ---
+    const FORM_RATE_KEY_CONTACT = 'mm_contact_last_submit';
+    const FORM_RATE_KEY_NEWSLETTER = 'mm_newsletter_last_submit';
+    const FORM_COOLDOWN_MS = 60 * 1000; // 60 seconds between submissions
+
+    function isRateLimited(storageKey) {
+      const last = parseInt(localStorage.getItem(storageKey) || '0', 10);
+      return Date.now() - last < FORM_COOLDOWN_MS;
+    }
+
+    function markSubmitted(storageKey) {
+      localStorage.setItem(storageKey, String(Date.now()));
+    }
+
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+    }
+
     // Submissions Form Listeners
     document.addEventListener('DOMContentLoaded', () => {
       // Contact submission
@@ -212,29 +230,45 @@
       if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
           e.preventDefault();
+
+          // Rate limiting
+          if (isRateLimited(FORM_RATE_KEY_CONTACT)) {
+            alert('Merci de patienter quelques instants avant d\'envoyer un nouveau message.');
+            return;
+          }
+
+          const firstName = document.getElementById('contact-firstname').value.trim();
+          const lastName = document.getElementById('contact-lastname').value.trim();
+          const email = document.getElementById('contact-email').value.trim();
+          const subject = document.getElementById('contact-subject').value;
+          const message = document.getElementById('contact-message').value.trim();
+
+          // Validation
+          if (!firstName || firstName.length > 80) { alert('Prénom invalide (1-80 caractères).'); return; }
+          if (!lastName || lastName.length > 80) { alert('Nom invalide (1-80 caractères).'); return; }
+          if (!validateEmail(email)) { alert('Adresse email invalide.'); return; }
+          if (!message || message.length < 10) { alert('Message trop court (min 10 caractères).'); return; }
+          if (message.length > 5000) { alert('Message trop long (max 5000 caractères).'); return; }
+
           const btnSubmit = contactForm.querySelector('button[type="submit"]');
           const originalText = btnSubmit.textContent;
-          btnSubmit.textContent = "Envoi en cours...";
+          btnSubmit.textContent = 'Envoi en cours...';
           btnSubmit.disabled = true;
 
-          const data = {
-            first_name: document.getElementById('contact-firstname').value.trim(),
-            last_name: document.getElementById('contact-lastname').value.trim(),
-            email: document.getElementById('contact-email').value.trim(),
-            subject: document.getElementById('contact-subject').value,
-            message: document.getElementById('contact-message').value.trim()
-          };
+          const data = { first_name: firstName, last_name: lastName, email, subject, message };
 
           try {
             if (window.supabaseDb) {
               await window.supabaseDb.saveMessage(data);
-              alert("Votre message a été transmis avec succès. Mirichi Mbumba ou son équipe vous recontactera sous 48 heures.");
+              markSubmitted(FORM_RATE_KEY_CONTACT);
+              alert('Votre message a été transmis avec succès. Mirichi Mbumba ou son équipe vous recontactera sous 48 heures.');
               contactForm.reset();
             } else {
-              throw new Error("Base de données non initialisée");
+              throw new Error('Base de données non initialisée');
             }
           } catch (err) {
-            alert("Une erreur s'est produite lors de l'envoi : " + err.message);
+            alert('Une erreur s\'est produite lors de l\'envoi. Veuillez réessayer.');
+            console.error('Contact form error:', err);
           } finally {
             btnSubmit.textContent = originalText;
             btnSubmit.disabled = false;
@@ -247,23 +281,33 @@
       if (newsForm) {
         newsForm.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const btnSubmit = newsForm.querySelector('button[type="submit"]');
-          const originalText = btnSubmit.textContent;
-          btnSubmit.textContent = "Inscription...";
-          btnSubmit.disabled = true;
+
+          // Rate limiting
+          if (isRateLimited(FORM_RATE_KEY_NEWSLETTER)) {
+            alert('Merci de patienter avant une nouvelle inscription.');
+            return;
+          }
 
           const email = document.getElementById('newsletter-email').value.trim();
+          if (!validateEmail(email)) { alert('Adresse email invalide.'); return; }
+
+          const btnSubmit = newsForm.querySelector('button[type="submit"]');
+          const originalText = btnSubmit.textContent;
+          btnSubmit.textContent = 'Inscription...';
+          btnSubmit.disabled = true;
 
           try {
             if (window.supabaseDb) {
               await window.supabaseDb.saveNewsletter(email);
-              alert("Merci pour votre inscription à la Tribune de Mirichi ! Vous recevrez nos futurs courriels hebdomadaires.");
+              markSubmitted(FORM_RATE_KEY_NEWSLETTER);
+              alert('Merci pour votre inscription à la Tribune de Mirichi ! Vous recevrez nos futurs courriels hebdomadaires.');
               newsForm.reset();
             } else {
-              throw new Error("Base de données non initialisée");
+              throw new Error('Base de données non initialisée');
             }
           } catch (err) {
-            alert("Une erreur s'est produite : " + err.message);
+            alert('Une erreur s\'est produite lors de l\'inscription. Veuillez réessayer.');
+            console.error('Newsletter form error:', err);
           } finally {
             btnSubmit.textContent = originalText;
             btnSubmit.disabled = false;

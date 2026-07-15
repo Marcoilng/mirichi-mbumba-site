@@ -132,6 +132,19 @@
   <script src="db-client.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Rate limiting config
+      const RES_RATE_KEY = 'mm_reservation_last_submit';
+      const RES_COOLDOWN_MS = 60 * 1000; // 60s between bookings
+
+      function isReservationRateLimited() {
+        const last = parseInt(localStorage.getItem(RES_RATE_KEY) || '0', 10);
+        return Date.now() - last < RES_COOLDOWN_MS;
+      }
+
+      function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+      }
+
       // Prevent past dates in input
       const dateInput = document.getElementById('res-date');
       const today = new Date().toISOString().split('T')[0];
@@ -161,43 +174,60 @@
       if (bookingForm) {
         bookingForm.addEventListener('submit', async (e) => {
           e.preventDefault();
-          const btnSubmit = bookingForm.querySelector('button[type="submit"]');
-          const originalText = btnSubmit.textContent;
-          btnSubmit.textContent = "Réservation en cours...";
-          btnSubmit.disabled = true;
+
+          // Rate limiting
+          if (isReservationRateLimited()) {
+            alert('Merci de patienter avant une nouvelle réservation.');
+            return;
+          }
 
           // Find selected radio value
           const radios = document.getElementsByName('sess');
-          let sessionTypeVal = "Session découverte";
+          let sessionTypeVal = 'Session découverte';
           for (const r of radios) {
-            if (r.checked) {
-              sessionTypeVal = r.value;
-              break;
-            }
+            if (r.checked) { sessionTypeVal = r.value; break; }
           }
+
+          const firstName = document.getElementById('res-firstname').value.trim();
+          const lastName = document.getElementById('res-lastname').value.trim();
+          const email = document.getElementById('res-email').value.trim();
+          const date = document.getElementById('res-date').value;
+
+          // Validation
+          if (!firstName || firstName.length > 80) { alert('Prénom invalide.'); return; }
+          if (!lastName || lastName.length > 80) { alert('Nom invalide.'); return; }
+          if (!validateEmail(email)) { alert('Adresse email invalide.'); return; }
+          if (!date || date < today) { alert('Date invalide. Veuillez sélectionner une date future.'); return; }
+
+          const btnSubmit = bookingForm.querySelector('button[type="submit"]');
+          const originalText = btnSubmit.textContent;
+          btnSubmit.textContent = 'Réservation en cours...';
+          btnSubmit.disabled = true;
 
           const data = {
             session_type: sessionTypeVal,
-            date: document.getElementById('res-date').value,
+            date,
             time: selectedSlotTime,
-            first_name: document.getElementById('res-firstname').value.trim(),
-            last_name: document.getElementById('res-lastname').value.trim(),
-            email: document.getElementById('res-email').value.trim(),
-            zoom_link: "",
-            status: "confirmée"
+            first_name: firstName,
+            last_name: lastName,
+            email,
+            zoom_link: '',
+            status: 'confirmée'
           };
 
           try {
             if (window.supabaseDb) {
               await window.supabaseDb.saveReservation(data);
-              alert(`Votre demande de coaching (${sessionTypeVal}) a été validée avec succès pour le ${data.date} à ${data.time}.\n\nVous recevrez un courriel de confirmation sous peu.`);
+              localStorage.setItem(RES_RATE_KEY, String(Date.now()));
+              alert(`Votre demande de coaching (${sessionTypeVal}) a été validée avec succès pour le ${date} à ${selectedSlotTime}.\n\nVous recevrez un courriel de confirmation sous peu.`);
               bookingForm.reset();
               if (dateInput) dateInput.value = today;
             } else {
-              throw new Error("Base de données non initialisée");
+              throw new Error('Base de données non initialisée');
             }
           } catch (err) {
-            alert("Erreur lors de l'enregistrement de votre réservation : " + err.message);
+            alert('Erreur lors de l\'enregistrement de votre réservation. Veuillez réessayer.');
+            console.error('Reservation form error:', err);
           } finally {
             btnSubmit.textContent = originalText;
             btnSubmit.disabled = false;

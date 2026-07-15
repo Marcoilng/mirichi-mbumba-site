@@ -1,189 +1,277 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout — Mirichi Mbumba</title>
-  <meta name="description" content="Informations, livraison et paiement.">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="index, follow">
+  <title>Finaliser votre commande — Boutique Mirichi Mbumba</title>
+  <meta name="description" content="Paiement sécurisé et traitement de votre commande.">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="_shared.css">
-  
+
   <style>
-    /* STABILISATION ET RESPONSIVE STRICT DU WIDGET CHARIOW */
+    /* STABILISATION ET INTEGRATION DESIGN CHARIOW SNAP */
     #chariow-injection-point {
       width: 100%;
       position: relative;
       display: block;
-      overflow: visible;
-      min-height: 100px;
+      margin-top: 1rem;
     }
-    
+
     #chariow-injection-point iframe,
     #chariow-injection-point .chariow-widget {
       width: 100% !important;
-      max-width: 100% !important;
+      max-width: 15rem !important;
+      margin: 0 auto;
       border: none !important;
-      contain: layout;
     }
 
-    /* Désactive les comportements de scroll natifs qui font sauter l'iframe au focus */
-    html {
-      scroll-behavior: auto !important;
+    .payment-badge {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(196, 146, 42, 0.15);
+      border-radius: 6px;
+      padding: 0.5rem 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #eaeaea;
+      transition: all 0.3s ease;
     }
 
-    /* Style adaptatif pour les étapes du checkout */
-    .responsive-steps span {
-      font-size: clamp(0.75rem, 2vw, 0.85rem);
-      white-space: nowrap;
+    .payment-badge:hover {
+      border-color: var(--gold-light);
+      background: rgba(196, 146, 42, 0.06);
     }
   </style>
 </head>
+
 <body>
 
-<div id="mm-nav-root"></div>
+  <div id="mm-nav-root"></div>
 
-<main class="page-shell">
-<section class="section-alt py-8 sm:py-12 px-4 sm:px-6 lg:px-12">
-  <div class="max-w-7xl mx-auto">
-    <p class="breadcrumb mb-3 text-xs sm:text-sm"><a href="index.html">Accueil</a> · <a href="panier.html">Panier</a> · Checkout</p>
-    <h1 style="font-size:clamp(1.75rem, 4vw, 2.5rem); font-weight:300; line-height: 1.2;">Commande</h1>
-    
-    <div class="responsive-steps flex flex-wrap items-center gap-x-2 gap-y-1 mt-6 text-[var(--muted)]">
-      <span class="done text-emerald-400">✓ Panier</span>
-      <span class="opacity-40">→</span>
-      <span class="text-white font-medium">2 Infos</span>
-      <span class="opacity-40">→</span>
-      <span class="text-white font-medium">3 Livraison</span>
-      <span class="opacity-40">→</span>
-      <span style="color:var(--gold-light);">4 Paiement Chariow</span>
-    </div>
-  </div>
-</section>
+  <main class="page-shell">
+    <section class="section-alt py-10 px-6 lg:px-12">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <p class="breadcrumb mb-2 text-xs sm:text-sm"><a href="index.html">Accueil</a> · <a href="shop.html">Shop</a>
+            · <a href="panier.html">Panier</a> · Paiement</p>
+          <h1 style="font-size:clamp(2rem, 4vw, 2.75rem); font-weight:300; font-family:'Cormorant Garant', serif;">
+            Finaliser la commande</h1>
+        </div>
 
-<section class="section-main py-6 sm:py-10 px-4 sm:px-6 lg:px-12">
-  <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-10 items-start">
-    
-    <div class="space-y-6 lg:col-span-2 order-1">
-      
-      <div class="card-dark p-4 sm:p-6 lg:p-8">
-        <p class="section-label mb-4">Informations personnelles</p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div><label class="form-label">Prénom</label><input id="chk-prenom" class="form-input" placeholder="Jean"></div>
-          <div><label class="form-label">Nom</label><input id="chk-nom" class="form-input" placeholder="Dupont"></div>
-          <div class="sm:col-span-2"><label class="form-label">Email</label><input id="chk-email" type="email" class="form-input" placeholder="vous@email.com"></div>
-          <div class="sm:col-span-2"><label class="form-label">Téléphone</label><input class="form-input" placeholder="+243…"></div>
+        <!-- Avancement -->
+        <div class="flex items-center gap-2 text-xs text-[var(--muted)]">
+          <span class="text-emerald-400">✓ Panier</span>
+          <span class="opacity-40">→</span>
+          <span class="text-[var(--gold-light)] font-medium">Paiement & Infos</span>
         </div>
       </div>
-      
-      <div class="card-dark p-4 sm:p-6 lg:p-8">
-        <p class="section-label mb-4">Adresse de livraison <span class="text-[var(--muted)] text-xs font-normal">(Si format papier)</span></p>
-        <div class="space-y-4">
-          <div><label class="form-label">Adresse</label><input class="form-input" placeholder="Rue, numéro"></div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div><label class="form-label">Ville</label><input class="form-input" placeholder="Lubumbashi"></div>
-            <div><label class="form-label">Code postal</label><input class="form-input" placeholder="0000"></div>
+    </section>
+
+    <section class="section-main py-10 px-6 lg:px-12">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+
+        <!-- Colonne info produit / Livraison (Left) -->
+        <div class="lg:col-span-7 space-y-6">
+
+          <!-- Box produit de l'achat -->
+          <div id="checkout-product-details" class="card-dark p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center">
+            <p class="text-xs text-gray-400">Chargement de votre commande...</p>
           </div>
-          <div><label class="form-label">Pays</label><select class="form-input"><option>RDC</option><option>France</option><option>Belgique</option><option>Autre</option></select></div>
+
+          <!-- FAQ Spécifique Mobile Money & Devises -->
+          <div class="card-dark p-6 sm:p-8 space-y-4">
+            <p class="section-label mb-2">Comment se déroule le paiement ?</p>
+
+            <div class="space-y-4 text-xs font-light leading-relaxed text-gray-300">
+              <div>
+                <h4 class="font-medium text-[var(--gold-light)] mb-1">📱 Paiement par Mobile Money (RDC/Afrique)</h4>
+                <p>Cliquez sur le bouton de paiement Chariow ci-contre, puis sélectionnez votre opérateur
+                  (<strong>M-Pesa, Orange Money, Airtel Money</strong>). Saisissez votre numéro de téléphone et validez.
+                  Vous recevrez instantanément une notification push sur votre téléphone pour saisir votre code PIN
+                  secret.</p>
+              </div>
+              <div class="full-divider my-2"></div>
+              <div>
+                <h4 class="font-medium text-[var(--gold-light)] mb-1">💳 Cartes de crédit, PayPal & International</h4>
+                <p>Si vous êtes à l'étranger ou préférez régler par carte bancaire, l'interface sécurisée de paiement
+                  Chariow accepte sans problème les cartes Visa, Mastercard ainsi que les comptes PayPal.</p>
+              </div>
+              <div class="full-divider my-2"></div>
+              <div>
+                <h4 class="font-medium text-[var(--gold-light)] mb-1">📦 Livraison des livres</h4>
+                <p><strong>Version E-book (PDF)</strong> : Un e-mail de confirmation contenant votre lien de
+                  téléchargement unique vous sera immédiatement envoyé après la validation du paiement.</p>
+                <p class="mt-1"><strong>Version Papier / Broché</strong> : Après votre achat, notre équipe à Kinshasa
+                  vous contactera sous 24h ouvrées (sur votre numéro ou e-mail indiqué lors du paiement) afin
+                  d'organiser le retrait ou la livraison à domicile.</p>
+              </div>
+            </div>
+          </div>
+
         </div>
-      </div>
-      
-    </div>
-    
-    <aside class="card-dark p-4 sm:p-6 lg:sticky order-2 lg:order-3" style="top:6rem" id="checkout-summary-root">
-      <p class="section-label mb-4">Résumé</p>
-      <div id="checkout-lines" class="mb-4"></div>
-      <div class="flex justify-between text-sm" style="color:var(--muted)"><span>Sous-total</span><span id="chk-subtotal">0,00 USD</span></div>
-      <div class="flex justify-between text-sm mt-2" style="color:var(--muted)"><span>Livraison</span><span id="chk-shipping">0,00 USD</span></div>
-      <div class="full-divider my-4"></div>
-      <div class="flex justify-between items-center"><span style="font-weight:600">Total</span><span id="chk-total" style="font-family:'Cormorant Garant',serif;font-size:1.35rem;color:var(--gold-light)">0,00 USD</span></div>
-    </aside>
 
-    <div class="lg:col-span-2 order-3 lg:order-4">
-      <div class="card-dark p-4 sm:p-6 lg:p-8">
-        <p class="section-label mb-2">Finalisation du paiement</p>
-        <p class="text-xs text-[var(--muted)] mb-6">Les détails analytiques ci-dessus sont préparés. Le traitement monétaire sécurisé s'exécute directement via le module officiel Chariow ci-dessous.</p>
-        
-        <div id="chariow-injection-point">
-          <p class="text-xs text-gray-400">Initialisation sécurisée de Chariow...</p>
+        <!-- Résumé panier & bouton d'achat Chariow (Right) -->
+        <aside class="lg:col-span-5 card-dark p-6 sm:p-8 space-y-6 sticky" style="top:6rem">
+          <p class="section-label">Résumé de commande</p>
+
+          <div id="checkout-lines"></div>
+
+          <div class="space-y-2 mt-4 text-sm text-[var(--muted)]">
+            <div class="flex justify-between">
+              <span>Sous-total</span>
+              <span id="chk-subtotal">0,00 USD</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Frais de livraison</span>
+              <span id="chk-shipping" class="text-emerald-400">Inclus / Offert</span>
+            </div>
+          </div>
+
+          <div class="full-divider"></div>
+
+          <div class="flex justify-between items-center text-white">
+            <span class="font-medium">Montant Total</span>
+            <span id="chk-total"
+              style="font-family:'Cormorant Garant',serif; font-size:1.65rem; color:var(--gold-light)">0,00 USD</span>
+          </div>
+
+          <!-- Section Action Chariow -->
+          <div class="bg-amber-950/10 border border-amber-900/40 rounded-lg p-5 text-center space-y-4">
+            <p class="text-[11px] text-gray-300">Paiement ultra-sécurisé via notre passerelle agréée :</p>
+
+            <div id="chariow-injection-point">
+              <p class="text-xs text-gray-500">Chargement de la passerelle...</p>
+            </div>
+
+            <p class="text-[9px] text-gray-400 font-light">En cliquant, vous ouvrez le formulaire sécurisé Chariow pour
+              saisir vos coordonnées de livraison/facturation et votre mode de règlement.</p>
+          </div>
+
+          <!-- Badges de paiement sécuritaire -->
+          <div>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest text-center mb-3">Moyens de paiement acceptés
+            </p>
+            <div class="grid grid-cols-3 gap-2">
+              <div class="payment-badge">📈 M-Pesa RDC</div>
+              <div class="payment-badge">🍊 Orange Money</div>
+              <div class="payment-badge">🔴 Airtel Money</div>
+              <div class="payment-badge">💳 Carte Bancaire</div>
+              <div class="payment-badge">🌐 Paypal</div>
+              <div class="payment-badge">🛡️ SSL Sécurisé</div>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </section>
+  </main>
+
+  <div id="mm-footer-root"></div>
+  <div id="mm-cart-root"></div>
+
+  <script>
+    function loadCheckoutSummary() {
+      var itemStr = localStorage.getItem('mm_cart_item');
+      var linesContainer = document.getElementById('checkout-lines');
+      var productDetails = document.getElementById('checkout-product-details');
+      var injectionPoint = document.getElementById('chariow-injection-point');
+
+      if (!itemStr) {
+        if (linesContainer) linesContainer.innerHTML = '<p class="text-xs text-red-400">Aucun produit détecté. Veuillez retourner à la boutique.</p>';
+        if (productDetails) productDetails.innerHTML = '<p class="text-xs text-red-400">Panier vide.</p>';
+        if (injectionPoint) injectionPoint.innerHTML = '<p class="text-xs text-red-400">Lancement impossible.</p>';
+        return;
+      }
+
+      var item = JSON.parse(itemStr);
+      var targetProductId = item.id;
+      var deliversPaper = item.formatKey === 'broche' || item.formatKey === 'pack';
+
+      // Rendu de la couverture à gauche
+      if (productDetails) {
+        productDetails.innerHTML = `
+      <img src="${item.image}" alt="${item.title}" class="w-24 sm:w-28 h-auto object-cover rounded shadow-lg border border-[rgba(196,146,42,0.15)] flex-shrink-0">
+      <div class="space-y-2 flex-grow text-left">
+        <span class="text-[9px] uppercase tracking-wider text-[var(--gold)] font-bold">${item.formatLabel}</span>
+        <h2 style="font-family:'Cormorant Garant',serif; font-size:1.85rem; line-height:1.1;" class="text-white">${item.title}</h2>
+        <p class="text-xs text-gray-400 font-light leading-relaxed">
+          Mirichi Mbumba &bull; Édition Officielle.<br>
+          Format : <strong class="text-white">${item.formatLabel}</strong><br>
+          Disponibilité : <span class="text-emerald-400 font-medium">${deliversPaper ? 'En Stock (Kinshasa)' : 'Téléchargement Instantané'}</span>
+        </p>
+      </div>
+    `;
+      }
+
+      // Rendu du résumé à droite
+      if (linesContainer) {
+        linesContainer.innerHTML = `
+      <div class="flex justify-between items-center text-sm gap-4">
+        <div class="min-w-0 flex-1">
+          <p class="font-medium text-white truncate">${item.title}</p>
+          <p class="text-xs text-muted truncate" style="color:var(--muted);">${item.formatLabel}</p>
         </div>
+        <span class="flex-shrink-0 font-medium" style="color:var(--gold-light);">${item.price},00 USD</span>
       </div>
-    </div>
+    `;
+      }
 
-  </div>
-</section>
-</main>
+      if (document.getElementById('chk-subtotal')) document.getElementById('chk-subtotal').textContent = item.price + ',00 USD';
+      if (document.getElementById('chk-total')) document.getElementById('chk-total').textContent = item.price + ',00 USD';
 
-<div id="mm-footer-root"></div>
-<div id="mm-cart-root"></div>
-
-<script>
-function loadCheckoutSummary() {
-  var itemStr = localStorage.getItem('mm_cart_item');
-  var linesContainer = document.getElementById('checkout-lines');
-  var injectionPoint = document.getElementById('chariow-injection-point');
-
-  if (!itemStr) {
-    linesContainer.innerHTML = '<p class="text-xs text-red-400">Aucun produit détecté. Veuillez retourner à la boutique.</p>';
-    injectionPoint.innerHTML = '<p class="text-xs text-red-400">Impossible de charger le paiement : panier vide.</p>';
-    return;
-  }
-
-  var item = JSON.parse(itemStr);
-  var targetProductId = item.id; 
-
-  linesContainer.innerHTML = `
-    <div class="flex justify-between items-center text-sm mb-2 gap-4">
-      <div class="min-w-0 flex-1">
-        <p class="font-medium text-white truncate">${item.title}</p>
-        <p class="text-xs text-muted truncate" style="color:var(--muted);">${item.formatLabel}</p>
+      // Chargement officiel du widget Chariow
+      if (injectionPoint) {
+        injectionPoint.innerHTML = `
+      <div id="chariow-widget" 
+           data-product-id="${targetProductId}"
+           data-store-domain="ufhzjurh.mychariow.shop"
+           data-style="tap"
+           data-border-style="rounded"
+           data-cta-width="xs"
+           data-background-color="#c4922a"
+           data-cta-animation="shine"
+           data-locale="fr"
+           data-primary-color="#c4922a">
       </div>
-      <span class="flex-shrink-0" style="color:var(--gold-light);">${item.price},00 USD</span>
-    </div>
-  `;
+    `;
+      }
 
-  document.getElementById('chk-subtotal').textContent = item.price + ',00 USD';
-  document.getElementById('chk-total').textContent = item.price + ',00 USD';
+      injectChariowScripts();
+    }
 
-  injectionPoint.innerHTML = `
-    <div id="chariow-widget" 
-         data-product-id="${targetProductId}"
-         data-store-domain="ufhzjurh.mychariow.shop"
-         data-style="tap"
-         data-border-style="rounded"
-         data-cta-width="xs"
-         data-background-color="#FFFFFF"
-         data-cta-animation="shine"
-         data-locale="fr"
-         data-primary-color="#ffcc00">
-    </div>
-  `;
+    function injectChariowScripts() {
+      if (document.getElementById('chariow-js')) return;
 
-  injectChariowScripts();
-}
+      var script = document.createElement('script');
+      script.id = 'chariow-js';
+      script.src = 'https://js.chariowcdn.com/v1/widget.min.js';
+      script.async = true;
+      document.head.appendChild(script);
 
-function injectChariowScripts() {
-  if (document.getElementById('chariow-js')) return;
+      var link = document.createElement('link');
+      link.id = 'chariow-css';
+      link.rel = 'stylesheet';
+      link.href = 'https://js.chariowcdn.com/v1/widget.min.css';
+      document.head.appendChild(link);
+    }
 
-  var script = document.createElement('script');
-  script.id = 'chariow-js';
-  script.src = 'https://js.chariowcdn.com/v1/widget.min.js';
-  script.async = true;
-  document.head.appendChild(script);
+    window.addEventListener('DOMContentLoaded', loadCheckoutSummary);
+  </script>
 
-  var link = document.createElement('link');
-  link.id = 'chariow-css';
-  link.rel = 'stylesheet';
-  link.href = 'https://js.chariowcdn.com/v1/widget.min.css';
-  document.head.appendChild(link);
-}
-
-window.addEventListener('DOMContentLoaded', loadCheckoutSummary);
-</script>
-
-<script src="site-chrome.js"></script>
-<script src="_shared.js"></script>
+  <script src="site-chrome.js"></script>
+  <script src="_shared.js"></script>
 </body>
+
 </html>

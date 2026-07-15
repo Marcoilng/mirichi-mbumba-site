@@ -11,6 +11,54 @@ let cachedNewsletter = [];
 let cachedFormations = [];
 let cachedArticles = [];
 
+// --- Rate Limiting / Lockout Configuration ---
+const AUTH_MAX_ATTEMPTS = 5;
+const AUTH_LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes
+const AUTH_STORAGE_KEY = 'mm_admin_auth_lockout';
+
+function getAuthState() {
+    try {
+        const raw = sessionStorage.getItem(AUTH_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : { attempts: 0, lockedUntil: 0 };
+    } catch { return { attempts: 0, lockedUntil: 0 }; }
+}
+
+function setAuthState(state) {
+    sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(state));
+}
+
+function isLockedOut() {
+    const state = getAuthState();
+    if (state.lockedUntil && Date.now() < state.lockedUntil) return state.lockedUntil;
+    return false;
+}
+
+function registerFailedAttempt() {
+    const state = getAuthState();
+    state.attempts = (state.attempts || 0) + 1;
+    if (state.attempts >= AUTH_MAX_ATTEMPTS) {
+        state.lockedUntil = Date.now() + AUTH_LOCKOUT_MS;
+    }
+    setAuthState(state);
+    return state;
+}
+
+function clearAuthState() {
+    sessionStorage.removeItem(AUTH_STORAGE_KEY);
+}
+
+function showLoginError(msg) {
+    let errEl = document.getElementById('admin-login-error');
+    if (!errEl) {
+        errEl = document.createElement('p');
+        errEl.id = 'admin-login-error';
+        errEl.style.cssText = 'color:#f87171;font-size:0.78rem;margin-top:0.75rem;text-align:center;';
+        const form = document.getElementById('admin-login-form');
+        if (form) form.appendChild(errEl);
+    }
+    errEl.textContent = msg;
+}
+
 // Init Startup
 document.addEventListener('DOMContentLoaded', async () => {
     // Wait for db-client.js to setup window.supabaseDb
@@ -56,8 +104,23 @@ async function initAdminAuth() {
 
 async function handleLoginSubmit(e) {
     e.preventDefault();
+
+    // Check lockout first
+    const lockoutUntil = isLockedOut();
+    if (lockoutUntil) {
+        const remaining = Math.ceil((lockoutUntil - Date.now()) / 60000);
+        showLoginError(`Trop de tentatives. Compte verrouillé. Réessayez dans ${remaining} minute(s).`);
+        return;
+    }
+
     const email = document.getElementById('admin-email').value.trim();
-    const pass = document.getElementById('admin-password').value.trim();
+    const pass = document.getElementById('admin-password').value;
+
+    // Basic input validation
+    if (!email || !pass || !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
+        showLoginError('Veuillez saisir un email et un mot de passe valides.');
+        return;
+    }
 
     const dbType = window.supabaseDb.getDbType();
     const supInstance = window.supabaseDb.getSupabaseInstance();
@@ -69,19 +132,37 @@ async function handleLoginSubmit(e) {
                 password: pass
             });
             if (error) throw error;
+            clearAuthState();
             sessionStorage.setItem('mm_admin_session', 'authenticated');
             await initAdminAuth();
         } catch (err) {
-            alert("Erreur de connexion Supabase administrative : " + err.message);
+            const state = registerFailedAttempt();
+            const remaining = AUTH_MAX_ATTEMPTS - state.attempts;
+            if (state.lockedUntil) {
+                showLoginError(`Trop de tentatives (échec). Compte verrouillé 15 minutes.`);
+            } else {
+                showLoginError(`Identifiants incorrects. ${remaining > 0 ? remaining + ' tentative(s) restante(s).' : ''}`);
+            }
         }
     } else {
-        // Local validation fallback
-        const savedPass = localStorage.getItem('mm_admin_password') || 'mirichi2026';
+        // Local validation fallback — no default password exposed
+        const savedPass = localStorage.getItem('mm_admin_password');
+        if (!savedPass) {
+            showLoginError('Aucun mode local configuré. Veuillez connecter Supabase depuis le panneau admin.');
+            return;
+        }
         if (email === 'admin@mirichimbumba.com' && pass === savedPass) {
+            clearAuthState();
             sessionStorage.setItem('mm_admin_session', 'authenticated');
             await initAdminAuth();
         } else {
-            alert("Identifiants incorrects. Vérifiez l'email et le mot de passe administrateur.");
+            const state = registerFailedAttempt();
+            const remaining = AUTH_MAX_ATTEMPTS - state.attempts;
+            if (state.lockedUntil) {
+                showLoginError(`Trop de tentatives. Compte verrouillé 15 minutes.`);
+            } else {
+                showLoginError(`Identifiants incorrects. ${remaining > 0 ? remaining + ' tentative(s) restante(s).' : ''}`);
+            }
         }
     }
 }
@@ -156,13 +237,13 @@ function renderOverviewStats() {
             let badgeClass = 'badge-status pending';
             if (res.status === 'confirmée') badgeClass = 'badge-status active';
             if (res.status === 'annulée') badgeClass = 'badge-status cancelled';
-
+            const sx = window.sanitizeText;
             bookingsList.innerHTML += `
                <tr class="border-b border-[rgba(196,146,42,0.06)]">
-                 <td class="py-2">${dateFmt} à ${res.time}</td>
-                 <td class="py-2 font-medium">${res.first_name} ${res.last_name}</td>
-                 <td class="py-2 text-[var(--gold)]" style="font-size:0.75rem">${res.session_type}</td>
-                 <td class="py-2"><span class="${badgeClass}" style="font-size:0.65rem">${res.status || 'confirmée'}</span></td>
+                 <td class="py-2">${sx(dateFmt)} à ${sx(res.time)}</td>
+                 <td class="py-2 font-medium">${sx(res.first_name)} ${sx(res.last_name)}</td>
+                 <td class="py-2 text-[var(--gold)]" style="font-size:0.75rem">${sx(res.session_type)}</td>
+                 <td class="py-2"><span class="${badgeClass}" style="font-size:0.65rem">${sx(res.status || 'confirmée')}</span></td>
                </tr>
             `;
         });
@@ -177,11 +258,12 @@ function renderOverviewStats() {
     } else {
         sliceMsg.forEach(msg => {
             const dateFmt = new Date(msg.created_at || Date.now()).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+            const sx = window.sanitizeText;
             msgList.innerHTML += `
                <tr class="border-b border-[rgba(196,146,42,0.06)]">
-                 <td class="py-2 text-gray-500">${dateFmt}</td>
-                 <td class="py-2 font-medium">${msg.first_name || ''} ${msg.last_name || ''}</td>
-                 <td class="py-2 italic">${msg.subject || 'Aucun objet'}</td>
+                 <td class="py-2 text-gray-500">${sx(dateFmt)}</td>
+                 <td class="py-2 font-medium">${sx(msg.first_name || '')} ${sx(msg.last_name || '')}</td>
+                 <td class="py-2 italic">${sx(msg.subject || 'Aucun objet')}</td>
                  <td class="py-2 text-right"><button onclick="switchTab('members')" class="text-[var(--gold)] hover:underline read-btn font-semibold">Consulter</button></td>
                </tr>
             `;
@@ -211,24 +293,27 @@ function renderBookings() {
         let badgeClass = 'badge-status pending';
         if (res.status === 'confirmée') badgeClass = 'badge-status active';
         if (res.status === 'annulée') badgeClass = 'badge-status cancelled';
-
-        const zoomText = res.zoom_link || res.zoomLink ?
-            `<a href="${res.zoom_link || res.zoomLink}" target="_blank" class="text-sky-400 font-semibold hover:underline truncate block max-w-[200px]">${res.zoom_link || res.zoomLink}</a>` :
+        const sx = window.sanitizeText;
+        // zoom link must be a valid https URL or empty — prevent JS injection
+        const rawZoom = res.zoom_link || res.zoomLink || '';
+        const safeZoom = /^https?:\/\//.test(rawZoom) ? rawZoom : '';
+        const zoomText = safeZoom ?
+            `<a href="${sx(safeZoom)}" target="_blank" rel="noopener noreferrer" class="text-sky-400 font-semibold hover:underline truncate block max-w-[200px]">${sx(safeZoom)}</a>` :
             `<span class="text-gray-500 font-light italic">Non associé</span>`;
 
         rows.innerHTML += `
            <tr>
-             <td class="font-semibold text-[var(--gold-light)]">${res.date} à ${res.time}</td>
-             <td>${res.first_name} ${res.last_name}</td>
-             <td><a href="mailto:${res.email}" class="hover:underline">${res.email}</a></td>
-             <td class="text-gray-400" style="font-size:0.8rem">${res.session_type}</td>
-             <td><span class="${badgeClass}">${res.status || 'confirmée'}</span></td>
+             <td class="font-semibold text-[var(--gold-light)]">${sx(res.date)} à ${sx(res.time)}</td>
+             <td>${sx(res.first_name)} ${sx(res.last_name)}</td>
+             <td><a href="mailto:${sx(res.email)}" class="hover:underline">${sx(res.email)}</a></td>
+             <td class="text-gray-400" style="font-size:0.8rem">${sx(res.session_type)}</td>
+             <td><span class="${badgeClass}">${sx(res.status || 'confirmée')}</span></td>
              <td>${zoomText}</td>
              <td class="text-right">
                <div class="flex gap-2 justify-end">
-                 <button onclick="openVisioModal('${res.id}')" class="bg-amber-950/60 border border-amber-800 text-[11px] text-amber-200 px-2.5 py-1 hover:border-amber-400 transition" title="Lien Zoom/Meet">Visio</button>
-                 <button onclick="toggleBookingStatus('${res.id}', '${res.status}')" class="bg-slate-800 border border-slate-700 text-[11px] text-slate-200 px-2.5 py-1 hover:border-slate-500 transition">Statut</button>
-                 <button onclick="deleteBookingConfirm('${res.id}')" class="bg-red-950 border border-red-900 text-[11px] text-red-200 px-2.5 py-1 hover:border-red-600 transition">Retirer</button>
+                 <button onclick="openVisioModal('${sx(res.id)}')" class="bg-amber-950/60 border border-amber-800 text-[11px] text-amber-200 px-2.5 py-1 hover:border-amber-400 transition" title="Lien Zoom/Meet">Visio</button>
+                 <button onclick="toggleBookingStatus('${sx(res.id)}', '${sx(res.status)}')" class="bg-slate-800 border border-slate-700 text-[11px] text-slate-200 px-2.5 py-1 hover:border-slate-500 transition">Statut</button>
+                 <button onclick="deleteBookingConfirm('${sx(res.id)}')" class="bg-red-950 border border-red-900 text-[11px] text-red-200 px-2.5 py-1 hover:border-red-600 transition">Retirer</button>
                </div>
              </td>
            </tr>
@@ -320,24 +405,24 @@ function renderContactAndNewsletter() {
         cachedMessages.forEach(msg => {
             const date = new Date(msg.created_at).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
             const isRead = typeof msg.is_read !== 'undefined' ? msg.is_read : false;
-
+            const sx = window.sanitizeText;
             cards.innerHTML += `
                <div class="admin-card p-6 ${isRead ? 'opacity-70' : 'border-amber-700/50 bg-amber-950/5'}" style="transition:0.3s">
                  <div class="flex items-center justify-between mb-2">
                    <div>
-                     <span class="text-xs text-[var(--gold)] uppercase font-semibold tracking-wider">${msg.subject || 'Objet général'}</span>
-                     <h4 class="text-base font-medium mt-1">${msg.first_name || ''} ${msg.last_name || ''} (<a href="mailto:${msg.email}" class="text-amber-200 hover:underline">${msg.email}</a>)</h4>
+                     <span class="text-xs text-[var(--gold)] uppercase font-semibold tracking-wider">${sx(msg.subject || 'Objet général')}</span>
+                     <h4 class="text-base font-medium mt-1">${sx(msg.first_name || '')} ${sx(msg.last_name || '')} (<a href="mailto:${sx(msg.email)}" class="text-amber-200 hover:underline">${sx(msg.email)}</a>)</h4>
                    </div>
-                   <span class="text-xs text-gray-500">${date}</span>
+                   <span class="text-xs text-gray-500">${sx(date)}</span>
                  </div>
                  
-                 <p class="text-sm font-light leading-relaxed my-4 text-gray-200 border-l border-[var(--gold-pale)] pl-3 whitespace-pre-wrap">${msg.message || ''}</p>
+                 <p class="text-sm font-light leading-relaxed my-4 text-gray-200 border-l border-[var(--gold-pale)] pl-3 whitespace-pre-wrap">${sx(msg.message || '')}</p>
                  
                  <div class="flex items-center justify-between border-t border-[rgba(196,146,42,0.06)] pt-4 mt-4">
                    <span class="text-xs ${isRead ? 'text-gray-500' : 'text-amber-300 font-bold'}">${isRead ? '✓ Lu' : '● Nouveau / Non Lu'}</span>
                    <div class="flex gap-2">
-                     <button onclick="toggleMessageRead('${msg.id}', ${isRead})" class="text-xs px-3 py-1 bg-slate-800 border border-slate-700 hover:border-slate-500 text-slate-200 rounded">${isRead ? 'Marquer Non Lu' : 'Marquer Lu'}</button>
-                     <button onclick="deleteMessageConfirm('${msg.id}')" class="text-xs px-3 py-1 bg-red-950 border border-red-900 hover:border-red-600 text-red-200 rounded">Supprimer</button>
+                     <button onclick="toggleMessageRead('${sx(msg.id)}', ${isRead})" class="text-xs px-3 py-1 bg-slate-800 border border-slate-700 hover:border-slate-500 text-slate-200 rounded">${isRead ? 'Marquer Non Lu' : 'Marquer Lu'}</button>
+                     <button onclick="deleteMessageConfirm('${sx(msg.id)}')" class="text-xs px-3 py-1 bg-red-950 border border-red-900 hover:border-red-600 text-red-200 rounded">Supprimer</button>
                    </div>
                  </div>
                </div>
@@ -354,13 +439,14 @@ function renderContactAndNewsletter() {
     } else {
         cachedNewsletter.forEach(sub => {
             const date = new Date(sub.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+            const sx = window.sanitizeText;
             newsletterContainer.innerHTML += `
                <div class="flex items-center justify-between p-2 border-b border-[rgba(196,146,42,0.05)] text-xs">
                  <div class="truncate pr-2">
-                   <p class="font-medium text-gray-200">${sub.email}</p>
-                   <span class="text-[9px] text-gray-500">Inscrit le ${date}</span>
+                   <p class="font-medium text-gray-200">${sx(sub.email)}</p>
+                   <span class="text-[9px] text-gray-500">Inscrit le ${sx(date)}</span>
                  </div>
-                 <button onclick="deleteNewsletterConfirm('${sub.id}')" class="text-red-400 hover:text-red-600 p-1 font-semibold" title="Rétracter">Retirer</button>
+                 <button onclick="deleteNewsletterConfirm('${sx(sub.id)}')" class="text-red-400 hover:text-red-600 p-1 font-semibold" title="Rétracter">Retirer</button>
                </div>
             `;
         });
