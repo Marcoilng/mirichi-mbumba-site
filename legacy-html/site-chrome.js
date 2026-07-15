@@ -62,20 +62,35 @@
     '<span class="w-6 h-px bg-white block transition-all" id="bar2"></span>' +
     '<span class="w-6 h-px bg-white block transition-all" id="bar3"></span></button></div></div></nav>';
 
+  var MOBILE_OVERLAY = '<div id="mobile-menu-overlay" onclick="closeMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:199;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);"></div>';
+
   var MOBILE =
-    '<div id="mobile-menu" class="fixed inset-0 flex flex-col justify-center px-8 lg:hidden" style="background:var(--dark-2);z-index:90">' +
-    '<div class="flex flex-col gap-6">' +
-    '<a href="index.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Accueil</a>' +
-    '<a href="about.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">À propos</a>' +
-    '<a href="foi-valeurs.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Foi &amp; Valeurs</a>' +
-    '<a href="shop.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Shop</a>' +
-    '<a href="tribunes.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Tribunes</a>' +
-    '<a href="coaching.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Coaching</a>' +
-    '<a href="clinique.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">La Clinique</a>' +
-    '<a href="temoignages.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Témoignages</a>' +
-    '<a href="galerie.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Galerie</a>' +
-    '<a href="contact.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:2.25rem;font-weight:300;color:var(--white)">Contact</a>' +
-    '<a href="panier.html" onclick="closeMenu()" class="nav-link mt-4">Panier</a></div></div>';
+    '<div id="mobile-menu" class="fixed inset-y-0 right-0 w-full max-w-xs flex flex-col lg:hidden" style="background:var(--dark-2);border-left:1px solid rgba(196,146,42,0.15);">' +
+    // Close button
+    '<div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(196,146,42,0.1);">' +
+    '<span style="font-family:\'Cormorant Garant\',serif;font-size:1.1rem;color:var(--gold-light);font-weight:400;letter-spacing:0.05em;">Menu</span>' +
+    '<button type="button" onclick="closeMenu()" aria-label="Fermer le menu" style="background:none;border:1px solid rgba(196,146,42,0.25);width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);border-radius:2px;transition:all 0.2s;" onmouseover="this.style.borderColor=\'var(--gold)\';this.style.color=\'var(--gold-light)\'" onmouseout="this.style.borderColor=\'rgba(196,146,42,0.25)\';this.style.color=\'var(--muted)\'">' +
+    '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+    '</button></div>' +
+    // Nav links
+    '<nav style="flex:1;overflow-y:auto;padding:1.5rem;">' +
+    '<div style="display:flex;flex-direction:column;gap:0.25rem;">' +
+    '<a href="index.html"    onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Accueil</a>' +
+    '<a href="about.html"   onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">À propos</a>' +
+    '<a href="foi-valeurs.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Foi &amp; Valeurs</a>' +
+    '<a href="shop.html"    onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Shop</a>' +
+    '<a href="tribunes.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Tribunes</a>' +
+    '<a href="coaching.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Coaching</a>' +
+    '<a href="clinique.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">La Clinique</a>' +
+    '<a href="temoignages.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Témoignages</a>' +
+    '<a href="galerie.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Galerie</a>' +
+    '<a href="contact.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Contact</a>' +
+    '</div></nav>' +
+    // Bottom CTA
+    '<div style="padding:1.25rem 1.5rem;border-top:1px solid rgba(196,146,42,0.1);display:flex;flex-direction:column;gap:0.75rem;">' +
+    '<a href="reservation.html" onclick="closeMenu()" class="btn-gold" style="padding:14px;font-size:0.72rem;text-align:center;display:block;">Réserver une session</a>' +
+    '</div>' +
+    '</div>';
 
   var OVERLAY =
     '<div id="site-menu-overlay" aria-hidden="true">' +
