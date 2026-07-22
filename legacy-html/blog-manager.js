@@ -39,26 +39,25 @@
         }
     ];
 
-    // ==========================================================
-    // ⚙️ CONFIGURATION SUPABASE (À REMPLIR POUR LA PRODUCTION)
-    // Renseignez l'URL et la clé anonyme de votre projet ci-dessous.
-    // Si elles sont laissées vides "", le système basculera par défaut en Mode Local.
-    // ==========================================================
-    const SUPABASE_URL = "https://eldvuhjcnelggnaidrgi.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_er1EIIBjyDdjLI9reWsZ0A_fCOgmweU";
-
     // Global state variables
     let dbType = 'local'; // 'local' or 'supabase'
     let supabaseInstance = null;
     let articles = [];
     let userSession = null;
 
+    // --- Read Supabase credentials from meta tags (injected by Vercel build) ---
+    function _getMeta(name) {
+        const el = document.querySelector('meta[name="' + name + '"]');
+        return el ? el.getAttribute('content') : null;
+    }
+
     // --- Initialize Database & Settings ---
     function initDB() {
-        let url = SUPABASE_URL;
-        let key = SUPABASE_ANON_KEY;
+        // Priority 1: Vercel-injected meta tags (SUPABASE_URL / SUPABASE_ANON_KEY env vars)
+        let url = _getMeta('supabase-url');
+        let key = _getMeta('supabase-anon-key');
 
-        // Si non renseigné dans le code, on regarde dans le localStorage
+        // Priority 2: Admin-saved config in localStorage
         if (!url || !key) {
             const savedConfig = localStorage.getItem('mm_supabase_config');
             if (savedConfig) {
@@ -66,9 +65,7 @@
                     const config = JSON.parse(savedConfig);
                     url = config.url || '';
                     key = config.key || '';
-                } catch (e) {
-                    console.error("Invalid database config loaded from localStorage", e);
-                }
+                } catch (e) { /* invalid config */ }
             }
         }
 
@@ -77,14 +74,13 @@
             if (window.supabase) {
                 supabaseInstance = window.supabase.createClient(url, key);
             }
-            console.log("Blog Manager initié en Mode : SUPABASE");
+            console.log('Blog Manager: Mode SUPABASE.');
         } else {
             dbType = 'local';
             supabaseInstance = null;
-            console.log("Blog Manager initié en Mode : LOCAL");
+            console.log('Blog Manager: Mode LOCAL.');
         }
 
-        // Attempt local session check
         if (dbType === 'supabase') {
             checkSupabaseSession();
         } else {
@@ -109,7 +105,8 @@
     }
 
     function getLocalPassword() {
-        return localStorage.getItem('mm_admin_password') || 'mirichi2026';
+        // No default password exposed — admin must set one via localStorage manually
+        return localStorage.getItem('mm_admin_password') || null;
     }
 
     function setLocalPassword(newPass) {
@@ -358,16 +355,20 @@
                 return false;
             }
         } else {
-            // Local Auth
+            // Local Auth — mode hors-ligne uniquement
             const correctEmail = 'admin@mirichimbumba.com';
             const correctPass = getLocalPassword();
+            if (!correctPass) {
+                alert('Aucun mot de passe local configuré. Connectez Supabase pour accéder à l\'administration.');
+                return false;
+            }
             if (email === correctEmail && password === correctPass) {
                 sessionStorage.setItem('mm_admin_session', 'authenticated');
                 userSession = { user: { email: correctEmail } };
                 updateAdminUI();
                 return true;
             } else {
-                alert("Identifiants locaux incorrects. Par défaut: admin@mirichimbumba.com / mirichi2026");
+                alert('Identifiants incorrects.');
                 return false;
             }
         }

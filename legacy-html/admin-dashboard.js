@@ -219,12 +219,12 @@ async function handleLoginSubmit(e) {
             }
         }
     } else {
-        // Local validation fallback — configure a safe default for local dev if not present
-        let savedPass = localStorage.getItem('mm_admin_password');
+        // Mode LOCAL — pas de Supabase
+        // Le mot de passe doit être défini manuellement dans localStorage
+        const savedPass = localStorage.getItem('mm_admin_password');
         if (!savedPass) {
-            savedPass = 'admin123';
-            localStorage.setItem('mm_admin_password', 'admin123');
-            console.log("Mode LOCAL : Aucun mot de passe configuré. Utilisation du mot de passe par défaut 'admin123'.");
+            showLoginError('Mode local : aucun mot de passe configuré. Connectez Supabase pour accéder au dashboard.');
+            return;
         }
         if (email === 'admin@mirichimbumba.com' && pass === savedPass) {
             clearAuthState();
