@@ -22,3 +22,21 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# ===================================================
+# SECURITE — Variables d'environnement & Credentials
+# CRITIQUE : Ne JAMAIS commiter ces fichiers !
+# ===================================================
+.env
+.env.local
+.env.production
+.env.development
+.env.staging
+.env.vercel
+*.env
+secrets.json
+config.secret.*
+
+# Thumbnails OS
+Thumbs.db
+desktop.ini

@@ -2,10 +2,13 @@
  * Database client abstractor for Mirichi Mbumba Website
  * Wraps Supabase and local storage fallbacks under a single data API.
  *
- * Credential priority:
- * 1. Admin-saved config (localStorage mm_supabase_config)
- * 2. Meta tags injected at build time (Vercel env vars via prepare-deploy.mjs)
- * 3. Project defaults (Supabase project credentials) — enables Supabase locally too
+ * Credential priority (SECURE — no hardcoded secrets):
+ * 1. Meta tags injected at build time (Vercel env vars via prepare-deploy.mjs)
+ * 2. Admin-saved config via Supabase Setup tool (stored in localStorage as encrypted config)
+ * 3. Local Storage fallback (no Supabase) — for offline/dev mode only
+ *
+ * IMPORTANT: Never commit API keys to source control.
+ * Set SUPABASE_URL and SUPABASE_ANON_KEY in Vercel project settings.
  */
 (function () {
     // Read credentials from meta tags injected by the build process
@@ -99,44 +102,43 @@
 
     // Initialize Database
     async function initDB() {
-        // Priority 1: Admin-saved config (localStorage)
-        // Priority 2: Meta tags injected at build time (Vercel env vars)
-        // Priority 3: Local-only mode
+        // Priority 1: Meta tags injected at build time by Vercel (SUPABASE_URL, SUPABASE_ANON_KEY)
+        // Priority 2: Admin-saved config stored in localStorage (from setup panel)
+        // Priority 3: Local-only mode (no Supabase)
         let url = null;
         let key = null;
 
-        const configSaved = localStorage.getItem('mm_supabase_config');
-        if (configSaved) {
-            try {
-                const parsed = JSON.parse(configSaved);
-                if (parsed.url && parsed.key) {
-                    url = parsed.url;
-                    key = parsed.key;
-                }
-            } catch (e) {
-                console.error("Error reading saved Supabase config:", e);
-            }
-        }
-
-        // Fallback 2: meta tags from server-side inject (Vercel)
-        if (!url && META_SUPABASE_URL && META_SUPABASE_KEY) {
+        // Priority 1: Vercel build-injected meta tags (most secure — from env vars)
+        if (META_SUPABASE_URL && META_SUPABASE_KEY) {
             url = META_SUPABASE_URL;
             key = META_SUPABASE_KEY;
         }
 
-        // Fallback 3: project defaults (always connects to Supabase, even locally)
+        // Priority 2: Admin-saved config in localStorage (manual setup via admin panel)
         if (!url) {
-            url = 'https://eldvuhjcnelggnaidrgi.supabase.co';
-            key = 'sb_publishable_er1EIIBjyDdjLI9reWsZ0A_fCOgmweU';
+            const configSaved = localStorage.getItem('mm_supabase_config');
+            if (configSaved) {
+                try {
+                    const parsed = JSON.parse(configSaved);
+                    if (parsed.url && parsed.key) {
+                        url = parsed.url;
+                        key = parsed.key;
+                    }
+                } catch (e) {
+                    // Invalid config — silently ignore
+                }
+            }
         }
 
+        // Priority 3: No credentials found — local storage fallback only
         if (url && key) {
             // Load supabase js CDN library dynamically if needed
             if (!window.supabase) {
-                const scriptPromise = new Promise((resolve) => {
+                const scriptPromise = new Promise((resolve, reject) => {
                     const script = document.createElement('script');
                     script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
                     script.onload = resolve;
+                    script.onerror = reject;
                     document.head.appendChild(script);
                 });
                 await scriptPromise;
@@ -145,16 +147,16 @@
             try {
                 supabaseInstance = window.supabase.createClient(url, key);
                 dbType = 'supabase';
-                console.log("Central DB Manager: Mode SUPABASE connecté.");
+                console.log("DB Manager: Mode SUPABASE actif.");
             } catch (err) {
-                console.error("Supabase failed to initialize, falling back to local storage:", err);
+                console.warn("Supabase init failed — mode local activé.");
                 supabaseInstance = null;
                 dbType = 'local';
             }
         } else {
             supabaseInstance = null;
             dbType = 'local';
-            console.log("Central DB Manager: Mode LOCAL.");
+            console.log("DB Manager: Mode LOCAL (aucune credential Supabase trouvée).");
         }
     }
 

@@ -11,6 +11,80 @@ let cachedNewsletter = [];
 let cachedFormations = [];
 let cachedArticles = [];
 
+// ============================================================
+// IMAGE COMPRESSION UTILITY — Robuste, fonctionne sur mobile
+// ============================================================
+/**
+ * Compresse et redimensionne un fichier image en base64.
+ * Gère iOS HEIC, grandes photos DSLR et uploads camera mobile.
+ * Max 1200px, qualité JPEG adaptative.
+ * @param {File} file
+ * @returns {Promise<string>} base64 data URL
+ */
+function resizeImageBase64(file) {
+    return new Promise(function (resolve, reject) {
+        if (!file || !file.type.startsWith('image/')) {
+            reject(new Error('Fichier invalide : veuillez sélectionner une image (JPG, PNG, WEBP).'));
+            return;
+        }
+        if (file.size > 25 * 1024 * 1024) {
+            reject(new Error('Image trop volumineuse (max 25 Mo). Veuillez choisir une image plus petite.'));
+            return;
+        }
+
+        var reader = new FileReader();
+        reader.onerror = function () {
+            reject(new Error('Erreur de lecture du fichier image.'));
+        };
+        reader.onload = function (ev) {
+            var img = new Image();
+            img.onerror = function () {
+                reject(new Error('Format non supporté. Essayez JPG, PNG ou WEBP.'));
+            };
+            img.onload = function () {
+                try {
+                    var MAX_DIM = 1200;
+                    var w = img.width;
+                    var h = img.height;
+
+                    // Réduction proportionnelle uniquement
+                    if (w > MAX_DIM || h > MAX_DIM) {
+                        if (w > h) {
+                            h = Math.round((h * MAX_DIM) / w);
+                            w = MAX_DIM;
+                        } else {
+                            w = Math.round((w * MAX_DIM) / h);
+                            h = MAX_DIM;
+                        }
+                    }
+
+                    var canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    var ctx = canvas.getContext('2d');
+                    // Fond blanc pour PNG transparents
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    // Qualité adaptative selon la taille originale
+                    var quality = 0.82;
+                    if (file.size > 5 * 1024 * 1024) quality = 0.75;
+                    if (file.size > 10 * 1024 * 1024) quality = 0.68;
+
+                    var result = canvas.toDataURL('image/jpeg', quality);
+                    resolve(result);
+                } catch (err) {
+                    reject(new Error('Erreur de traitement image : ' + err.message));
+                }
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+window.resizeImageBase64 = resizeImageBase64;
+
 // --- Rate Limiting / Lockout Configuration ---
 const AUTH_MAX_ATTEMPTS = 5;
 const AUTH_LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes
@@ -1033,44 +1107,192 @@ function openArticleEditor(artId = null) {
             </div>
 
             <div>
-              <label class="form-label">Image d'illustration commerciale</label>
-              <input type="file" id="art-fc-file" class="form-input-admin mb-2" accept="image/*" />
-              <input type="text" id="art-fc-imageurl" class="form-input-admin" placeholder="Ou URL absolue de l'image" value="${imageVal.startsWith('data:') ? '(Image Locale Chargee)' : imageVal}" />
+              <label class="form-label">Image d'illustration</label>
+              <div id="art-img-drop-zone" style="border:2px dashed rgba(196,146,42,0.3);border-radius:4px;padding:12px 16px;background:#090912;text-align:center;cursor:pointer;transition:all 0.3s;" onclick="document.getElementById('art-fc-file').click()">
+                <svg width="24" height="24" fill="none" stroke="#c4922a" stroke-width="1.5" style="display:inline-block;margin-bottom:6px" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <p style="font-size:0.78rem;color:#9ca3af;margin:0">Cliquez ou glissez une image ici (JPG, PNG, WEBP)</p>
+                <p style="font-size:0.7rem;color:#6b7280;margin-top:4px">Optimisation automatique — fonctionne sur mobile</p>
+              </div>
+              <input type="file" id="art-fc-file" class="hidden" accept="image/*,image/heic,image/heif" />
+              <div id="art-img-status" style="margin-top:8px;display:none;align-items:center;gap:8px;font-size:0.78rem;">
+                <div id="art-img-preview" style="width:48px;height:48px;border-radius:3px;overflow:hidden;border:1px solid rgba(196,146,42,0.3);flex-shrink:0;"></div>
+                <div>
+                  <p id="art-img-status-text" style="color:#4ade80;font-weight:600;margin:0;"></p>
+                  <p id="art-img-status-size" style="color:#9ca3af;margin:0;font-size:0.7rem;"></p>
+                </div>
+                <button type="button" onclick="clearArticleImage()" style="margin-left:auto;color:#f87171;font-size:0.7rem;background:none;border:none;cursor:pointer;">✕ Retirer</button>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">Ou collez une URL directe :</p>
+              <input type="text" id="art-fc-imageurl" class="form-input-admin" placeholder="https://..." value="${imageVal.startsWith('data:') ? '' : imageVal}" />
             </div>
 
             <div>
-              <label class="form-label">Corps de l'Article (HTML admis: &lt;p&gt;, &lt;h4&gt;, &lt;div class="pull-quote"&gt;)</label>
-              <textarea id="art-fc-content" class="form-input-admin h-48 font-mono text-xs resize-y" style="background:#090912;" placeholder="<p>Corps de la tribune...</p>" required>${contentVal}</textarea>
+              <label class="form-label">Corps de l'Article</label>
+              <p style="font-size:0.7rem;color:#6b7280;margin-bottom:6px;">Éditeur visuel — balises <code style="color:#e8b84b">&lt;p&gt;</code>, <code style="color:#e8b84b">&lt;h4&gt;</code>, <code style="color:#e8b84b">&lt;pull-quote&gt;</code> supportées</p>
+
+              <!-- Toolbar -->
+              <div id="art-editor-toolbar" style="background:#0e0e18;border:1px solid rgba(196,146,42,0.22);border-bottom:none;border-radius:3px 3px 0 0;padding:6px 10px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;">
+                <button type="button" onclick="artCmd('bold')" title="Gras" class="rich-btn"><strong>B</strong></button>
+                <button type="button" onclick="artCmd('italic')" title="Italique" class="rich-btn"><em>I</em></button>
+                <button type="button" onclick="artCmd('underline')" title="Souligner" class="rich-btn"><u>U</u></button>
+                <span style="width:1px;height:18px;background:rgba(196,146,42,0.2);margin:0 4px;display:inline-block;"></span>
+                <button type="button" onclick="artCmdBlock('h4')" title="Sous-titre" class="rich-btn" style="font-family:'Cormorant Garant',serif;">H4</button>
+                <button type="button" onclick="artCmdBlock('p')" title="Paragraphe" class="rich-btn">¶</button>
+                <button type="button" onclick="artCmdBlock('pull-quote')" title="Citation mise en valeur" class="rich-btn">« »</button>
+                <span style="width:1px;height:18px;background:rgba(196,146,42,0.2);margin:0 4px;display:inline-block;"></span>
+                <button type="button" onclick="artCmd('insertUnorderedList')" title="Liste à puces" class="rich-btn">• —</button>
+                <button type="button" onclick="artCmd('justifyLeft')" title="Gauche" class="rich-btn">⬅</button>
+                <button type="button" onclick="artCmd('justifyCenter')" title="Centrer" class="rich-btn">≡</button>
+                <span style="width:1px;height:18px;background:rgba(196,146,42,0.2);margin:0 4px;display:inline-block;"></span>
+                <button type="button" onclick="artSwitchView()" id="art-view-toggle" title="Basculer HTML / Visuel" class="rich-btn" style="font-size:0.65rem;letter-spacing:0.05em;">HTML</button>
+              </div>
+
+              <!-- WYSIWYG visual editor -->
+              <div id="art-fc-editor"
+                contenteditable="true"
+                spellcheck="true"
+                style="min-height:220px;background:#090912;border:1px solid rgba(196,146,42,0.22);border-radius:0 0 3px 3px;padding:14px 16px;color:#F5F0E8;font-size:0.88rem;line-height:1.8;outline:none;overflow-y:auto;max-height:420px;"
+              >${contentVal || '<p></p>'}</div>
+
+              <!-- Raw HTML textarea (hidden by default) -->
+              <textarea id="art-fc-content"
+                class="form-input-admin font-mono text-xs resize-y"
+                style="background:#090912;min-height:220px;border-radius:0 0 3px 3px;font-size:0.75rem;display:none;"
+              >${contentVal}</textarea>
             </div>
 
             <div class="pt-4 flex justify-end gap-3">
               <button type="button" onclick="closeAdminModal()" class="btn-outline py-2 px-4" style="font-size:0.7rem">Annuler</button>
-              <button type="submit" class="btn-gold py-2 px-6" style="font-size:0.7rem">Publier l'Article</button>
+              <button type="submit" id="art-submit-btn" class="btn-gold py-2 px-6" style="font-size:0.7rem">Publier l'Article</button>
             </div>
           </form>
         </div>
       </div>
     `;
 
-    // Canvas resizing setup
-    let compressedImgStr = art ? art.image : '';
+    // --- Inject rich editor styles (once) ---
+    if (!document.getElementById('rich-editor-styles')) {
+        const s = document.createElement('style');
+        s.id = 'rich-editor-styles';
+        s.textContent = `
+            .rich-btn { background:rgba(196,146,42,0.06);border:1px solid rgba(196,146,42,0.18);color:#e8b84b;padding:3px 8px;font-size:0.8rem;cursor:pointer;border-radius:2px;transition:all 0.2s;min-width:26px;text-align:center; }
+            .rich-btn:hover { background:rgba(196,146,42,0.18);border-color:rgba(196,146,42,0.5);color:#fff; }
+            #art-fc-editor p { margin-bottom:0.9em; }
+            #art-fc-editor h4 { font-family:'Cormorant Garant',serif;font-size:1.25rem;color:#e8b84b;margin:1.2em 0 0.5em;font-weight:400; }
+            #art-fc-editor .pull-quote { border-left:3px solid #c4922a;padding:0.75em 1em;margin:1em 0;background:rgba(196,146,42,0.04);color:#e8b84b;font-style:italic;font-size:1.05em; }
+            #art-fc-editor ul { list-style:disc;padding-left:1.5em;margin-bottom:0.9em; }
+            #art-fc-editor:focus { box-shadow:0 0 0 2px rgba(196,146,42,0.2); }
+            #art-img-drop-zone:hover { border-color:rgba(196,146,42,0.6);background:#0e0e18; }
+        `;
+        document.head.appendChild(s);
+    }
+
+    // --- Rich editor commands ---
+    let _artHtmlMode = false;
+    window.artCmd = function (cmd) {
+        const ed = document.getElementById('art-fc-editor');
+        if (!ed || _artHtmlMode) return;
+        ed.focus();
+        document.execCommand(cmd, false, null);
+    };
+    window.artCmdBlock = function (tag) {
+        const ed = document.getElementById('art-fc-editor');
+        if (!ed || _artHtmlMode) return;
+        ed.focus();
+        if (tag === 'pull-quote') {
+            const sel = window.getSelection();
+            const txt = (sel && sel.toString()) ? sel.toString() : 'Votre citation ici...';
+            document.execCommand('insertHTML', false, '<div class="pull-quote">' + txt + '</div><p></p>');
+        } else {
+            document.execCommand('formatBlock', false, tag);
+        }
+    };
+    window.artSwitchView = function () {
+        const ed = document.getElementById('art-fc-editor');
+        const ta = document.getElementById('art-fc-content');
+        const btn = document.getElementById('art-view-toggle');
+        if (!ed || !ta || !btn) return;
+        _artHtmlMode = !_artHtmlMode;
+        if (_artHtmlMode) {
+            ta.value = ed.innerHTML;
+            ed.style.display = 'none';
+            ta.style.display = 'block';
+            btn.textContent = 'VISUEL';
+            btn.style.color = '#4ade80';
+        } else {
+            ed.innerHTML = ta.value;
+            ta.style.display = 'none';
+            ed.style.display = 'block';
+            btn.textContent = 'HTML';
+            btn.style.color = '';
+        }
+    };
+
+    // --- Image compression with closure (robust mobile support) ---
+    let _compressedImg = (art && art.image && art.image.startsWith('data:')) ? art.image : '';
     const fileSel = document.getElementById('art-fc-file');
+    const dropZone = document.getElementById('art-img-drop-zone');
+    const imgStatus = document.getElementById('art-img-status');
+    const imgStatusText = document.getElementById('art-img-status-text');
+    const imgStatusSize = document.getElementById('art-img-status-size');
+    const imgPreview = document.getElementById('art-img-preview');
     const urlInput = document.getElementById('art-fc-imageurl');
 
-    fileSel.addEventListener('change', async function (e) {
-        if (e.target.files && e.target.files[0]) {
-            try {
-                urlInput.value = "Compression et traitement...";
-                urlInput.disabled = true;
-                compressedImgStr = await resizeImageBase64(e.target.files[0]);
-                urlInput.value = "(Image locale chargée et optimisée)";
-            } catch (err) {
-                alert("Erreur lors de la compression de l'image.");
-                urlInput.value = "";
-                urlInput.disabled = false;
-            }
-        }
+    // Drag & drop support
+    dropZone.addEventListener('dragover', function (e) { e.preventDefault(); dropZone.style.borderColor = 'rgba(196,146,42,0.7)'; });
+    dropZone.addEventListener('dragleave', function () { dropZone.style.borderColor = 'rgba(196,146,42,0.3)'; });
+    dropZone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dropZone.style.borderColor = 'rgba(196,146,42,0.3)';
+        const f = e.dataTransfer.files && e.dataTransfer.files[0];
+        if (f) processImageFile(f);
     });
+
+    fileSel.addEventListener('change', function (e) {
+        const f = e.target.files && e.target.files[0];
+        if (f) processImageFile(f);
+    });
+
+    async function processImageFile(f) {
+        dropZone.style.opacity = '0.5';
+        dropZone.querySelector('p').textContent = 'Optimisation en cours...';
+        urlInput.value = '';
+
+        try {
+            _compressedImg = await resizeImageBase64(f);
+            const kbSize = Math.round(_compressedImg.length * 0.75 / 1024);
+            imgPreview.innerHTML = '<img src="' + _compressedImg + '" style="width:100%;height:100%;object-fit:cover;">';
+            imgStatusText.textContent = '✓ Image optimisée';
+            imgStatusSize.textContent = f.name + ' — ' + kbSize + ' Ko';
+            imgStatus.style.display = 'flex';
+            dropZone.style.display = 'none';
+        } catch (err) {
+            _compressedImg = '';
+            dropZone.style.opacity = '1';
+            dropZone.querySelector('p').textContent = 'Cliquez ou glissez une image ici (JPG, PNG, WEBP)';
+            // Show error below
+            let errEl = document.getElementById('art-img-error');
+            if (!errEl) {
+                errEl = document.createElement('p');
+                errEl.id = 'art-img-error';
+                errEl.style.cssText = 'color:#f87171;font-size:0.78rem;margin-top:6px;';
+                dropZone.parentNode.insertBefore(errEl, dropZone.nextSibling);
+            }
+            errEl.textContent = '⚠ ' + (err.message || 'Erreur de compression. Essayez une autre image.');
+        }
+    }
+
+    window.clearArticleImage = function () {
+        _compressedImg = '';
+        imgStatus.style.display = 'none';
+        dropZone.style.display = 'block';
+        dropZone.style.opacity = '1';
+        fileSel.value = '';
+        urlInput.value = '';
+    };
+
+    // Expose via closure accessor
+    window._adminCompressedImageFn = function () { return _compressedImg; };
 
     document.getElementById('art-editor-form').onsubmit = handleArticleSubmit;
 }
@@ -1079,22 +1301,45 @@ window.openArticleEditor = openArticleEditor;
 async function handleArticleSubmit(e) {
     e.preventDefault();
     const id = document.getElementById('art-fc-id').value || null;
-    const urlInput = document.getElementById('art-fc-imageurl').value;
+    const urlInputEl = document.getElementById('art-fc-imageurl');
+    const urlVal = urlInputEl ? urlInputEl.value.trim() : '';
 
-    // Format date beautifully
-    const inputDate = document.getElementById('art-fc-date').value;
-    const options = { day: 'numeric', month: 'short', year: 'numeric' };
-    const dateFormatted = new Date(inputDate).toLocaleDateString('fr-FR', options);
-
-    let base64ImageVal = '';
-    // Determine image source
-    if (urlInput.startsWith('http') || urlInput.startsWith('/')) {
-        base64ImageVal = urlInput;
-    } else {
-        const foundArt = cachedArticles.find(a => a.id === id);
-        // Find existing image or compile compressed string
-        base64ImageVal = urlInput === "(Image locale chargée et optimisée)" ? window.adminCompressedImage : (foundArt ? foundArt.image : '');
+    // Sync content from rich editor before submitting
+    const editor = document.getElementById('art-fc-editor');
+    const contentTA = document.getElementById('art-fc-content');
+    let articleContent = '';
+    if (editor && editor.style.display !== 'none') {
+        articleContent = editor.innerHTML.trim();
+        if (articleContent === '<p></p>' || articleContent === '<br>') articleContent = '';
+    } else if (contentTA) {
+        articleContent = contentTA.value.trim();
     }
+
+    if (!articleContent) {
+        alert("Le corps de l'article ne peut pas être vide.");
+        return;
+    }
+
+    // Format date
+    const inputDate = document.getElementById('art-fc-date').value;
+    const dateFormatted = new Date(inputDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    // Determine image
+    let base64ImageVal = '';
+    if (urlVal.startsWith('http') || urlVal.startsWith('/')) {
+        base64ImageVal = urlVal;
+    } else {
+        const compressed = window._adminCompressedImageFn ? window._adminCompressedImageFn() : '';
+        if (compressed && compressed.startsWith('data:')) {
+            base64ImageVal = compressed;
+        } else {
+            const foundArt = cachedArticles.find(function (a) { return a.id === id; });
+            base64ImageVal = foundArt ? (foundArt.image || '') : '';
+        }
+    }
+
+    const submitBtn = document.getElementById('art-submit-btn');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Publication...'; }
 
     const payload = {
         id,
@@ -1104,7 +1349,7 @@ async function handleArticleSubmit(e) {
         associatedBook: document.getElementById('art-fc-book').value.trim(),
         readTime: document.getElementById('art-fc-readtime').value.trim(),
         description: document.getElementById('art-fc-description').value.trim(),
-        content: document.getElementById('art-fc-content').value.trim(),
+        content: articleContent,
         image: base64ImageVal
     };
 
@@ -1113,7 +1358,8 @@ async function handleArticleSubmit(e) {
         closeAdminModal();
         await fetchAllData();
     } catch (err) {
-        alert("Erreur de sauvegarde article: " + err.message);
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Publier l'Article"; }
+        alert('Erreur de sauvegarde article : ' + err.message);
     }
 }
 
