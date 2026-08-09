@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Événements - TOUCH UP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --text: #6b6375;
+            --text-h: #08060d;
+            --bg: #fff;
+            --border: #e5e4e7;
+            --code-bg: #f4f3ec;
+            --accent: #aa3bff;
+            --accent-bg: rgba(170, 59, 255, 0.1);
+            --accent-border: rgba(170, 59, 255, 0.5);
+            --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+            --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            font-family: var(--sans);
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header-icon {
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 56px;
+            color: var(--accent);
+            margin: 0 0 16px;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            font-size: 20px;
+            color: var(--text);
+        }
+
+        .featured-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            color: var(--text-h);
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .featured-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .featured-image {
+            background: linear-gradient(135deg, var(--accent-bg) 0%, var(--code-bg) 100%);
+            padding: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .featured-icon {
+            color: var(--accent);
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .featured-content {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-title {
+            font-size: 36px;
+            color: var(--text-h);
+            margin: 0 0 12px;
+            font-weight: 700;
+        }
+
+        .event-subtitle {
+            font-size: 22px;
+            color: var(--accent);
+            margin: 0 0 24px;
+            font-style: italic;
+        }
+
+        .event-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .event-detail {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .detail-icon {
+            color: var(--accent);
+            width: 20px;
+            height: 20px;
+        }
+
+        .event-description {
+            font-size: 16px;
+            color: var(--text);
+            line-height: 1.6;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .cta-button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            align-self: flex-start;
+            text-decoration: none;
+            display: inline-block;
+
+            &:hover {
+                background: var(--accent-border);
+                transform: translateY(-2px);
+            }
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .event-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+
+            &:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+                border-color: var(--accent);
+            }
+        }
+
+        .card-image {
+            background: linear-gradient(135deg, var(--accent-bg) 0%, var(--code-bg) 100%);
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 150px;
+        }
+
+        .card-icon {
+            color: var(--accent);
+        }
+
+        .card-content {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 24px;
+            color: var(--text-h);
+            margin: 0 0 8px;
+            font-weight: 700;
+        }
+
+        .card-subtitle {
+            font-size: 16px;
+            color: var(--accent);
+            margin: 0 0 16px;
+            font-style: italic;
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+            align-self: flex-start;
+            text-decoration: none;
+            display: inline-block;
+
+            &:hover {
+                background: var(--accent-border);
+                transform: translateY(-2px);
+            }
+        }
+
+        .no-events {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--code-bg);
+            border-radius: 12px;
+        }
+
+        .no-events p {
+            font-size: 18px;
+            color: var(--text);
+            margin: 10px 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .header p {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .featured-card {
+                grid-template-columns: 1fr;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .event-title {
+                font-size: 28px;
+            }
+
+            .event-subtitle {
+                font-size: 18px;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <svg class="header-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <h1>Nos Événements</h1>
+            <p>Découvrez et participez à nos événements qui transforment des vies</p>
+        </header>
+
+        <section class="featured-section">
+            <h2 class="section-title">Événement à la une</h2>
+            <div class="featured-card">
+                <div class="featured-image">
+                    <svg class="featured-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <span class="category-badge">Développement Personnel</span>
+                </div>
+                <div class="featured-content">
+                    <h3 class="event-title">TOUCH UP</h3>
+                    <p class="event-subtitle">L'identité avant la réussite</p>
+                    
+                    <div class="event-details">
+                        <div class="event-detail">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>Samedi 29 août 2026</span>
+                        </div>
+                        <div class="event-detail">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span>À partir de 13h00</span>
+                        </div>
+                        <div class="event-detail">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span>Silikin Village, Kinshasa</span>
+                        </div>
+                        <div class="event-detail">
+                            <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            <span>100 places</span>
+                        </div>
+                    </div>
+                    
+                    <p class="event-description">
+                        Nous voulons contribuer à une génération de jeunes qui ne cherchent pas seulement à avoir, 
+                        mais qui travaillent d'abord à devenir. Des jeunes capables de connaître leur valeur, 
+                        de développer leurs talents, de créer des solutions et, ensuite, de construire des entreprises 
+                        et des projets qui ont un impact.
+                    </p>
+                    
+                    <a href="/" class="cta-button">En savoir plus</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="regular-events">
+            <h2 class="section-title">Tous les événements</h2>
+            <div class="events-grid">
+                <!-- Additional events can be added here -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Load events from localStorage if available
+        const storedEvents = localStorage.getItem('events');
+        if (storedEvents) {
+            const events = JSON.parse(storedEvents);
+            const regularEvents = events.filter(event => !event.featured);
+            
+            const eventsGrid = document.querySelector('.events-grid');
+            
+            if (regularEvents.length > 0) {
+                regularEvents.forEach(event => {
+                    const card = document.createElement('div');
+                    card.className = 'event-card';
+                    card.innerHTML = `
+                        <div class="card-image">
+                            <svg class="card-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            ${event.category ? `<span class="category-badge">${event.category}</span>` : ''}
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">${event.title}</h3>
+                            ${event.subtitle ? `<p class="card-subtitle">${event.subtitle}</p>` : ''}
+                            <div class="card-details">
+                                <div class="event-detail">
+                                    <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    <span>${event.date}</span>
+                                </div>
+                                <div class="event-detail">
+                                    <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    <span>${event.time}</span>
+                                </div>
+                                <div class="event-detail">
+                                    <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    <span>${event.location}</span>
+                                </div>
+                            </div>
+                            <p class="card-description">${event.description?.substring(0, 150) || ''}${event.description?.length > 150 ? '...' : ''}</p>
+                            <a href="/" class="card-button">Voir détails</a>
+                        </div>
+                    `;
+                    eventsGrid.appendChild(card);
+                });
+            } else {
+                eventsGrid.innerHTML = `
+                    <div class="no-events">
+                        <p>Aucun autre événement programmé pour le moment.</p>
+                        <p>Revenez bientôt pour découvrir nos nouvelles activités!</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
