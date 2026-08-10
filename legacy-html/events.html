@@ -124,15 +124,36 @@
         <div id="events-section">
           <!-- Admin Counter -->
           <div class="mb-8 p-4 rounded-lg" style="background:rgba(196,146,42,0.1);border:1px solid rgba(196,146,42,0.3);">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between mb-4">
               <div>
                 <span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Compteur Admin</span>
                 <p class="font-body-md text-body-md text-on-surface-variant mt-1" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Suivi des réservations en temps réel</p>
               </div>
               <div class="text-right">
                 <span id="admin-counter" class="font-display-lg text-display-lg text-secondary" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;">0</span>
-                <span class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:1rem;">/ 100</span>
+                <span id="admin-max" class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:1rem;">/ 100</span>
               </div>
+            </div>
+            <!-- Admin Controls -->
+            <div class="flex items-center gap-4 pt-4 border-t" style="border-color:rgba(196,146,42,0.2);">
+              <div class="flex items-center gap-2 flex-1">
+                <label class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Modifier le max:</label>
+                <input 
+                  type="number" 
+                  id="max-participants-input" 
+                  value="100"
+                  min="1"
+                  class="w-24 bg-surface-container-low border border-outline-variant rounded px-3 py-2 text-on-surface focus:outline-none focus:border-primary transition-colors"
+                  style="background:var(--dark-2);border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;"
+                >
+              </div>
+              <button 
+                onclick="updateMaxParticipants()"
+                class="px-4 py-2 rounded-lg font-label-caps text-label-caps text-on-primary transition-colors"
+                style="background:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.75rem;font-weight:600;"
+              >
+                Mettre à jour
+              </button>
             </div>
           </div>
           
@@ -324,7 +345,28 @@
   <script src="_shared.js"></script>
   <script>
     // LocalStorage-based booking system
-    const MAX_PARTICIPANTS = 100;
+    function getMaxParticipants() {
+      const stored = localStorage.getItem('mirichi_max_participants');
+      return stored ? parseInt(stored) : 100; // Default 100
+    }
+    
+    function setMaxParticipants(count) {
+      localStorage.setItem('mirichi_max_participants', count.toString());
+    }
+    
+    function updateMaxParticipants() {
+      const input = document.getElementById('max-participants-input');
+      const newValue = parseInt(input.value);
+      
+      if (newValue && newValue > 0) {
+        setMaxParticipants(newValue);
+        document.getElementById('admin-max').textContent = '/ ' + newValue;
+        loadEvents(); // Reload to update display
+        alert('Nombre maximum de participants mis à jour: ' + newValue);
+      } else {
+        alert('Veuillez entrer un nombre valide');
+      }
+    }
 
     // Event data - TOUCH UP
     const events = [
@@ -380,13 +422,13 @@
     // Get available places
     function getAvailablePlaces() {
       const currentRegistrations = getCurrentRegistrations();
-      return MAX_PARTICIPANTS - currentRegistrations;
+      return getMaxParticipants() - currentRegistrations;
     }
 
     // Check if event is full
     function isEventFull() {
       const currentRegistrations = getCurrentRegistrations();
-      return currentRegistrations >= MAX_PARTICIPANTS;
+      return currentRegistrations >= getMaxParticipants();
     }
 
     // Load events on page load
@@ -394,17 +436,32 @@
       const eventsGrid = document.getElementById('events-grid');
       const availablePlaces = getAvailablePlaces();
       const isFull = isEventFull();
+      const maxParticipants = getMaxParticipants();
       
       // Update admin counter
       const currentRegistrations = getCurrentRegistrations();
       const adminCounter = document.getElementById('admin-counter');
+      const adminMax = document.getElementById('admin-max');
+      const maxInput = document.getElementById('max-participants-input');
+      
       if (adminCounter) {
         adminCounter.textContent = currentRegistrations;
-        // Change color if approaching limit
-        if (currentRegistrations >= 90) {
+      }
+      if (adminMax) {
+        adminMax.textContent = '/ ' + maxParticipants;
+      }
+      if (maxInput) {
+        maxInput.value = maxParticipants;
+      }
+      
+      // Change color if approaching limit
+      if (adminCounter) {
+        if (currentRegistrations >= maxParticipants - 10) {
           adminCounter.style.color = '#BA1A1A'; // Red warning
-        } else if (currentRegistrations >= 70) {
+        } else if (currentRegistrations >= maxParticipants - 30) {
           adminCounter.style.color = '#F59E0B'; // Orange warning
+        } else {
+          adminCounter.style.color = 'var(--gold)'; // Normal
         }
       }
       
@@ -421,30 +478,22 @@
                 <span>${event.date}</span>
               </div>
               <div class="flex items-center gap-2 text-sm" style="color:var(--muted);">
-                <span class="material-symbols-outlined" style="font-size:18px;color:var(--gold);">schedule</span>
-                <span>${event.time}</span>
-              </div>
-              <div class="flex items-center gap-2 text-sm" style="color:var(--muted);">
                 <span class="material-symbols-outlined" style="font-size:18px;color:var(--gold);">location_on</span>
                 <span>${event.location}</span>
               </div>
             </div>
-            <p class="text-sm mb-4" style="color:var(--muted);line-height:1.6;">${event.description?.substring(0, 120) || ''}${event.description?.length > 120 ? '...' : ''}</p>
-            
-            <!-- Availability Indicator -->
-            <div class="mb-4 p-3 rounded-lg" style="background:var(--dark-3);border:1px solid var(--gold-pale);">
+            <div class="pt-4 border-t" style="border-color:rgba(196,146,42,0.15);">
               <div class="flex items-center justify-between mb-2">
-                <span class="text-xs" style="color:var(--muted);">Places disponibles</span>
-                <span class="text-sm font-bold" style="color:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold-light)'}">${availablePlaces} / ${MAX_PARTICIPANTS}</span>
+                <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Places disponibles</span>
+                <span class="font-display-sm text-display-sm text-secondary" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:700;color:var(--gold-light);">${availablePlaces}</span>
               </div>
-              <div class="w-full bg-gray-700 rounded-full h-2">
-                <div class="h-2 rounded-full transition-all duration-300" style="width:${(availablePlaces / MAX_PARTICIPANTS) * 100}%;background:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold)'};"></div>
+              <div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden" style="background:rgba(245,240,232,0.15);">
+                <div class="h-2 rounded-full relative transition-all duration-300" style="width:${(availablePlaces / maxParticipants) * 100}%;background:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold)'};">
+                  ${availablePlaces <= 10 ? '<div class="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50 animate-pulse"></div>' : ''}
+                </div>
               </div>
+              <p class="font-body-md text-body-md text-on-surface-variant mt-4" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--muted);">Sur ${maxParticipants} places exclusives disponibles.</p>
             </div>
-            
-            <button class="px-6 py-3 text-sm w-full" style="background:${isFull ? 'var(--dark-3)' : 'var(--gold)'};color:${isFull ? 'var(--muted)' : 'var(--dark)'};border:none;border-radius:4px;font-weight:600;cursor:pointer;${isFull ? 'opacity:0.6;cursor:not-allowed;' : ''}" ${isFull ? 'disabled' : ''}>
-              ${isFull ? 'Inscriptions closes' : 'Réserver ma place'}
-            </button>
           </div>
         `).join('');
       } else {
