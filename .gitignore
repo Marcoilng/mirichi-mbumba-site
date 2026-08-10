@@ -40,3 +40,5 @@ config.secret.*
 # Thumbnails OS
 Thumbs.db
 desktop.ini
+
+.vercel
