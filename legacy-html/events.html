@@ -235,10 +235,10 @@
                     <label class="font-label-caps text-label-caps text-on-surface-variant" for="message" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--muted);">Message (optionnel)</label>
                     <textarea class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-4 text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors resize-none mt-2" id="message" name="message" placeholder="Partagez vos attentes..." rows="4" style="background:var(--dark-2);border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;font-size:1rem;"></textarea>
                   </div>
-                  <div class="flex flex-col gap-2 relative group">
+                    <div class="flex flex-col gap-2 relative group">
                     <label class="font-label-caps text-label-caps text-on-surface-variant" for="photo" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--muted);">Votre photo (pour le badge d'accès) *</label>
                     <div class="relative">
-                      <input type="file" id="photo" name="photo" accept="image/*" required class="hidden" onchange="previewPhoto(event)">
+                      <input type="file" id="photo" name="photo" accept="image/*" class="hidden" onchange="previewPhoto(event)">
                       <div class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-6 text-center cursor-pointer hover:border-primary transition-colors" onclick="document.getElementById('photo').click()" style="background:var(--dark-2);border-color:rgba(245,240,232,0.3);">
                         <div id="photo-preview" class="hidden mb-4">
                           <img id="photo-preview-img" class="w-24 h-24 object-cover rounded-full mx-auto border-2" style="border-color:var(--gold);">
@@ -304,11 +304,18 @@
       const supabaseUrl = document.querySelector('meta[name="supabase-url"]')?.content;
       const supabaseAnonKey = document.querySelector('meta[name="supabase-anon-key"]')?.content;
       
-      if (supabaseUrl && supabaseAnonKey && window.supabase) {
-        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-        console.log('Supabase initialized successfully');
+      if (supabaseUrl && supabaseAnonKey && window.supabase && typeof window.supabase.createClient === 'function') {
+        try {
+          supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+          console.log('Supabase initialized successfully');
+        } catch (error) {
+          console.error('Failed to initialize Supabase:', error);
+          console.warn('Falling back to localStorage mode');
+          supabaseClient = null;
+        }
       } else {
-        console.warn('Supabase credentials not found, falling back to localStorage mode');
+        console.warn('Supabase credentials not found or script not loaded, falling back to localStorage mode');
+        supabaseClient = null;
       }
     }
 
