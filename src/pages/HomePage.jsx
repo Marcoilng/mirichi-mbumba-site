@@ -6,46 +6,43 @@ function HomePage({ onPageChange }) {
       <div className="flex flex-col w-full font-body-md text-on-background">
         
         {/* Hero Section */}
-        <section className="relative w-full min-h-[85vh] flex items-center justify-center -mt-20 pt-20 overflow-hidden">
+        <section className="relative w-full min-h-[90vh] flex items-center justify-center -mt-20 pt-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img 
               alt="Hero Background" 
-              className="w-full h-full object-cover object-center filter brightness-50" 
+              className="w-full h-full object-cover object-center filter brightness-40 scale-105 animate-slow-zoom" 
               src={HERO_BG_URL} 
             />
           </div>
           
-          {/* Gradient Scrim for Readability */}
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-primary/80 via-primary/40 to-transparent"></div>
+          {/* Animated Gradient Overlay */}
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-primary via-primary/60 to-transparent animate-gradient-shift"></div>
           
-          <div className="relative z-20 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col items-start justify-end h-full pb-16 md:pb-32">
+          {/* Floating Particles */}
+          <div className="absolute inset-0 z-10 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-secondary-container/30 rounded-full animate-float-1"></div>
+            <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-secondary-container/20 rounded-full animate-float-2"></div>
+            <div className="absolute bottom-1/4 left-1/3 w-2 h-2 bg-secondary-container/25 rounded-full animate-float-3"></div>
+          </div>
+          
+          <div className="relative z-20 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col items-start justify-end h-full pb-20 md:pb-40">
             
-            {/* Decorative Accent */}
-            <div className="w-12 h-1 bg-secondary-container mb-6"></div>
+            {/* Animated Decorative Accent */}
+            <div className="w-16 h-1 bg-gradient-to-r from-secondary-container to-transparent mb-8 animate-pulse-slow"></div>
             
-            <h1 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary mb-4 max-w-4xl tracking-tight leading-tight">
+            <h1 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-primary mb-6 max-w-4xl tracking-tight leading-tight animate-fade-in-up">
               L'identité avant <br/> la réussite.
             </h1>
             
-            <p className="font-body-lg text-body-lg text-surface-container-high max-w-2xl mb-10 opacity-90">
+            <p className="font-body-lg text-body-lg text-surface-container-high max-w-2xl mb-12 opacity-95 leading-relaxed animate-fade-in-up-delay-1">
               Une journée d'immersion pour redéfinir le succès. Touchez à l'essentiel, forgez votre caractère, et préparez-vous à impacter Kinshasa.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-              <button 
-                onClick={() => onPageChange('ticketing')}
-                className="group relative px-8 py-4 bg-primary text-on-primary font-label-caps text-label-caps tracking-widest uppercase overflow-hidden shadow-xl shadow-primary/20 transition-all duration-300 hover:shadow-primary/40 hover:-translate-y-1"
-              >
-                <span className="relative z-10 group-hover:text-tertiary transition-colors duration-300">
-                  S'inscrire maintenant
-                </span>
-                <div className="absolute inset-0 bg-secondary-container transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-              </button>
-              
-              <div className="flex items-center gap-2 mt-4 sm:mt-0 sm:ml-6 text-on-primary/80">
-                <span className="material-symbols-outlined text-[20px] text-secondary-container">stars</span>
-                <span className="font-label-caps text-label-caps uppercase tracking-wider text-xs">
-                  100 Places Limitées
+            <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center animate-fade-in-up-delay-2">
+              <div className="flex items-center gap-3 mt-4 sm:mt-0 sm:ml-8 text-on-primary/90 bg-surface-container-lowest/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/10">
+                <span className="material-symbols-outlined text-[24px] text-secondary-container animate-pulse">stars</span>
+                <span className="font-label-caps text-label-caps uppercase tracking-wider text-sm">
+                  Coming Soon
                 </span>
               </div>
             </div>
@@ -55,13 +52,13 @@ function HomePage({ onPageChange }) {
         {/* About & Philosophy Section */}
         <section className="w-full py-24 md:py-32 bg-background relative overflow-hidden">
           {/* Subtle Background Elements */}
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-surface-container rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 opacity-50"></div>
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-surface-container-high/40 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 opacity-50"></div>
           
           <div className="w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-gutter">
               
               {/* Left: Signature Quote Block */}
-              <div className="lg:col-span-5 flex flex-col justify-center border-l-4 border-secondary-container pl-8 md:pl-12 py-4">
+              <div className="col-span-1 lg:col-span-5 flex flex-col justify-center border-l-4 border-secondary-container pl-8 md:pl-12 py-4">
                 <p className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest mb-6">
                   Notre Vision
                 </p>
@@ -71,7 +68,7 @@ function HomePage({ onPageChange }) {
               </div>
 
               {/* Right: Elaboration */}
-              <div className="lg:col-span-6 lg:col-start-7 flex flex-col justify-center space-y-6">
+              <div className="col-span-1 lg:col-span-6 lg:col-start-7 flex flex-col justify-center space-y-6">
                 <p className="font-body-lg text-body-lg text-on-surface-variant">
                   Le leadership véritable ne naît pas des titres ou des possessions. Il émerge d'une compréhension profonde de qui l'on est, de ses valeurs fondamentales et de sa capacité à rester ancré face à l'adversité.
                 </p>
