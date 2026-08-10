@@ -296,40 +296,8 @@
   <script src="site-chrome.js"></script>
   <script src="_shared.js"></script>
   <script>
-    // Supabase REST API configuration
-    const supabaseUrl = document.querySelector('meta[name="supabase-url"]')?.content;
-    const supabaseAnonKey = document.querySelector('meta[name="supabase-anon-key"]')?.content;
-    const supabaseEnabled = !!(supabaseUrl && supabaseAnonKey);
-    
-    if (supabaseEnabled) {
-      console.log('Supabase REST API enabled');
-    } else {
-      console.warn('Supabase credentials not found, using localStorage mode');
-    }
-    
-    // Helper function for Supabase REST API calls
-    async function supabaseFetch(endpoint, options = {}) {
-      if (!supabaseEnabled) {
-        throw new Error('Supabase not configured');
-      }
-      
-      const url = `${supabaseUrl}/rest/v1/${endpoint}`;
-      const headers = {
-        'apikey': supabaseAnonKey,
-        'Authorization': `Bearer ${supabaseAnonKey}`,
-        'Content-Type': 'application/json',
-        ...options.headers
-      };
-      
-      const response = await fetch(url, { ...options, headers });
-      
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Supabase API error: ${response.status} - ${error}`);
-      }
-      
-      return response.json();
-    }
+    // LocalStorage-based booking system
+    const MAX_PARTICIPANTS = 100;
 
     // Event data - TOUCH UP
     const events = [
@@ -349,7 +317,6 @@
     let selectedEvent = null;
     let currentBooking = null;
     let uploadedPhotoData = null;
-    const MAX_PARTICIPANTS = 100;
 
     // Preview uploaded photo
     function previewPhoto(event) {
@@ -377,45 +344,29 @@
       }
     }
 
-    // Get current number of registrations (Supabase REST API or localStorage fallback)
-    async function getCurrentRegistrations() {
-      if (supabaseEnabled) {
-        try {
-          const data = await supabaseFetch('bookings?select=id&event_id=eq.1', {
-            headers: { 'Prefer': 'count=exact' }
-          });
-          const count = parseInt(data.headers?.get('content-range')?.split('/')[1] || '0');
-          return count;
-        } catch (error) {
-          console.error('Error fetching count from Supabase:', error);
-          // Fallback to localStorage
-          const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
-          return bookings.length;
-        }
-      } else {
-        // LocalStorage fallback
-        const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
-        return bookings.length;
-      }
+    // Get current number of registrations from localStorage
+    function getCurrentRegistrations() {
+      const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
+      return bookings.length;
     }
 
     // Get available places
-    async function getAvailablePlaces() {
-      const currentRegistrations = await getCurrentRegistrations();
+    function getAvailablePlaces() {
+      const currentRegistrations = getCurrentRegistrations();
       return MAX_PARTICIPANTS - currentRegistrations;
     }
 
     // Check if event is full
-    async function isEventFull() {
-      const currentRegistrations = await getCurrentRegistrations();
+    function isEventFull() {
+      const currentRegistrations = getCurrentRegistrations();
       return currentRegistrations >= MAX_PARTICIPANTS;
     }
 
     // Load events on page load
-    async function loadEvents() {
+    function loadEvents() {
       const eventsGrid = document.getElementById('events-grid');
-      const availablePlaces = await getAvailablePlaces();
-      const isFull = await isEventFull();
+      const availablePlaces = getAvailablePlaces();
+      const isFull = isEventFull();
       
       if (events.length > 0) {
         eventsGrid.innerHTML = events.map(event => `
@@ -467,12 +418,12 @@
     }
 
     // Select event and show reservation form
-    async function selectEvent(eventId) {
+    function selectEvent(eventId) {
       selectedEvent = events.find(e => e.id === eventId);
       if (!selectedEvent) return;
 
       // Check if event is full
-      const full = await isEventFull();
+      const full = isEventFull();
       if (full) {
         alert('Désolé, toutes les places sont déjà réservées pour cet événement.');
         return;
@@ -492,12 +443,12 @@
       document.querySelector('.event-title-preview').textContent = selectedEvent.title;
       
       // Update availability indicator in form
-      await updateAvailabilityIndicator();
+      updateAvailabilityIndicator();
     }
 
     // Update availability indicator in the form
-    async function updateAvailabilityIndicator() {
-      const availablePlaces = await getAvailablePlaces();
+    function updateAvailabilityIndicator() {
+      const availablePlaces = getAvailablePlaces();
       const availabilitySection = document.getElementById('selected-event-info');
       
       // Add availability indicator if it doesn't exist
@@ -568,7 +519,7 @@
     }
 
     // Show events list
-    async function showEvents() {
+    function showEvents() {
       document.getElementById('events-section').style.display = 'block';
       document.getElementById('reservation-form').classList.remove('active');
       document.getElementById('success-message').classList.remove('active');
@@ -576,11 +527,11 @@
       selectedEvent = null;
       currentBooking = null;
       uploadedPhotoData = null;
-      await loadEvents(); // Reload to update availability
+      loadEvents(); // Reload to update availability
     }
 
     // Handle booking submission
-    async function handleBooking(event) {
+    function handleBooking(event) {
       event.preventDefault();
 
       // Check if photo is uploaded
@@ -590,97 +541,52 @@
       }
 
       // Check if event is full again (double-check)
-      const full = await isEventFull();
+      const full = isEventFull();
       if (full) {
         alert('Désolé, toutes les places sont déjà réservées pour cet événement.');
-        await showEvents();
+        showEvents();
         return;
       }
 
       const fullName = document.getElementById('fullName').value;
       const email = document.getElementById('email').value;
       const phone = document.getElementById('phone').value;
+      const message = document.getElementById('message').value;
 
       // Generate unique ticket code
       const ticketCode = 'MIR-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-      if (supabaseEnabled) {
-        try {
-          // Check for duplicate email in Supabase
-          const existingBookings = await supabaseFetch('bookings?select=email&email=eq.' + encodeURIComponent(email) + '&event_id=eq.1');
-          
-          if (existingBookings && existingBookings.length > 0) {
-            alert('Vous avez déjà réservé une place pour cet événement avec cet email.');
-            return;
-          }
-
-          // Insert booking into Supabase
-          const result = await supabaseFetch('bookings', {
-            method: 'POST',
-            body: JSON.stringify({
-              ticket_code: ticketCode,
-              full_name: fullName,
-              email: email,
-              phone: phone,
-              event_id: 1
-            })
-          });
-
-          currentBooking = {
-            event: selectedEvent,
-            fullName,
-            email,
-            phone,
-            message,
-            photo: uploadedPhotoData,
-            ticketCode,
-            bookingDate: new Date().toISOString()
-          };
-
-          // Directly generate and download the badge PDF
-          downloadTicket();
-          
-          // Show success message after PDF generation
-          document.getElementById('reservation-form').classList.remove('active');
-          document.getElementById('success-message').classList.add('active');
-
-        } catch (error) {
-          console.error('Error creating booking in Supabase:', error);
-          alert('Erreur lors de la réservation. Veuillez réessayer.');
-        }
-      } else {
-        // Fallback to localStorage
-        const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
-        const existingBooking = bookings.find(b => b.email === email && b.event.id === selectedEvent.id);
-        if (existingBooking) {
-          alert('Vous avez déjà réservé une place pour cet événement avec cet email.');
-          return;
-        }
-
-        currentBooking = {
-          event: selectedEvent,
-          fullName,
-          email,
-          phone,
-          message,
-          photo: uploadedPhotoData,
-          ticketCode,
-          bookingDate: new Date().toISOString()
-        };
-
-        // Save to localStorage (without photo data to avoid storage limits)
-        const bookingWithoutPhoto = { ...currentBooking };
-        delete bookingWithoutPhoto.photo;
-        bookings.push(bookingWithoutPhoto);
-        localStorage.setItem('mirichi_bookings', JSON.stringify(bookings));
-
-        // Directly generate and download the badge PDF
-        downloadTicket();
-        
-        // Show success message after PDF generation
-        document.getElementById('reservation-form').classList.remove('active');
-        document.getElementById('success-message').classList.add('active');
+      // Save to localStorage
+      const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
+      const existingBooking = bookings.find(b => b.email === email && b.event.id === selectedEvent.id);
+      if (existingBooking) {
+        alert('Vous avez déjà réservé une place pour cet événement avec cet email.');
+        return;
       }
+
+      currentBooking = {
+        event: selectedEvent,
+        fullName,
+        email,
+        phone,
+        message,
+        photo: uploadedPhotoData,
+        ticketCode,
+        bookingDate: new Date().toISOString()
+      };
+
+      // Save to localStorage (without photo data to avoid storage limits)
+      const bookingWithoutPhoto = { ...currentBooking };
+      delete bookingWithoutPhoto.photo;
+      bookings.push(bookingWithoutPhoto);
+      localStorage.setItem('mirichi_bookings', JSON.stringify(bookings));
+
+      // Directly generate and download the badge PDF
+      downloadTicket();
+      
+      // Show success message after PDF generation
+      document.getElementById('reservation-form').classList.remove('active');
+      document.getElementById('success-message').classList.add('active');
     }
 
     // Generate and download ticket PDF
@@ -862,7 +768,7 @@
     }
 
     // Initialize
-    loadEvents().catch(console.error);
+    loadEvents();
   </script>
 </body>
 </html>
