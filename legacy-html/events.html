@@ -298,14 +298,14 @@
   <script src="_shared.js"></script>
   <script>
     // Initialize Supabase client
-    let supabase = null;
+    let supabaseClient = null;
     
     function initSupabase() {
       const supabaseUrl = document.querySelector('meta[name="supabase-url"]')?.content;
       const supabaseAnonKey = document.querySelector('meta[name="supabase-anon-key"]')?.content;
       
-      if (supabaseUrl && supabaseAnonKey) {
-        supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+      if (supabaseUrl && supabaseAnonKey && window.supabase) {
+        supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
         console.log('Supabase initialized successfully');
       } else {
         console.warn('Supabase credentials not found, falling back to localStorage mode');
@@ -360,9 +360,9 @@
 
     // Get current number of registrations (Supabase or localStorage fallback)
     async function getCurrentRegistrations() {
-      if (supabase) {
+      if (supabaseClient) {
         try {
-          const { count, error } = await supabase
+          const { count, error } = await supabaseClient
             .from('bookings')
             .select('*', { count: 'exact', head: true })
             .eq('event_id', 1);
@@ -588,10 +588,10 @@
       // Generate unique ticket code
       const ticketCode = 'MIR-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-      if (supabase) {
+      if (supabaseClient) {
         try {
           // Check for duplicate email in Supabase
-          const { data: existingBooking, error: checkError } = await supabase
+          const { data: existingBooking, error: checkError } = await supabaseClient
             .from('bookings')
             .select('email')
             .eq('email', email)
