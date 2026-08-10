@@ -113,7 +113,7 @@
           <h2 class="font-headline-md text-headline-md text-on-surface mb-4" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;">
             Scanner par caméra
           </h2>
-          <div id="reader"></div>
+          <div id="reader" style="min-height: 300px;"></div>
         </div>
         
         <div class="mb-6">
@@ -130,8 +130,9 @@
           >
         </div>
         
+        <!-- Scan Result Display -->
         <div id="scan-result" class="hidden">
-          <div class="p-6 rounded-lg" id="result-card" style="background:var(--surface-container-low);">
+          <div id="result-card" class="rounded-xl overflow-hidden" style="background:var(--surface-container-low);">
             <!-- Result will be displayed here -->
           </div>
         </div>
@@ -265,25 +266,33 @@
         saveCheckedIn(result.booking.ticketCode);
         
         resultCard.innerHTML = `
-          <div class="flex items-center gap-3 mb-4">
-            <span class="material-symbols-outlined text-4xl" style="color:var(--success);">check_circle</span>
-            <div>
-              <h3 class="font-headline-md text-headline-md text-success" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;color:var(--success);">Ticket Valide</h3>
-              <p class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Entrée autorisée</p>
+          <div class="p-6" style="background:linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);border:2px solid #10B981;">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:#10B981;">
+                <span class="material-symbols-outlined text-4xl" style="color:white;">check_circle</span>
+              </div>
+              <div>
+                <h3 class="font-headline-lg text-headline-lg" style="font-family:'Montserrat',sans-serif;font-size:1.75rem;font-weight:700;color:#10B981;">TICKET VALIDE</h3>
+                <p class="font-body-lg text-body-lg" style="font-family:'Inter',sans-serif;font-size:1rem;color:#065F46;">Entrée autorisée ✓</p>
+              </div>
             </div>
-          </div>
-          <div class="space-y-2 mt-4 p-4 rounded-lg" style="background:var(--surface);">
-            <div class="flex justify-between">
-              <span class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Nom:</span>
-              <span class="font-body-md text-body-md text-on-surface" style="font-family:'Inter',sans-serif;font-size:0.875rem;">${result.booking.fullName}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Email:</span>
-              <span class="font-body-md text-body-md text-on-surface" style="font-family:'Inter',sans-serif;font-size:0.875rem;">${result.booking.email}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Code:</span>
-              <span class="font-body-md text-body-md text-on-surface" style="font-family:'Inter',sans-serif;font-size:0.875rem;">${result.booking.ticketCode}</span>
+            <div class="space-y-3 p-4 rounded-lg" style="background:rgba(255,255,255,0.05);">
+              <div class="flex justify-between items-center py-2 border-b" style="border-color:rgba(16, 185, 129, 0.2);">
+                <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">NOM COMPLET</span>
+                <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--white);">${result.booking.fullName}</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b" style="border-color:rgba(16, 185, 129, 0.2);">
+                <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">EMAIL</span>
+                <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--white);">${result.booking.email}</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b" style="border-color:rgba(16, 185, 129, 0.2);">
+                <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">TÉLÉPHONE</span>
+                <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--white);">${result.booking.phone || 'N/A'}</span>
+              </div>
+              <div class="flex justify-between items-center py-2">
+                <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">CODE TICKET</span>
+                <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Montserrat',sans-serif;font-size:1.1rem;color:#10B981;letter-spacing:0.05em;">${result.booking.ticketCode}</span>
+              </div>
             </div>
           </div>
         `;
@@ -291,32 +300,50 @@
         // Update stats
         updateStats('checked');
       } else {
+        const bgColor = result.alreadyUsed ? 'rgba(245, 158, 11, 0.1)' : 'rgba(186, 26, 26, 0.1)';
+        const borderColor = result.alreadyUsed ? '#F59E0B' : '#BA1A1A';
+        const iconColor = result.alreadyUsed ? '#F59E0B' : '#BA1A1A';
+        const title = result.alreadyUsed ? 'DÉJÀ UTILISÉ' : 'TICKET INVALIDE';
+        const subtitle = result.alreadyUsed ? 'Ce ticket a déjà été scanné' : result.message;
+        
         resultCard.innerHTML = `
-          <div class="flex items-center gap-3 mb-4">
-            <span class="material-symbols-outlined text-4xl" style="color:var(--error);">cancel</span>
-            <div>
-              <h3 class="font-headline-md text-headline-md text-error" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;color:var(--error);">Ticket Invalide</h3>
-              <p class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">${result.message}</p>
-            </div>
-          </div>
-          ${result.alreadyUsed ? `
-            <div class="mt-4 p-4 rounded-lg" style="background:var(--surface);">
-              <div class="flex justify-between">
-                <span class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Déjà utilisé par:</span>
-                <span class="font-body-md text-body-md text-on-surface" style="font-family:'Inter',sans-serif;font-size:0.875rem;">${result.booking.fullName}</span>
+          <div class="p-6" style="background:linear-gradient(135deg, ${bgColor} 0%, ${bgColor.replace('0.1', '0.05')} 100%);border:2px solid ${borderColor};">
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:${iconColor};">
+                <span class="material-symbols-outlined text-4xl" style="color:white;">${result.alreadyUsed ? 'history' : 'cancel'}</span>
+              </div>
+              <div>
+                <h3 class="font-headline-lg text-headline-lg" style="font-family:'Montserrat',sans-serif;font-size:1.75rem;font-weight:700;color:${iconColor};">${title}</h3>
+                <p class="font-body-lg text-body-lg" style="font-family:'Inter',sans-serif;font-size:1rem;color:${result.alreadyUsed ? '#92400E' : '#7F1D1D'};">${subtitle}</p>
               </div>
             </div>
-          ` : ''}
+            ${result.booking ? `
+              <div class="space-y-3 p-4 rounded-lg" style="background:rgba(255,255,255,0.05);">
+                <div class="flex justify-between items-center py-2 border-b" style="border-color:${borderColor}40;">
+                  <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">NOM COMPLET</span>
+                  <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--white);">${result.booking.fullName}</span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b" style="border-color:${borderColor}40;">
+                  <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">EMAIL</span>
+                  <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--white);">${result.booking.email}</span>
+                </div>
+                <div class="flex justify-between items-center py-2">
+                  <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">CODE TICKET</span>
+                  <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Montserrat',sans-serif;font-size:1.1rem;color:${iconColor};letter-spacing:0.05em;">${result.booking.ticketCode}</span>
+                </div>
+              </div>
+            ` : ''}
+          </div>
         `;
         
         // Update stats
         updateStats('invalid');
       }
       
-      // Auto-hide after 5 seconds
+      // Auto-hide after 8 seconds
       setTimeout(() => {
         scanResult.classList.add('hidden');
-      }, 5000);
+      }, 8000);
     }
 
     // Update statistics
