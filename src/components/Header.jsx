@@ -7,7 +7,7 @@ function Header({ currentPage, onPageChange }) {
 
   const navItems = [
     { path: 'home', label: 'Home', icon: 'home' },
-    { path: 'events', label: 'Events', icon: 'event', external: true, url: '/events.html' },
+    { path: 'events', label: 'Events', icon: 'event', external: true, url: 'events.html' },
   ]
 
   return (
