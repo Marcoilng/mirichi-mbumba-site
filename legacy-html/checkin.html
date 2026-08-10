@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vérification des Tickets - Mirichi Mbumba</title>
+  <meta name="description" content="Système de vérification des tickets pour les événements Mirichi Mbumba">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <link rel="stylesheet" href="_shared.css">
+  <script id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            secondary: '#C4922A',
+            'secondary-container': '#E8B84B',
+            surface: '#0F0F1A',
+            'surface-container': '#16162A',
+            'surface-container-low': '#1a1a2e',
+            'surface-container-lowest': '#09090F',
+            background: '#09090F',
+            'on-surface': '#F5F0E8',
+            'on-surface-variant': 'rgba(245, 240, 232, 0.7)',
+            'on-background': '#F5F0E8',
+            primary: '#C4922A',
+            'on-primary': '#09090F',
+            'primary-container': '#16162A',
+            gold: '#C4922A',
+            'gold-light': '#E8B84B',
+            'gold-pale': 'rgba(196, 146, 42, 0.2)',
+            muted: 'rgba(245, 240, 232, 0.6)',
+            white: '#F5F0E8',
+            error: '#BA1A1A',
+            success: '#10B981'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--background);
+      color: var(--on-background);
+      min-height: 100vh;
+    }
+    #reader {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    #reader video {
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <section class="section-main py-20 px-6 lg:px-12">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1 class="font-display-lg text-display-lg text-on-background mb-4" style="font-family:'Montserrat',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.1;">
+          Vérification des <span class="text-secondary">Tickets</span>
+        </h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:1.125rem;line-height:1.7;">
+          Scannez le QR code du badge d'accès pour vérifier l'entrée
+        </p>
+      </div>
+
+      <!-- Scanner Section -->
+      <div class="bg-surface-container rounded-xl p-8 shadow-lg mb-8" style="background:var(--surface-container);">
+        <div id="reader" class="mb-6"></div>
+        <div id="scan-result" class="hidden">
+          <div class="p-6 rounded-lg" id="result-card" style="background:var(--surface-container-low);">
+            <!-- Result will be displayed here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Manual Entry -->
+      <div class="bg-surface-container rounded-xl p-8 shadow-lg" style="background:var(--surface-container);">
+        <h2 class="font-headline-md text-headline-md text-on-surface mb-6" style="font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:600;">
+          Ou entrez le code manuellement
+        </h2>
+        <div class="flex gap-4">
+          <input 
+            type="text" 
+            id="manual-code" 
+            placeholder="Ex: MIR-ABC123-XYZ789"
+            class="flex-1 bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors"
+            style="background:var(--surface-container-low);border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;"
+          >
+          <button 
+            onclick="verifyManualCode()"
+            class="px-6 py-3 rounded-lg font-label-caps text-label-caps text-on-primary transition-colors"
+            style="background:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.875rem;font-weight:600;"
+          >
+            Vérifier
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-8 grid grid-cols-3 gap-4">
+        <div class="bg-surface-container rounded-lg p-4 text-center" style="background:var(--surface-container);">
+          <div class="font-display-lg text-display-lg text-secondary" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;" id="stat-total">0</div>
+          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Total</div>
+        </div>
+        <div class="bg-surface-container rounded-lg p-4 text-center" style="background:var(--surface-container);">
+          <div class="font-display-lg text-display-lg text-success" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;" id="stat-checked">0</div>
+          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Validés</div>
+        </div>
+        <div class="bg-surface-container rounded-lg p-4 text-center" style="background:var(--surface-container);">
+          <div class="font-display-lg text-display-lg text-error" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;" id="stat-invalid">0</div>
+          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Invalides</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Load checked-in tickets from localStorage
+    function getCheckedInTickets() {
+      return JSON.parse(localStorage.getItem('mirichi_checked_in') || '[]');
+    }
+
+    // Save checked-in ticket
+    function saveCheckedInTicket(ticketCode) {
+      const checkedIn = getCheckedInTickets();
+      if (!checkedIn.includes(ticketCode)) {
+        checkedIn.push(ticketCode);
+        localStorage.setItem('mirichi_checked_in', JSON.stringify(checkedIn));
+      }
+    }
+
+    // Check if ticket is already checked in
+    function isCheckedIn(ticketCode) {
+      const checkedIn = getCheckedInTickets();
+      return checkedIn.includes(ticketCode);
+    }
+
+    // Get all bookings
+    function getBookings() {
+      return JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
+    }
+
+    // Verify ticket code
+    function verifyTicket(ticketCode) {
+      const bookings = getBookings();
+      const booking = bookings.find(b => b.ticketCode === ticketCode);
+      
+      if (!booking) {
+        return {
+          valid: false,
+          message: 'Ticket non trouvé',
+          color: 'var(--error)'
+        };
+      }
+
+      if (isCheckedIn(ticketCode)) {
+        return {
+          valid: false,
+          message: 'Ticket déjà utilisé',
+          color: 'var(--error)',
+          alreadyUsed: true,
+          booking: booking
+        };
+      }
+
+      return {
+        valid: true,
+        message: 'Ticket valide',
+        color: 'var(--success)',
+        booking: booking
+      };
+    }
+
+    // Display result
+    function displayResult(result) {
+      const resultCard = document.getElementById('result-card');
+      const scanResult = document.getElementById('scan-result');
+      
+      scanResult.classList.remove('hidden');
+      
+      if (result.valid) {
+        // Mark as checked in
+        saveCheckedIn(result.booking.ticketCode);
+        
+        resultCard.innerHTML = `
+          <div class="flex items-center gap-3 mb-4">
+            <span class="material-symbols-outlined text-4xl" style="color:var(--success);">check_circle</span>
+            <div>
+              <h3 class="font-headline-md text-headline-md text-success" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;color:var(--success);">Ticket Valide</h3>
+              <p class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Entrée autorisée</p>
+            </div>
+          </div>
+          <div class="space-y-2 mt-4 p-4 rounded-lg" style="background:var(--surface);">
+            <div class="flex justify-between">
+              <span class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Nom:</span>
+              <span class="font-body-md text-body-md text-on-surface" style="font-family:'Inter',sans-serif;font-size:0.875rem;">${result.booking.fullName}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Email:</span>
+              <span class="font-body-md text-body-md text-on-surface" style="font-family:'Inter',sans-serif;font-size:0.875rem;">${result.booking.email}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Code:</span>
+              <span class="font-body-md text-body-md text-on-surface" style="font-family:'Inter',sans-serif;font-size:0.875rem;">${result.booking.ticketCode}</span>
+            </div>
+          </div>
+        `;
+        
+        // Update stats
+        updateStats('checked');
+      } else {
+        resultCard.innerHTML = `
+          <div class="flex items-center gap-3 mb-4">
+            <span class="material-symbols-outlined text-4xl" style="color:var(--error);">cancel</span>
+            <div>
+              <h3 class="font-headline-md text-headline-md text-error" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;color:var(--error);">Ticket Invalide</h3>
+              <p class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">${result.message}</p>
+            </div>
+          </div>
+          ${result.alreadyUsed ? `
+            <div class="mt-4 p-4 rounded-lg" style="background:var(--surface);">
+              <div class="flex justify-between">
+                <span class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Déjà utilisé par:</span>
+                <span class="font-body-md text-body-md text-on-surface" style="font-family:'Inter',sans-serif;font-size:0.875rem;">${result.booking.fullName}</span>
+              </div>
+            </div>
+          ` : ''}
+        `;
+        
+        // Update stats
+        updateStats('invalid');
+      }
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        scanResult.classList.add('hidden');
+      }, 5000);
+    }
+
+    // Update statistics
+    function updateStats(type) {
+      const bookings = getBookings();
+      const checkedIn = getCheckedInTickets();
+      
+      document.getElementById('stat-total').textContent = bookings.length;
+      document.getElementById('stat-checked').textContent = checkedIn.length;
+      document.getElementById('stat-invalid').textContent = type === 'invalid' ? 
+        parseInt(document.getElementById('stat-invalid').textContent) + 1 : 
+        document.getElementById('stat-invalid').textContent;
+    }
+
+    // Manual code verification
+    function verifyManualCode() {
+      const code = document.getElementById('manual-code').value.trim().toUpperCase();
+      if (!code) {
+        alert('Veuillez entrer un code de ticket');
+        return;
+      }
+      
+      const result = verifyTicket(code);
+      displayResult(result);
+      document.getElementById('manual-code').value = '';
+    }
+
+    // Initialize QR scanner
+    function onScanSuccess(decodedText, decodedResult) {
+      const result = verifyTicket(decodedText.toUpperCase());
+      displayResult(result);
+      
+      // Pause scanning briefly
+      html5QrcodeScanner.pause();
+      setTimeout(() => {
+        html5QrcodeScanner.resume();
+      }, 3000);
+    }
+
+    function onScanFailure(error) {
+      // Handle scan failure silently
+    }
+
+    // Initialize
+    let html5QrcodeScanner;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize stats
+      const bookings = getBookings();
+      const checkedIn = getCheckedInTickets();
+      
+      document.getElementById('stat-total').textContent = bookings.length;
+      document.getElementById('stat-checked').textContent = checkedIn.length;
+      
+      // Initialize QR scanner
+      html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader",
+        { 
+          fps: 10, 
+          qrbox: {width: 250, height: 250},
+          aspectRatio: 1.0
+        },
+        /* verbose= */ false
+      );
+      
+      html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    });
+  </script>
+</body>
+</html>
