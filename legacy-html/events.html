@@ -22,7 +22,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="supabase.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -297,26 +296,39 @@
   <script src="site-chrome.js"></script>
   <script src="_shared.js"></script>
   <script>
-    // Initialize Supabase client
-    let supabaseClient = null;
+    // Supabase REST API configuration
+    const supabaseUrl = document.querySelector('meta[name="supabase-url"]')?.content;
+    const supabaseAnonKey = document.querySelector('meta[name="supabase-anon-key"]')?.content;
+    const supabaseEnabled = !!(supabaseUrl && supabaseAnonKey);
     
-    function initSupabase() {
-      const supabaseUrl = document.querySelector('meta[name="supabase-url"]')?.content;
-      const supabaseAnonKey = document.querySelector('meta[name="supabase-anon-key"]')?.content;
-      
-      if (supabaseUrl && supabaseAnonKey && window.supabase) {
-        try {
-          supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-          console.log('Supabase initialized successfully');
-        } catch (error) {
-          console.error('Failed to initialize Supabase:', error);
-          console.warn('Falling back to localStorage mode');
-          supabaseClient = null;
-        }
-      } else {
-        console.warn('Supabase credentials not found or script not loaded, falling back to localStorage mode');
-        supabaseClient = null;
+    if (supabaseEnabled) {
+      console.log('Supabase REST API enabled');
+    } else {
+      console.warn('Supabase credentials not found, using localStorage mode');
+    }
+    
+    // Helper function for Supabase REST API calls
+    async function supabaseFetch(endpoint, options = {}) {
+      if (!supabaseEnabled) {
+        throw new Error('Supabase not configured');
       }
+      
+      const url = `${supabaseUrl}/rest/v1/${endpoint}`;
+      const headers = {
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${supabaseAnonKey}`,
+        'Content-Type': 'application/json',
+        ...options.headers
+      };
+      
+      const response = await fetch(url, { ...options, headers });
+      
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Supabase API error: ${response.status} - ${error}`);
+      }
+      
+      return response.json();
     }
 
     // Event data - TOUCH UP
@@ -365,17 +377,15 @@
       }
     }
 
-    // Get current number of registrations (Supabase or localStorage fallback)
+    // Get current number of registrations (Supabase REST API or localStorage fallback)
     async function getCurrentRegistrations() {
-      if (supabaseClient) {
+      if (supabaseEnabled) {
         try {
-          const { count, error } = await supabaseClient
-            .from('bookings')
-            .select('*', { count: 'exact', head: true })
-            .eq('event_id', 1);
-          
-          if (error) throw error;
-          return count || 0;
+          const data = await supabaseFetch('bookings?select=id&event_id=eq.1', {
+            headers: { 'Prefer': 'count=exact' }
+          });
+          const count = parseInt(data.headers?.get('content-range')?.split('/')[1] || '0');
+          return count;
         } catch (error) {
           console.error('Error fetching count from Supabase:', error);
           // Fallback to localStorage
@@ -590,42 +600,31 @@
       const fullName = document.getElementById('fullName').value;
       const email = document.getElementById('email').value;
       const phone = document.getElementById('phone').value;
-      const message = document.getElementById('message').value;
 
       // Generate unique ticket code
       const ticketCode = 'MIR-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-      if (supabaseClient) {
+      if (supabaseEnabled) {
         try {
           // Check for duplicate email in Supabase
-          const { data: existingBooking, error: checkError } = await supabaseClient
-            .from('bookings')
-            .select('email')
-            .eq('email', email)
-            .eq('event_id', 1)
-            .single();
-
-          if (existingBooking) {
+          const existingBookings = await supabaseFetch('bookings?select=email&email=eq.' + encodeURIComponent(email) + '&event_id=eq.1');
+          
+          if (existingBookings && existingBookings.length > 0) {
             alert('Vous avez déjà réservé une place pour cet événement avec cet email.');
             return;
           }
 
           // Insert booking into Supabase
-          const { data, error } = await supabase
-            .from('bookings')
-            .insert([
-              {
-                ticket_code: ticketCode,
-                full_name: fullName,
-                email: email,
-                phone: phone,
-                message: message,
-                event_id: 1
-              }
-            ])
-            .select();
-
-          if (error) throw error;
+          const result = await supabaseFetch('bookings', {
+            method: 'POST',
+            body: JSON.stringify({
+              ticket_code: ticketCode,
+              full_name: fullName,
+              email: email,
+              phone: phone,
+              event_id: 1
+            })
+          });
 
           currentBooking = {
             event: selectedEvent,
@@ -863,7 +862,6 @@
     }
 
     // Initialize
-    initSupabase();
     loadEvents().catch(console.error);
   </script>
 </body>
