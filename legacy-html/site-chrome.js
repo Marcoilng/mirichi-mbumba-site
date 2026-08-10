@@ -227,6 +227,7 @@
     '<a href="#" style="color:var(--muted)" target="_blank" rel="noopener noreferrer">Mentions légales</a>' +
     '<a href="#" style="color:var(--muted)" target="_blank" rel="noopener noreferrer">CGV</a>' +
     '<a href="#" style="color:var(--muted)" target="_blank" rel="noopener noreferrer">Confidentialité</a>' +
+    '<a href="checkin.html" style="color:rgba(196,146,42,0.45);transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold)\'" onmouseout="this.style.color=\'rgba(196,146,42,0.45)\'">Check-in ↗</a>' +
     '<a href="admin.html" style="color:rgba(196,146,42,0.45);transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold)\'" onmouseout="this.style.color=\'rgba(196,146,42,0.45)\'">Admin ↗</a>' +
     '</div></div>' +
     '<div class="mm-footer-social" aria-label="Réseaux sociaux" style="display:flex;justify-content:flex-start;align-items:center;gap:12px;flex-wrap:wrap">' +
