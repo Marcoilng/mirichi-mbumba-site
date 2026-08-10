@@ -109,7 +109,27 @@
 
       <!-- Scanner Section -->
       <div class="bg-surface-container rounded-xl p-8 shadow-lg mb-8" style="background:var(--surface-container);">
-        <div id="reader" class="mb-6"></div>
+        <div class="mb-6">
+          <h2 class="font-headline-md text-headline-md text-on-surface mb-4" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;">
+            Scanner par caméra
+          </h2>
+          <div id="reader"></div>
+        </div>
+        
+        <div class="mb-6">
+          <h2 class="font-headline-md text-headline-md text-on-surface mb-4" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;">
+            Ou scanner une photo
+          </h2>
+          <input 
+            type="file" 
+            id="file-input" 
+            accept="image/*"
+            class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors"
+            style="background:var(--surface-container-low);border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;"
+            onchange="scanFromFile(this)"
+          >
+        </div>
+        
         <div id="scan-result" class="hidden">
           <div class="p-6 rounded-lg" id="result-card" style="background:var(--surface-container-low);">
             <!-- Result will be displayed here -->
@@ -319,9 +339,32 @@
         return;
       }
       
+      console.log('Vérification du code:', code);
       const result = verifyTicket(code);
+      console.log('Résultat:', result);
       displayResult(result);
       document.getElementById('manual-code').value = '';
+    }
+
+    // Scan from file (photo)
+    function scanFromFile(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const html5QrCode = new Html5Qrcode("reader");
+        
+        html5QrCode.scanFile(file, true)
+          .then(decodedText => {
+            console.log('QR code scanné depuis photo:', decodedText);
+            const result = verifyTicket(decodedText.toUpperCase());
+            displayResult(result);
+            input.value = ''; // Clear input
+          })
+          .catch(err => {
+            console.error('Erreur de scan depuis photo:', err);
+            alert('Impossible de lire le QR code depuis cette photo. Essayez une autre photo.');
+            input.value = '';
+          });
+      }
     }
 
     // Initialize QR scanner
