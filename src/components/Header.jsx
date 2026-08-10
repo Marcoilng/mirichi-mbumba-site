@@ -7,6 +7,7 @@ function Header({ currentPage, onPageChange }) {
 
   const navItems = [
     { path: 'home', label: 'Home', icon: 'home' },
+    { path: 'events', label: 'Events', icon: 'event' },
   ]
 
   return (
