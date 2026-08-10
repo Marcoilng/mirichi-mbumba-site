@@ -44,6 +44,7 @@
     '<div class="desktop-nav flex items-center gap-5 xl:gap-6">' +
     '<a href="about.html" class="nav-link">À propos</a>' +
     '<a href="foi-valeurs.html" class="nav-link">Foi &amp; Valeurs</a>' +
+    '<a href="events.html" class="nav-link">Événements</a>' +
     '<a href="shop.html" class="nav-link">Shop</a>' +
     '<a href="tribunes.html" class="nav-link">Tribunes</a>' +
     '<a href="coaching.html" class="nav-link">Coaching</a>' +
@@ -79,6 +80,7 @@
     '<a href="index.html"    onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Accueil</a>' +
     '<a href="about.html"   onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">À propos</a>' +
     '<a href="foi-valeurs.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Foi &amp; Valeurs</a>' +
+    '<a href="events.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Événements</a>' +
     '<a href="shop.html"    onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Shop</a>' +
     '<a href="tribunes.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Tribunes</a>' +
     '<a href="coaching.html" onclick="closeMenu()" style="font-family:\'Cormorant Garant\',serif;font-size:1.6rem;font-weight:300;color:var(--white);padding:0.55rem 0;border-bottom:1px solid rgba(196,146,42,0.07);display:block;transition:color 0.2s;" onmouseover="this.style.color=\'var(--gold-light)\'" onmouseout="this.style.color=\'var(--white)\'">Coaching</a>' +
@@ -110,20 +112,22 @@
     '<span class="nav-num">02</span><span class="nav-big">À propos</span></a>' +
     '<a href="foi-valeurs.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
     '<span class="nav-num">03</span><span class="nav-big">Ma foi &amp; mes valeurs</span></a>' +
+    '<a href="events.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
+    '<span class="nav-num">04</span><span class="nav-big">Événements</span></a>' +
     '<a href="shop.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
-    '<span class="nav-num">04</span><span class="nav-big">Bibliothèque</span></a>' +
+    '<span class="nav-num">05</span><span class="nav-big">Bibliothèque</span></a>' +
     '<a href="tribunes.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
-    '<span class="nav-num">05</span><span class="nav-big">Tribunes</span></a>' +
+    '<span class="nav-num">06</span><span class="nav-big">Tribunes</span></a>' +
     '<a href="coaching.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
-    '<span class="nav-num">06</span><span class="nav-big">Coaching</span></a>' +
+    '<span class="nav-num">07</span><span class="nav-big">Coaching</span></a>' +
     '<a href="formations.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
-    '<span class="nav-num">07</span><span class="nav-big">Formations</span></a>' +
+    '<span class="nav-num">08</span><span class="nav-big">Formations</span></a>' +
     '<a href="clinique.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
-    '<span class="nav-num">08</span><span class="nav-big">La Clinique</span></a>' +
+    '<span class="nav-num">09</span><span class="nav-big">La Clinique</span></a>' +
     '<a href="galerie.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
-    '<span class="nav-num">09</span><span class="nav-big">Galerie</span></a>' +
+    '<span class="nav-num">10</span><span class="nav-big">Galerie</span></a>' +
     '<a href="contact.html" class="block mm-overlay-link" onclick="closeSiteMenu()">' +
-    '<span class="nav-num">10</span><span class="nav-big">Contact</span></a>' +
+    '<span class="nav-num">11</span><span class="nav-big">Contact</span></a>' +
     '</nav>' +
     '</div>' +
     // Right: Info + Socials
@@ -204,6 +208,7 @@
     '<div><div style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">Navigation</div>' +
     '<ul class="space-y-2" style="font-size:0.875rem;color:var(--muted)">' +
     '<li><a href="about.html" class="nav-link" style="display:inline;padding:0">À propos</a></li>' +
+    '<li><a href="events.html" class="nav-link" style="display:inline;padding:0">Événements</a></li>' +
     '<li><a href="shop.html" class="nav-link" style="display:inline;padding:0">Shop</a></li>' +
     '<li><a href="tribunes.html" class="nav-link" style="display:inline;padding:0">Tribunes</a></li>' +
     '<li><a href="coaching.html" class="nav-link" style="display:inline;padding:0">Coaching</a></li>' +
