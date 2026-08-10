@@ -122,8 +122,29 @@
         
         <!-- Events List -->
         <div id="events-section">
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="events-grid">
-            <!-- Events will be loaded dynamically -->
+          <!-- Admin Counter -->
+          <div class="mb-8 p-4 rounded-lg" style="background:rgba(196,146,42,0.1);border:1px solid rgba(196,146,42,0.3);">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Compteur Admin</span>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-1" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Suivi des réservations en temps réel</p>
+              </div>
+              <div class="text-right">
+                <span id="admin-counter" class="font-display-lg text-display-lg text-secondary" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;">0</span>
+                <span class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:1rem;">/ 100</span>
+              </div>
+            </div>
+          </div>
+          
+          <h1 class="font-display-lg text-display-lg text-on-background mb-4 text-balance" style="font-family:'Montserrat',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:700;line-height:1.1;">
+            Événements <span class="text-secondary">à venir</span>
+          </h1>
+          <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-12" style="font-family:'Inter',sans-serif;font-size:1.125rem;line-height:1.7;">
+            Découvrez nos conférences, workshops et sessions de coaching conçus pour vous aider à développer votre identité et vos talents.
+          </p>
+          
+          <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Events will be loaded here -->
           </div>
         </div>
 
@@ -142,7 +163,7 @@
                 <button onclick="showEvents()" class="mb-6 text-sm font-label-caps text-on-surface-variant hover:text-secondary transition-colors" style="background:none;border:none;cursor:pointer;">
                   ← Retour aux événements
                 </button>
-                <h1 class="font-display-lg text-display-lg text-on-background mb-4 text-balance" style="font-family:'Montserrat',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:700;line-height:1.1;">
+                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-background mb-4 text-balance" style="font-family:'Montserrat',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:700;line-height:1.1;">
                   Sécurisez votre <span class="text-secondary relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-secondary">place.</span>
                 </h1>
                 <p class="font-body-lg text-body-lg text-on-surface-variant max-w-md" style="font-family:'Inter',sans-serif;font-size:1.125rem;line-height:1.7;">
@@ -367,6 +388,19 @@
       const eventsGrid = document.getElementById('events-grid');
       const availablePlaces = getAvailablePlaces();
       const isFull = isEventFull();
+      
+      // Update admin counter
+      const currentRegistrations = getCurrentRegistrations();
+      const adminCounter = document.getElementById('admin-counter');
+      if (adminCounter) {
+        adminCounter.textContent = currentRegistrations;
+        // Change color if approaching limit
+        if (currentRegistrations >= 90) {
+          adminCounter.style.color = '#BA1A1A'; // Red warning
+        } else if (currentRegistrations >= 70) {
+          adminCounter.style.color = '#F59E0B'; // Orange warning
+        }
+      }
       
       if (events.length > 0) {
         eventsGrid.innerHTML = events.map(event => `
