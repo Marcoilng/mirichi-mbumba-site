@@ -1,0 +1,97 @@
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={theme:{extend:{"colors":{"secondary-container":"#fea619","surface-container-low":"#eff4ff","background":"#f8f9ff","on-tertiary-fixed":"#1a1c1c","inverse-primary":"#b9c7e4","surface-container-lowest":"#ffffff","on-primary-fixed-variant":"#39475f","on-primary":"#ffffff","on-secondary-fixed":"#2a1700","outline":"#75777e","on-surface":"#0b1c30","surface-dim":"#cbdbf5","on-secondary-fixed-variant":"#653e00","tertiary":"#000000","secondary":"#855300","error-container":"#ffdad6","on-error-container":"#93000a","primary-fixed-dim":"#b9c7e4","surface":"#f8f9ff","inverse-on-surface":"#eaf1ff","secondary-fixed":"#ffddb8","tertiary-container":"#1a1c1c","primary-container":"#0d1c32","on-primary-fixed":"#0d1c32","surface-container-high":"#dce9ff","on-background":"#0b1c30","on-secondary-container":"#684000","on-tertiary":"#ffffff","on-surface-variant":"#44474d","tertiary-fixed":"#e2e2e2","primary":"#000000","secondary-fixed-dim":"#ffb95f","on-primary-container":"#76849f","surface-variant":"#d3e4fe","on-secondary":"#ffffff","on-tertiary-fixed-variant":"#454747","inverse-surface":"#213145","primary-fixed":"#d6e3ff","surface-tint":"#515f78","surface-container-highest":"#d3e4fe","on-tertiary-container":"#838484","on-error":"#ffffff","outline-variant":"#c5c6cd","surface-container":"#e5eeff","error":"#ba1a1a","tertiary-fixed-dim":"#c6c6c7","surface-bright":"#f8f9ff"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"unit":"8px","margin-desktop":"64px","gutter":"24px","margin-mobile":"20px","container-max":"1280px"},"fontFamily":{"headline-sm":["Montserrat"],"display-lg":["Montserrat"],"display-lg-mobile":["Montserrat"],"label-caps":["JetBrains Mono"],"body-lg":["Inter"],"body-md":["Inter"],"headline-md":["Montserrat"]},"fontSize":{"headline-sm":["24px",{"lineHeight":"32px","fontWeight":"600"}],"display-lg":["64px",{"lineHeight":"72px","letterSpacing":"-0.02em","fontWeight":"700"}],"display-lg-mobile":["40px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"700"}],"label-caps":["14px",{"lineHeight":"20px","fontWeight":"500"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"body-md":["16px",{"lineHeight":"24px","fontWeight":"400"}],"headline-md":["32px",{"lineHeight":"40px","fontWeight":"600"}]}}}}</script><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet"/></head><body class="bg-background font-body-md text-on-background"><header class="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 w-full px-margin-desktop flex items-center justify-between"><div class="flex items-center gap-4"><img alt="Logo TOUCH UP" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTQx4XpqduwRNrkuot8PYRa2nJ2In7xephtTHjxezufGBVjqvql2yJNPcNAz_yp8-YDPjgWELhyi7u-qvjdLUnzihYn3C5DcuwoIIUABppJrpaiI4fAouLEjj_aU4vNbNc0YNwP7BheaQp4yze1knaToO0d3AuMAGBYF7cervDAVIuWfl6qDV10iCQJTRqtkwUaz5ErM-tKIBfT7j9SUg7sCOmwffdgGNTTrcG9qIoDh1EgNt281uA"/><span class="font-headline-sm text-headline-sm text-primary uppercase tracking-widest">Touch Up</span></div><nav class="hidden md:flex items-center gap-gutter" data-active-classes="text-primary font-bold"><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" data-path="home" href="#">Home</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" data-path="ticketing" href="#">Ticketing</a><a aria-current="page" class="transition-colors text-primary font-bold" data-path="my-tickets" href="#">My Tickets</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors" data-path="admin-dashboard" href="#">Admin</a></nav><div class="flex items-center gap-4"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-background min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full flex-grow flex items-center justify-center py-16 px-4 sm:px-8">
+<div class="max-w-[400px] w-full flex flex-col items-center gap-8 relative z-10">
+<div class="text-center mb-4">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary mb-2">Your Ticket</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">The journey of becoming starts here.</p>
+</div>
+<!-- Ticket Card -->
+<div class="w-full relative group">
+<!-- Decorative blurred glow behind ticket -->
+<div class="absolute -inset-4 bg-secondary-container/20 blur-2xl rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+<div class="w-full bg-surface-container-lowest rounded-3xl overflow-hidden shadow-2xl shadow-primary-container/10 transition-transform duration-500 ease-out hover:scale-[1.02] border border-outline-variant/30 flex flex-col relative z-10">
+<!-- Top section with background image -->
+<div class="h-48 relative overflow-hidden bg-primary-container">
+<div class="absolute inset-0 bg-cover bg-center opacity-60 mix-blend-overlay" data-alt="Abstract macro photography of flowing golden ink interacting with deep navy blue liquid, cinematic lighting, corporate modern aesthetic with organic shapes, high contrast, symbolising identity and transformation." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCKCJgy7x0L5jerhDD3aKa9k-AWLjw0l4kpTm05GIbQfpdjAJBkZkXc7IE94Hcx9aT9rpmlrR0JQtl6sGM-N8qslUsRvWRT9xPO3QUi1luiLjaD__9rUMT8xu6WFJijNvoTDrslToECwLNeWD2gEMkg0ZOXkgCQQkWPIohQ29Ix8UWjFGchZQJ9k2TXiDUrz5GiIhixKIcx-9WETJ_ccALvZTBVENC__gg5BZD_T9GZmNbb-B7pi1ll')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary-container to-transparent"></div>
+<div class="absolute top-6 left-6 right-6 flex justify-between items-start">
+<span class="font-headline-sm text-headline-sm text-on-primary uppercase tracking-widest">Touch Up</span>
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-secondary-container bg-surface-container-lowest/10 backdrop-blur-md px-3 py-1 rounded-full border border-secondary-container/30">VIP SEAT</span>
+<span class="font-display-lg-mobile text-display-lg-mobile text-on-primary mt-1">042<span class="text-on-primary/50 text-[24px]">/100</span></span>
+</div>
+</div>
+</div>
+<!-- Middle section: Details -->
+<div class="p-8 pb-4 relative bg-surface-container-lowest flex-grow flex flex-col">
+<!-- Cutouts for classic ticket look -->
+<div class="absolute -top-4 -left-4 w-8 h-8 rounded-full bg-background shadow-inner"></div>
+<div class="absolute -top-4 -right-4 w-8 h-8 rounded-full bg-background shadow-inner"></div>
+<!-- Dashed line separator -->
+<div class="absolute top-0 left-6 right-6 h-[1px] border-t-2 border-dashed border-outline-variant/50"></div>
+<div class="flex flex-col gap-6">
+<div>
+<span class="font-label-caps text-label-caps text-outline mb-1 block">Participant</span>
+<h2 class="font-headline-md text-headline-md text-on-surface truncate">Ezekiel Lumumba</h2>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<span class="font-label-caps text-label-caps text-outline mb-1 block">Date</span>
+<p class="font-body-md text-body-md text-on-surface font-semibold">August 29, 2026</p>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-outline mb-1 block">Location</span>
+<p class="font-body-md text-body-md text-on-surface font-semibold truncate">Silikin Village</p>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-center">
+<!-- SVG QR Code Placeholder -->
+<div class="p-4 bg-surface rounded-xl border border-outline-variant/50 relative group/qr">
+<svg class="text-primary group-hover/qr:scale-105 transition-transform duration-300" fill="currentColor" height="120" viewbox="0 0 24 24" width="120">
+<path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zm-3 3h3v3h-3v-3zm3 3h3v3h-3v-3zm-3-6h-3v3h3v-3zm-3 3h3v3h-3v-3zm-3 0h3v3h-3v-3zm3 3h3v3h-3v-3z"></path>
+</svg>
+<!-- Scan line animation -->
+<div class="absolute top-4 left-4 right-4 h-0.5 bg-secondary-container shadow-[0_0_8px_rgba(254,166,25,0.8)] opacity-0 group-hover/qr:opacity-100 group-hover/qr:animate-[scan_2s_ease-in-out_infinite]"></div>
+</div>
+</div>
+</div>
+<!-- Bottom section: Theme -->
+<div class="bg-primary p-6 flex flex-col items-center justify-center text-center border-t-4 border-secondary-container relative overflow-hidden">
+<!-- Abstract gold lines -->
+<div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+<svg height="100%" preserveaspectratio="none" viewbox="0 0 100 100" width="100%">
+<path d="M0,100 L100,0 M-20,100 L100,-20 M20,100 L100,20" fill="none" stroke="#fea619" stroke-width="0.5"></path>
+</svg>
+</div>
+<p class="font-headline-sm text-headline-sm text-secondary-container relative z-10 italic">"L'identité avant la réussite."</p>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="w-full flex flex-col sm:flex-row gap-4 mt-4">
+<button class="flex-1 bg-primary text-on-primary font-label-caps text-label-caps h-14 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-container hover:text-on-secondary-container transition-colors duration-300 shadow-xl shadow-primary/10">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                    Download PDF
+                </button>
+<button class="flex-1 bg-surface-container text-on-surface font-label-caps text-label-caps h-14 rounded-full flex items-center justify-center gap-2 hover:bg-surface-variant transition-colors duration-300">
+<span class="material-symbols-outlined text-[20px]">wallet</span>
+                    Add to Wallet
+                </button>
+</div>
+</div>
+</div>
+<!-- Decorative background elements -->
+<div class="fixed top-1/4 left-0 w-[500px] h-[500px] rounded-full bg-secondary-container/5 blur-[120px] pointer-events-none -z-10 mix-blend-multiply"></div>
+<div class="fixed bottom-0 right-0 w-[600px] h-[600px] rounded-full bg-primary-container/5 blur-[150px] pointer-events-none -z-10 mix-blend-multiply"></div>
+<style>
+        @keyframes scan {
+            0% { top: 1rem; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: calc(100% - 1.2rem); opacity: 0; }
+        }
+    </style>
+</div></main><footer class="w-full bg-surface-container-lowest py-margin-desktop"><div class="w-full px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-gutter border-t border-outline-variant pt-margin-desktop"><div class="text-center md:text-left"><p class="font-headline-sm text-headline-sm text-on-surface">TOUCH UP 2026</p><p class="font-body-md text-body-md text-on-surface-variant">Silikin Village, Kinshasa</p></div><div class="text-center md:text-right"><p class="font-label-caps text-label-caps text-secondary">AUGUST 29, 2026</p><p class="font-body-md text-body-md text-outline">L'identité avant la réussite.</p></div></div></footer></body></html>
