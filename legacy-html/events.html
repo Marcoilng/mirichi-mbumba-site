@@ -252,6 +252,12 @@
                     <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary transition-all duration-300 peer-focus:w-full" style="background:var(--gold);"></div>
                   </div>
                   <div class="flex flex-col gap-2 relative group">
+                    <label class="font-label-caps text-label-caps text-on-surface-variant" for="whatsapp" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--muted);">Numéro WhatsApp (pour recevoir votre badge)</label>
+                    <input class="w-full bg-transparent border-b-2 border-outline-variant py-3 text-body-lg text-on-surface focus:outline-none focus:border-primary transition-colors peer" id="whatsapp" name="whatsapp" placeholder="+243 000 000 000" type="tel" style="border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;font-size:1.125rem;">
+                    <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary transition-all duration-300 peer-focus:w-full" style="background:var(--gold);"></div>
+                    <p class="font-body-md text-body-md text-outline-variant text-sm mt-1" style="font-family:'Inter',sans-serif;color:rgba(245,240,232,0.5);">Optionnel: Vous recevrez un lien pour télécharger votre badge</p>
+                  </div>
+                  <div class="flex flex-col gap-2 relative group">
                     <label class="font-label-caps text-label-caps text-on-surface-variant" for="message" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--muted);">Message (optionnel)</label>
                     <textarea class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-4 text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors resize-none mt-2" id="message" name="message" placeholder="Partagez vos attentes..." rows="4" style="background:var(--dark-2);border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;font-size:1rem;"></textarea>
                   </div>
@@ -585,6 +591,7 @@
       const fullName = document.getElementById('fullName').value;
       const email = document.getElementById('email').value;
       const phone = document.getElementById('phone').value;
+      const whatsapp = document.getElementById('whatsapp').value;
       const message = document.getElementById('message').value;
 
       // Generate unique ticket code
@@ -603,6 +610,7 @@
         fullName,
         email,
         phone,
+        whatsapp,
         message,
         photo: uploadedPhotoData,
         ticketCode,
@@ -618,9 +626,29 @@
       // Directly generate and download the badge PDF
       downloadTicket();
       
+      // Send via WhatsApp if number provided
+      if (whatsapp) {
+        sendViaWhatsApp(whatsapp, fullName, ticketCode);
+      }
+      
       // Show success message after PDF generation
       document.getElementById('reservation-form').classList.remove('active');
       document.getElementById('success-message').classList.add('active');
+    }
+
+    // Send badge via WhatsApp
+    function sendViaWhatsApp(whatsappNumber, fullName, ticketCode) {
+      // Clean the number (remove +, spaces, etc.)
+      const cleanNumber = whatsappNumber.replace(/[^0-9]/g, '');
+      
+      // Create WhatsApp message
+      const message = `Bonjour ${fullName}! 🎉\n\nVotre réservation pour l'événement TOUCH UP est confirmée!\n\n🎫 Code ticket: ${ticketCode}\n\nVotre badge PDF a été téléchargé automatiquement. Présentez ce code à l'entrée.\n\nMerci de votre participation!`;
+      
+      // Create WhatsApp link
+      const whatsappLink = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
+      
+      // Open WhatsApp in new tab
+      window.open(whatsappLink, '_blank');
     }
 
     // Generate and download ticket PDF
