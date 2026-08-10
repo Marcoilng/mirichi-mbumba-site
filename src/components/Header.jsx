@@ -7,7 +7,7 @@ function Header({ currentPage, onPageChange }) {
 
   const navItems = [
     { path: 'home', label: 'Home', icon: 'home' },
-    { path: 'events', label: 'Events', icon: 'event' },
+    { path: 'events', label: 'Events', icon: 'event', external: true, url: '/events.html' },
   ]
 
   return (
@@ -35,7 +35,13 @@ function Header({ currentPage, onPageChange }) {
           {navItems.map((item) => (
             <button
               key={item.path}
-              onClick={() => onPageChange(item.path)}
+              onClick={() => {
+                if (item.external) {
+                  window.location.href = item.url
+                } else {
+                  onPageChange(item.path)
+                }
+              }}
               className={`relative font-label-caps text-label-caps transition-all duration-300 group py-2 ${
                 currentPage === item.path 
                   ? 'text-primary font-bold' 
@@ -84,7 +90,11 @@ function Header({ currentPage, onPageChange }) {
               <button
                 key={item.path}
                 onClick={() => {
-                  onPageChange(item.path)
+                  if (item.external) {
+                    window.location.href = item.url
+                  } else {
+                    onPageChange(item.path)
+                  }
                   setMobileMenuOpen(false)
                 }}
                 className={`font-label-caps text-label-caps py-4 px-6 rounded-xl text-left transition-all duration-300 flex items-center gap-3 ${
