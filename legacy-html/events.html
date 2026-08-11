@@ -6,9 +6,9 @@
     <title>Événements Mirichi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,560;1,9..144,420&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -631,8 +631,11 @@
                 return;
             }
 
-            // Generate ticket code
-            const ticketCode = 'MIR-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            // Generate ticket code in TU-2026-XXX format
+            const year = '2026';
+            const randomNum = Math.floor(Math.random() * 900) + 100;
+            const ticketCode = `TU-${year}-${String(randomNum)}`;
+            currentBooking.ticketCode = ticketCode;
 
             currentBooking = {
                 event: selectedEvent,
@@ -663,7 +666,7 @@
             if (!currentBooking || !selectedEvent) return;
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', [100, 160]); // Museum-style badge format
+            const doc = new jsPDF('p', 'mm', [100, 160]);
             
             const pageWidth = 100;
             const pageHeight = 160;
@@ -672,23 +675,26 @@
             doc.setFillColor(246, 241, 230);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-            // Inner museum-label frame
+            // Corner radius (2.4mm)
+            // jsPDF doesn't support rounded corners for the page itself, but we can simulate with content
+
+            // Inner museum-label frame (0.3mm)
             doc.setDrawColor(218, 208, 185);
             doc.setLineWidth(0.3);
-            doc.roundedRect(10, 4.5, pageWidth - 9, pageHeight - 9, 2, 2, 'S');
+            doc.roundedRect(10, 4.5, pageWidth - 9, pageHeight - 9, 2.4, 2.4, 'S');
 
             // Masthead with bronze gradient
             doc.setFillColor(212, 174, 108);
-            doc.rect(0, 0, pageWidth, 8, 'F');
+            doc.rect(0, 0, pageWidth, 6, 'F');
             doc.setFillColor(180, 134, 58);
-            doc.rect(0, 6, pageWidth, 2, 'F');
+            doc.rect(0, 4, pageWidth, 2, 'F');
 
             // Load logo and add to masthead
             const logoImg = new Image();
             logoImg.crossOrigin = 'anonymous';
             logoImg.onload = function() {
                 // Add logo next to text
-                doc.addImage(logoImg, 'PNG', 15, 2, 8, 4);
+                doc.addImage(logoImg, 'PNG', 12, 1.5, 7, 3);
                 generateBadgeContent(doc, pageWidth, pageHeight);
             };
             logoImg.onerror = function() {
@@ -699,55 +705,65 @@
         }
 
         function generateBadgeContent(doc, pageWidth, pageHeight) {
-            // "Touch Up" text in masthead
+            // "Touch Up" wordmark in masthead - Fraunces 560
             doc.setTextColor(246, 241, 230);
             doc.setFontSize(3.4);
-            doc.setFont('times', 'bold');
+            doc.setFont('fraunces', 'bold');
             doc.text('TOUCH UP', pageWidth / 2, 5, { align: 'center' });
 
-            // Punch hole
+            // Lanyard punch hole (rivet style)
+            // Outer circle
+            doc.setFillColor(20, 24, 26);
+            doc.circle(pageWidth / 2, 3, 2.1, 'F');
+            // Inner circle with shadow
             doc.setFillColor(14, 17, 19);
-            doc.circle(pageWidth / 2, 4, 2.1, 'F');
+            doc.circle(pageWidth / 2, 3, 1.5, 'F');
+            // Highlight ring
+            doc.setDrawColor(180, 134, 58);
+            doc.setLineWidth(0.3);
+            doc.circle(pageWidth / 2, 3, 2.3, 'S');
 
-            // Content section
-            // Eyebrow row
+            // Eyebrow row - Archivo 600, letter-spacing 0.16em
             doc.setTextColor(122, 112, 95);
             doc.setFontSize(2.3);
-            doc.setFont('helvetica', 'bold');
-            doc.text('PASS PARTICIPANT', pageWidth / 2, 14, { align: 'center' });
+            doc.setFont('archivo', 'bold');
+            doc.text('PASS PARTICIPANT', pageWidth / 2, 14, { align: 'center', charSpace: 0.16 });
 
             doc.setTextColor(180, 134, 58);
-            doc.text('·', pageWidth / 2, 14, { align: 'center', charSpace: 2 });
+            doc.text('·', pageWidth / 2, 14, { align: 'center', charSpace: 0.16 });
 
             const participantNum = getCurrentRegistrations();
             doc.setTextColor(124, 84, 35);
-            doc.text(`N° ${String(participantNum).padStart(3, '0')} ⁄ 100`, pageWidth / 2, 14, { align: 'center', charSpace: 2 });
+            doc.text(`N° ${String(participantNum).padStart(2, '0')} ⁄ 100`, pageWidth / 2, 14, { align: 'center', charSpace: 0.16 });
 
-            // Tagline
+            // Tagline - Fraunces italic 420
             doc.setTextColor(124, 84, 35);
             doc.setFontSize(3.7);
-            doc.setFont('times', 'italic');
-            doc.setFont('times', 'normal');
+            doc.setFont('fraunces', 'italic');
+            doc.setFont('fraunces', 'normal');
             doc.text(selectedEvent.theme, pageWidth / 2, 18, { align: 'center' });
 
-            // Hairline
+            // Hairline divider
             doc.setDrawColor(218, 208, 185);
             doc.setLineWidth(0.3);
             doc.line(8, 22, pageWidth - 8, 22);
 
-            // Photo frame - circular
+            // Photo frame - 32mm circular with double bronze border
             const photoX = pageWidth / 2;
-            const photoY = 32;
-            const photoRadius = 16;
+            const photoY = 34;
+            const photoRadius = 32;
 
-            // Photo background
+            // Photo background (paper_alt)
             doc.setFillColor(239, 231, 214);
             doc.circle(photoX, photoY, photoRadius, 'F');
 
-            // Photo border
+            // Photo border - double bronze
             doc.setDrawColor(180, 134, 58);
             doc.setLineWidth(1.5);
             doc.circle(photoX, photoY, photoRadius, 'S');
+            doc.setDrawColor(124, 84, 35);
+            doc.setLineWidth(0.5);
+            doc.circle(photoX, photoY, photoRadius - 0.5, 'S');
 
             if (currentBooking.photo) {
                 try {
@@ -788,33 +804,33 @@
         }
 
         function continueBadgeGeneration(doc, pageWidth, pageHeight) {
-            // Name
+            // Name - Fraunces 560
             doc.setTextColor(20, 24, 26);
             doc.setFontSize(6.6);
-            doc.setFont('times', 'bold');
+            doc.setFont('fraunces', 'bold');
             doc.text(currentBooking.fullName.toUpperCase(), pageWidth / 2, 54, { align: 'center' });
 
-            // Hairline
+            // Hairline divider
             doc.setDrawColor(218, 208, 185);
             doc.setLineWidth(0.3);
             doc.line(8, 58, pageWidth - 8, 58);
 
-            // Event details
+            // Event details - Archivo 400
             doc.setTextColor(20, 24, 26);
             doc.setFontSize(3.1);
-            doc.setFont('helvetica', 'bold');
-            doc.text(selectedEvent.date, pageWidth / 2, 63, { align: 'center' });
+            doc.setFont('archivo', 'bold');
+            doc.text('Samedi 29 août 2026', pageWidth / 2, 63, { align: 'center' });
 
-            doc.setFont('helvetica', 'normal');
-            doc.text(`${selectedEvent.time} · ${selectedEvent.location}`, pageWidth / 2, 67, { align: 'center' });
+            doc.setFont('archivo', 'normal');
+            doc.text('Dès 13h00 · Silikin Village', pageWidth / 2, 67, { align: 'center' });
             doc.text('Kinshasa', pageWidth / 2, 71, { align: 'center' });
 
-            // Hairline
+            // Hairline divider
             doc.setDrawColor(218, 208, 185);
             doc.setLineWidth(0.3);
             doc.line(8, 75, pageWidth - 8, 75);
 
-            // QR Code section
+            // QR Code section - 22mm
             const qrX = 8;
             const qrY = 78;
             const qrSize = 22;
@@ -826,45 +842,47 @@
             doc.setLineWidth(0.5);
             doc.roundedRect(qrX, qrY, qrSize, qrSize, 1, 1, 'S');
 
-            const qrContainer = document.createElement('div');
-            qrContainer.style.display = 'none';
-            document.body.appendChild(qrContainer);
+            // Generate QR code with QRious
+            const qrCanvas = document.createElement('canvas');
+            qrCanvas.style.display = 'none';
+            document.body.appendChild(qrCanvas);
             
-            new QRCode(qrContainer, {
-                text: currentBooking.ticketCode,
-                width: 150,
-                height: 150,
-                colorDark: '#14181A',
-                colorLight: '#F6F1E6'
+            new QRious({
+                element: qrCanvas,
+                value: currentBooking.ticketCode,
+                size: 150,
+                background: '#F6F1E6',
+                foreground: '#14181A',
+                level: 'H',
+                padding: 8
             });
 
             setTimeout(() => {
-                const qrCanvas = qrContainer.querySelector('canvas');
                 const qrDataUrl = qrCanvas.toDataURL('image/png');
-                document.body.removeChild(qrContainer);
+                document.body.removeChild(qrCanvas);
 
                 doc.addImage(qrDataUrl, 'PNG', qrX + 1, qrY + 1, qrSize - 2, qrSize - 2);
 
-                // QR info
+                // QR info - Archivo
                 doc.setTextColor(122, 112, 95);
                 doc.setFontSize(2.2);
-                doc.setFont('helvetica', 'bold');
+                doc.setFont('archivo', 'bold');
                 doc.text('CODE D\'ACCÈS', 34, 82);
 
                 doc.setTextColor(20, 24, 26);
                 doc.setFontSize(3.4);
-                doc.setFont('helvetica', 'bold');
+                doc.setFont('archivo', 'bold');
                 doc.text(currentBooking.ticketCode, 34, 86);
 
                 doc.setTextColor(122, 112, 95);
                 doc.setFontSize(2.4);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Scannez à l\'entrée', 34, 90, { maxWidth: 55 });
+                doc.setFont('archivo', 'normal');
+                doc.text('Scannez à l\'entrée pour confirmer', 34, 90, { maxWidth: 55 });
 
-                // Footer
+                // Footer - Fraunces italic 420
                 doc.setTextColor(122, 112, 95);
                 doc.setFontSize(3.1);
-                doc.setFont('times', 'italic');
+                doc.setFont('fraunces', 'italic');
                 doc.text('« Qui veux-tu devenir ? »', pageWidth / 2, 145, { align: 'center' });
 
                 doc.save(`TOUCH-UP-${currentBooking.fullName.replace(/\s+/g, '-').toUpperCase()}.pdf`);
@@ -875,15 +893,15 @@
             doc.setDrawColor(180, 134, 58);
             doc.setLineWidth(1);
             
-            // Head
-            doc.circle(x, y - 5, 7, 'S');
+            // Head - circle
+            doc.circle(x, y - 8, 9, 'S');
             
-            // Body
-            doc.line(x - 12, y + 12, x + 12, y + 12);
-            doc.line(x - 12, y + 12, x - 8, y + 20);
-            doc.line(x + 12, y + 12, x + 8, y + 20);
-            doc.line(x - 8, y + 20, x, y + 25);
-            doc.line(x + 8, y + 20, x, y + 25);
+            // Body - curved shoulders
+            doc.line(x - 14, y + 14, x + 14, y + 14);
+            doc.line(x - 14, y + 14, x - 10, y + 24);
+            doc.line(x + 14, y + 14, x + 10, y + 24);
+            doc.line(x - 10, y + 24, x, y + 30);
+            doc.line(x + 10, y + 24, x, y + 30);
         }
 
         // Initialize
