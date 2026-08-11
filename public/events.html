@@ -532,74 +532,97 @@
 
     // Load events on page load
     async function loadEvents() {
+      console.log('Chargement des événements...');
       const eventsGrid = document.getElementById('events-grid');
-      const availablePlaces = await getAvailablePlaces();
-      const full = await isEventFull();
-      const maxParticipants = await getMaxParticipants();
-      const currentRegistrations = await getCurrentRegistrations();
       
-      // Update admin counter
-      const adminCounter = document.getElementById('admin-counter');
-      const adminMax = document.getElementById('admin-max');
-      const maxInput = document.getElementById('max-participants-input');
-      
-      if (adminCounter) {
-        adminCounter.textContent = currentRegistrations;
-      }
-      if (adminMax) {
-        adminMax.textContent = '/ ' + maxParticipants;
-      }
-      if (maxInput) {
-        maxInput.value = maxParticipants;
+      if (!eventsGrid) {
+        console.error('events-grid element not found');
+        return;
       }
       
-      // Change color if approaching limit
-      if (adminCounter) {
-        if (currentRegistrations >= maxParticipants - 10) {
-          adminCounter.style.color = '#BA1A1A'; // Red warning
-        } else if (currentRegistrations >= maxParticipants - 30) {
-          adminCounter.style.color = '#F59E0B'; // Orange warning
-        } else {
-          adminCounter.style.color = 'var(--gold)'; // Normal
+      try {
+        const availablePlaces = await getAvailablePlaces();
+        const full = await isEventFull();
+        const maxParticipants = await getMaxParticipants();
+        const currentRegistrations = await getCurrentRegistrations();
+        
+        console.log('Données chargées:', { availablePlaces, full, maxParticipants, currentRegistrations });
+        
+        // Update admin counter
+        const adminCounter = document.getElementById('admin-counter');
+        const adminMax = document.getElementById('admin-max');
+        const maxInput = document.getElementById('max-participants-input');
+        
+        if (adminCounter) {
+          adminCounter.textContent = currentRegistrations;
         }
-      }
-      
-      if (events.length > 0) {
-        eventsGrid.innerHTML = events.map(event => `
-          <div class="event-card p-6" style="background:var(--dark-2);border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;" onclick="${full ? '' : `selectEvent(${event.id})`}">
-            <div class="mb-4">
-              <span class="text-xs px-3 py-1" style="background:var(--gold-pale);color:var(--gold-light);border-radius:20px;">${event.category}</span>
-            </div>
-            <h3 class="mb-3" style="font-family:'Cormorant Garant',serif;font-size:1.5rem;font-weight:300;color:var(--white);">${event.title}</h3>
-            <div class="space-y-2 mb-4">
-              <div class="flex items-center gap-2 text-sm" style="color:var(--muted);">
-                <span class="material-symbols-outlined" style="font-size:18px;color:var(--gold);">calendar_today</span>
-                <span>${event.date}</span>
+        if (adminMax) {
+          adminMax.textContent = '/ ' + maxParticipants;
+        }
+        if (maxInput) {
+          maxInput.value = maxParticipants;
+        }
+        
+        // Change color if approaching limit
+        if (adminCounter) {
+          if (currentRegistrations >= maxParticipants - 10) {
+            adminCounter.style.color = '#BA1A1A'; // Red warning
+          } else if (currentRegistrations >= maxParticipants - 30) {
+            adminCounter.style.color = '#F59E0B'; // Orange warning
+          } else {
+            adminCounter.style.color = 'var(--gold)'; // Normal
+          }
+        }
+        
+        console.log('Nombre d\'événements:', events.length);
+        
+        if (events.length > 0) {
+          eventsGrid.innerHTML = events.map(event => `
+            <div class="event-card p-6" style="background:var(--dark-2);border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;" onclick="${full ? '' : `selectEvent(${event.id})`}">
+              <div class="mb-4">
+                <span class="text-xs px-3 py-1" style="background:var(--gold-pale);color:var(--gold-light);border-radius:20px;">${event.category}</span>
               </div>
-              <div class="flex items-center gap-2 text-sm" style="color:var(--muted);">
-                <span class="material-symbols-outlined" style="font-size:18px;color:var(--gold);">location_on</span>
-                <span>${event.location}</span>
-              </div>
-            </div>
-            <div class="pt-4 border-t" style="border-color:rgba(196,146,42,0.15);">
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Places disponibles</span>
-                <span class="font-display-sm text-display-sm text-secondary" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:700;color:var(--gold-light);">${availablePlaces}</span>
-              </div>
-              <div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden" style="background:rgba(245,240,232,0.15);">
-                <div class="h-2 rounded-full relative transition-all duration-300" style="width:${(availablePlaces / maxParticipants) * 100}%;background:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold)'};">
-                  ${availablePlaces <= 10 ? '<div class="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50 animate-pulse"></div>' : ''}
+              <h3 class="mb-3" style="font-family:'Cormorant Garant',serif;font-size:1.5rem;font-weight:300;color:var(--white);">${event.title}</h3>
+              <div class="space-y-2 mb-4">
+                <div class="flex items-center gap-2 text-sm" style="color:var(--muted);">
+                  <span class="material-symbols-outlined" style="font-size:18px;color:var(--gold);">calendar_today</span>
+                  <span>${event.date}</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm" style="color:var(--muted);">
+                  <span class="material-symbols-outlined" style="font-size:18px;color:var(--gold);">location_on</span>
+                  <span>${event.location}</span>
                 </div>
               </div>
-              <p class="font-body-md text-body-md text-on-surface-variant mt-4" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--muted);">Sur ${maxParticipants} places exclusives disponibles.</p>
+              <div class="pt-4 border-t" style="border-color:rgba(196,146,42,0.15);">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Places disponibles</span>
+                  <span class="font-display-sm text-display-sm text-secondary" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:700;color:var(--gold-light);">${availablePlaces}</span>
+                </div>
+                <div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden" style="background:rgba(245,240,232,0.15);">
+                  <div class="h-2 rounded-full relative transition-all duration-300" style="width:${(availablePlaces / maxParticipants) * 100}%;background:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold)'};">
+                    ${availablePlaces <= 10 ? '<div class="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50 animate-pulse"></div>' : ''}
+                  </div>
+                </div>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-4" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--muted);">Sur ${maxParticipants} places exclusives disponibles.</p>
+              </div>
             </div>
-          </div>
-        `).join('');
-      } else {
+          `).join('');
+          console.log('Événements affichés avec succès');
+        } else {
+          eventsGrid.innerHTML = `
+            <div class="text-center py-12 col-span-full">
+              <p style="color:var(--muted);">Aucun événement programmé pour le moment.</p>
+              <p style="color:var(--muted);">Revenez bientôt pour découvrir nos nouvelles activités!</p>
+            </div>
+          `;
+          console.log('Aucun événement à afficher');
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des événements:', error);
         eventsGrid.innerHTML = `
           <div class="text-center py-12 col-span-full">
-            <p style="color:var(--muted);">Aucun événement programmé pour le moment.</p>
-            <p style="color:var(--muted);">Revenez bientôt pour découvrir nos nouvelles activités!</p>
+            <p style="color:var(--error);">Erreur lors du chargement des événements.</p>
+            <p style="color:var(--muted);">Veuillez réessayer plus tard.</p>
           </div>
         `;
       }
