@@ -79,13 +79,23 @@
 
         // Get available places
         function getAvailablePlaces() {
+            console.log('Calcul des places disponibles...');
             return MAX_PARTICIPANTS - getCurrentRegistrations();
         }
 
         // Load events
         function loadEvents() {
+            console.log('Chargement des événements...');
             const eventsGrid = document.getElementById('events-grid');
+            
+            if (!eventsGrid) {
+                console.error('events-grid element not found');
+                return;
+            }
+            
             const availablePlaces = getAvailablePlaces();
+            console.log('Places disponibles:', availablePlaces);
+            console.log('Nombre d\'événements:', events.length);
             
             eventsGrid.innerHTML = events.map(event => `
                 <div class="event-card" onclick="selectEvent(${event.id})">
@@ -96,6 +106,8 @@
                     <p style="color: #c4922a; font-weight: 600;">Places disponibles: ${availablePlaces}</p>
                 </div>
             `).join('');
+            
+            console.log('Événements affichés');
         }
 
         // Select event
