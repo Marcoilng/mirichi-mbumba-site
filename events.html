@@ -264,6 +264,21 @@
                     </div>
                     
                     <div class="form-group">
+                        <label for="photo">Photo d'identité *</label>
+                        <div style="border: 2px dashed rgba(196,146,42,0.3); border-radius: 12px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('photo').click()" id="photo-dropzone">
+                            <div id="photo-preview" style="display: none; margin-bottom: 16px;">
+                                <img id="photo-preview-img" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #c4922a;">
+                            </div>
+                            <div id="photo-placeholder">
+                                <span class="material-icons" style="font-size: 48px; color: #c4922a; margin-bottom: 16px;">add_a_photo</span>
+                                <p style="color: #888;">Cliquez pour ajouter votre photo</p>
+                                <p style="color: #666; font-size: 12px; margin-top: 8px;">Format: JPG, PNG (Max 5MB)</p>
+                            </div>
+                        </div>
+                        <input type="file" id="photo" accept="image/jpeg,image/png" style="display: none;" onchange="handlePhotoUpload(event)" required>
+                    </div>
+                    
+                    <div class="form-group">
                         <label for="motivation">Pourquoi souhaitez-vous participer ? *</label>
                         <textarea id="motivation" placeholder="Partagez vos motivations..." rows="4" required></textarea>
                     </div>
@@ -323,6 +338,36 @@
         const MAX_PARTICIPANTS = 100;
         let selectedEvent = null;
         let currentBooking = null;
+        let uploadedPhoto = null;
+
+        // Handle photo upload
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('La photo ne doit pas dépasser 5MB.');
+                event.target.value = '';
+                return;
+            }
+
+            // Validate file type
+            if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+                alert('Seuls les fichiers JPG et PNG sont acceptés.');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedPhoto = e.target.result;
+                document.getElementById('photo-preview-img').src = uploadedPhoto;
+                document.getElementById('photo-preview').style.display = 'block';
+                document.getElementById('photo-placeholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
 
         // Get current registrations from localStorage
         function getCurrentRegistrations() {
@@ -479,6 +524,12 @@
             const expectations = document.getElementById('expectations').value;
             const newsletter = document.getElementById('newsletter').checked;
 
+            // Validate photo
+            if (!uploadedPhoto) {
+                alert('Veuillez ajouter votre photo d\'identité.');
+                return;
+            }
+
             // Check if event is full
             const availablePlaces = getAvailablePlaces();
             if (availablePlaces <= 0) {
@@ -499,6 +550,7 @@
                 motivation,
                 expectations,
                 newsletter,
+                photo: uploadedPhoto,
                 ticketCode,
                 bookingDate: new Date().toISOString()
             };
@@ -517,7 +569,124 @@
             if (!currentBooking || !selectedEvent) return;
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            const pageWidth = 210;
+            const pageHeight = 297;
+
+            // Background gradient
+            doc.setFillColor(9, 9, 15);
+            doc.rect(0, 0, pageWidth, pageHeight, 'F');
+
+            // Gold accent bar at top
+            doc.setFillColor(196, 146, 42);
+            doc.rect(0, 0, pageWidth, 8, 'F');
+
+            // Header
+            doc.setTextColor(196, 146, 42);
+            doc.setFontSize(28);
+            doc.setFont('helvetica', 'bold');
+            doc.text('BADGE D\'ACCÈS', pageWidth / 2, 25, { align: 'center' });
+
+            doc.setTextColor(245, 240, 232);
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Événement exclusif Mirichi Mbumba', pageWidth / 2, 35, { align: 'center' });
+
+            // Event card
+            doc.setFillColor(15, 15, 26);
+            doc.setDrawColor(196, 146, 42);
+            doc.setLineWidth(0.5);
+            doc.roundedRect(15, 45, pageWidth - 30, 45, 3, 3, 'FD');
+
+            // Event title
+            doc.setTextColor(196, 146, 42);
+            doc.setFontSize(22);
+            doc.setFont('helvetica', 'bold');
+            doc.text(selectedEvent.title, pageWidth / 2, 58, { align: 'center' });
+
+            // Event theme
+            doc.setTextColor(232, 184, 75);
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'italic');
+            doc.text(selectedEvent.theme, pageWidth / 2, 66, { align: 'center' });
+
+            // Event details
+            doc.setTextColor(245, 240, 232);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            
+            const detailsY = 75;
+            const detailsX = 20;
+            const lineHeight = 6;
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('DATE:', detailsX, detailsY);
+            doc.setFont('helvetica', 'normal');
+            doc.text(selectedEvent.date, detailsX + 25, detailsY);
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('HEURE:', detailsX, detailsY + lineHeight);
+            doc.setFont('helvetica', 'normal');
+            doc.text(selectedEvent.time, detailsX + 25, detailsY + lineHeight);
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('LIEU:', detailsX, detailsY + lineHeight * 2);
+            doc.setFont('helvetica', 'normal');
+            doc.text(selectedEvent.location, detailsX + 25, detailsY + lineHeight * 2);
+
+            // Participant card
+            doc.setFillColor(15, 15, 26);
+            doc.roundedRect(15, 100, pageWidth - 30, 80, 3, 3, 'FD');
+
+            // Photo placeholder
+            if (currentBooking.photo) {
+                try {
+                    doc.addImage(currentBooking.photo, 'JPEG', 20, 108, 40, 50);
+                } catch (e) {
+                    doc.setFillColor(30, 30, 30);
+                    doc.rect(20, 108, 40, 50, 'F');
+                    doc.setTextColor(196, 146, 42);
+                    doc.setFontSize(8);
+                    doc.text('Photo', 40, 133, { align: 'center' });
+                }
+            } else {
+                doc.setFillColor(30, 30, 30);
+                doc.rect(20, 108, 40, 50, 'F');
+                doc.setTextColor(196, 146, 42);
+                doc.setFontSize(8);
+                doc.text('Photo', 40, 133, { align: 'center' });
+            }
+
+            // Photo border
+            doc.setDrawColor(196, 146, 42);
+            doc.setLineWidth(0.3);
+            doc.rect(20, 108, 40, 50);
+
+            // Participant info
+            doc.setTextColor(196, 146, 42);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text('PARTICIPANT', 70, 115);
+
+            doc.setTextColor(245, 240, 232);
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text(currentBooking.fullName, 70, 125);
+
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Email: ' + currentBooking.email, 70, 135);
+            doc.text('Téléphone: ' + currentBooking.phone, 70, 143);
+            doc.text('Ville: ' + currentBooking.city, 70, 151);
+            
+            if (currentBooking.profession) {
+                doc.text('Profession: ' + currentBooking.profession, 70, 159);
+            }
+
+            // QR Code section
+            doc.setFillColor(15, 15, 26);
+            doc.roundedRect(15, 190, pageWidth - 30, 60, 3, 3, 'FD');
 
             const qrContainer = document.createElement('div');
             qrContainer.style.display = 'none';
@@ -525,8 +694,8 @@
             
             new QRCode(qrContainer, {
                 text: currentBooking.ticketCode,
-                width: 128,
-                height: 128
+                width: 120,
+                height: 120
             });
 
             setTimeout(() => {
@@ -534,36 +703,31 @@
                 const qrDataUrl = qrCanvas.toDataURL('image/png');
                 document.body.removeChild(qrContainer);
 
-                doc.setFillColor(196, 146, 42);
-                doc.rect(0, 0, 210, 40, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(24);
-                doc.text('TICKET ÉVÉNEMENT', 105, 25, { align: 'center' });
+                doc.addImage(qrDataUrl, 'PNG', 25, 200, 35, 35);
 
-                doc.setTextColor(0, 0, 0);
-                doc.setFontSize(20);
-                doc.text(selectedEvent.title, 105, 60, { align: 'center' });
-
-                doc.setFontSize(12);
-                doc.text(`Date: ${selectedEvent.date}`, 20, 80);
-                doc.text(`Heure: ${selectedEvent.time}`, 20, 90);
-                doc.text(`Lieu: ${selectedEvent.location}`, 20, 100);
-                doc.text(`Nom: ${currentBooking.fullName}`, 20, 120);
-                doc.text(`Email: ${currentBooking.email}`, 20, 130);
-                doc.text(`Téléphone: ${currentBooking.phone}`, 20, 140);
-
-                doc.addImage(qrDataUrl, 'PNG', 80, 160, 50, 50);
-
-                doc.setFillColor(245, 240, 255);
-                doc.rect(20, 220, 170, 30, 'F');
-                doc.setDrawColor(196, 146, 42);
-                doc.rect(20, 220, 170, 30, 'S');
-
-                doc.setFontSize(14);
+                // Ticket code
                 doc.setTextColor(196, 146, 42);
-                doc.text(currentBooking.ticketCode, 105, 240, { align: 'center' });
+                doc.setFontSize(18);
+                doc.setFont('helvetica', 'bold');
+                doc.text(currentBooking.ticketCode, 70, 215);
 
-                doc.save(`ticket-${selectedEvent.title.replace(/\s+/g, '-')}.pdf`);
+                doc.setTextColor(245, 240, 232);
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Code unique de validation', 70, 222);
+
+                // Footer
+                doc.setTextColor(153, 153, 153);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Ce badge est personnel et incessible. Présentation obligatoire à l\'entrée.', pageWidth / 2, 260, { align: 'center' });
+                doc.text('Pour toute information: contact@mirichimbumba.com', pageWidth / 2, 267, { align: 'center' });
+
+                // Gold accent bar at bottom
+                doc.setFillColor(196, 146, 42);
+                doc.rect(0, pageHeight - 8, pageWidth, 8, 'F');
+
+                doc.save(`badge-${selectedEvent.title.replace(/\s+/g, '-')}-${currentBooking.fullName.replace(/\s+/g, '-')}.pdf`);
             }, 100);
         }
 
