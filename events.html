@@ -401,6 +401,8 @@
                     document.getElementById('photo-preview-img').src = uploadedPhoto;
                     document.getElementById('photo-preview-container').style.display = 'block';
                     document.getElementById('photo-placeholder').style.display = 'none';
+                    
+                    console.log('Photo uploaded successfully');
                 };
                 img.src = e.target.result;
             };
@@ -420,11 +422,10 @@
 
         // Load events
         function loadEvents() {
-            console.log('Chargement des événements...');
+            console.log('Loading events...');
             const eventsGrid = document.getElementById('events-grid');
-            
             if (!eventsGrid) {
-                console.error('events-grid element not found');
+                console.error('Events grid not found');
                 return;
             }
             
@@ -552,6 +553,7 @@
         // Handle booking
         function handleBooking(event) {
             event.preventDefault();
+            console.log('Booking form submitted');
 
             const fullName = document.getElementById('fullName').value;
             const email = document.getElementById('email').value;
@@ -561,6 +563,8 @@
             const motivation = document.getElementById('motivation').value;
             const expectations = document.getElementById('expectations').value;
             const newsletter = document.getElementById('newsletter').checked;
+
+            console.log('Form data collected:', { fullName, email, phone, city });
 
             // Validate photo
             if (!uploadedPhoto) {
@@ -595,20 +599,24 @@
                 bookingDate: new Date().toISOString()
             };
 
+            console.log('Booking created:', currentBooking);
+
             // Save to localStorage
             const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
             bookings.push(currentBooking);
             localStorage.setItem('mirichi_bookings', JSON.stringify(bookings));
 
+            console.log('Booking saved to localStorage');
+
             document.getElementById('reservation-form').classList.add('hidden');
             document.getElementById('success-message').classList.remove('hidden');
+            
+            console.log('Success message displayed');
         }
 
         // Download ticket
         function downloadTicket() {
             console.log('Download ticket called');
-            console.log('currentBooking:', currentBooking);
-            console.log('selectedEvent:', selectedEvent);
             
             if (!currentBooking || !selectedEvent) {
                 alert('Erreur: Aucune réservation trouvée.');
@@ -633,36 +641,21 @@
             doc.setFillColor(196, 146, 42);
             doc.rect(0, pageHeight - 6, pageWidth, 6, 'F');
 
-            // Header section with logo
+            // Header section
             doc.setFillColor(15, 15, 26);
             doc.roundedRect(15, 12, pageWidth - 30, 35, 3, 3, 'F');
             
-            // Load logo
-            const logoImg = new Image();
-            logoImg.crossOrigin = 'anonymous';
-            logoImg.onload = function() {
-                doc.addImage(logoImg, 'PNG', 20, 16, 25, 25);
-                generateBadge(doc, pageWidth, pageHeight);
-            };
-            logoImg.onerror = function() {
-                // Fallback if logo fails to load
-                generateBadge(doc, pageWidth, pageHeight);
-            };
-            logoImg.src = 'legacy-html/logo-touchup.png';
-        }
-
-        function generateBadge(doc, pageWidth, pageHeight) {
             // Event title
             doc.setTextColor(196, 146, 42);
             doc.setFontSize(26);
             doc.setFont('helvetica', 'bold');
-            doc.text(selectedEvent.title, 55, 28);
+            doc.text(selectedEvent.title, 20, 28);
 
             // Event theme
             doc.setTextColor(232, 184, 75);
             doc.setFontSize(11);
             doc.setFont('helvetica', 'italic');
-            doc.text(selectedEvent.theme, 55, 35);
+            doc.text(selectedEvent.theme, 20, 35);
 
             // Event card
             doc.setFillColor(15, 15, 26);
@@ -670,7 +663,7 @@
             doc.setLineWidth(0.5);
             doc.roundedRect(15, 55, pageWidth - 30, 50, 3, 3, 'FD');
 
-            // Event details with icons
+            // Event details
             doc.setTextColor(196, 146, 42);
             doc.setFontSize(10);
             doc.setFont('helvetica', 'bold');
@@ -708,7 +701,7 @@
             doc.setFillColor(15, 15, 26);
             doc.roundedRect(15, 112, pageWidth - 30, 85, 3, 3, 'FD');
 
-            // Photo placeholder
+            // Photo - add directly without async
             if (currentBooking.photo) {
                 try {
                     doc.addImage(currentBooking.photo, 'JPEG', 20, 118, 40, 55);
@@ -773,51 +766,50 @@
             doc.setFillColor(15, 15, 26);
             doc.roundedRect(15, 205, pageWidth - 30, 65, 3, 3, 'FD');
 
-            const qrContainer = document.createElement('div');
-            qrContainer.style.display = 'none';
-            document.body.appendChild(qrContainer);
+            // Generate QR code synchronously
+            const qrCanvas = document.createElement('canvas');
+            qrCanvas.style.display = 'none';
+            document.body.appendChild(qrCanvas);
             
             new QRious({
-                element: qrContainer.querySelector('canvas') || document.createElement('canvas'),
+                element: qrCanvas,
                 value: currentBooking.ticketCode,
                 size: 140,
                 background: '#0F0F1A',
                 foreground: '#C4922A'
             });
 
-            setTimeout(() => {
-                const qrCanvas = qrContainer.querySelector('canvas') || qrContainer;
-                const qrDataUrl = qrCanvas.toDataURL('image/png');
-                document.body.removeChild(qrContainer);
+            const qrDataUrl = qrCanvas.toDataURL('image/png');
+            document.body.removeChild(qrCanvas);
 
-                doc.addImage(qrDataUrl, 'PNG', 25, 215, 40, 40);
+            doc.addImage(qrDataUrl, 'PNG', 25, 215, 40, 40);
 
-                // Ticket code
-                doc.setTextColor(196, 146, 42);
-                doc.setFontSize(20);
-                doc.setFont('helvetica', 'bold');
-                doc.text(currentBooking.ticketCode, 75, 230);
+            // Ticket code
+            doc.setTextColor(196, 146, 42);
+            doc.setFontSize(20);
+            doc.setFont('helvetica', 'bold');
+            doc.text(currentBooking.ticketCode, 75, 230);
 
-                doc.setTextColor(245, 240, 232);
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Code unique de validation', 75, 238);
-                doc.text('Scannez ce code pour accéder à l\'événement', 75, 246);
+            doc.setTextColor(245, 240, 232);
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Code unique de validation', 75, 238);
+            doc.text('Scannez ce code pour accéder à l\'événement', 75, 246);
 
-                // Footer with legal info
-                doc.setDrawColor(196, 146, 42);
-                doc.setLineWidth(0.3);
-                doc.line(15, 280, pageWidth - 15, 280);
+            // Footer with legal info
+            doc.setDrawColor(196, 146, 42);
+            doc.setLineWidth(0.3);
+            doc.line(15, 280, pageWidth - 15, 280);
 
-                doc.setTextColor(153, 153, 153);
-                doc.setFontSize(7);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Ce badge est personnel et incessible. Présentation obligatoire à l\'entrée.', pageWidth / 2, 286, { align: 'center' });
-                doc.text('Pour toute information: contact@mirichimbumba.com', pageWidth / 2, 291, { align: 'center' });
+            doc.setTextColor(153, 153, 153);
+            doc.setFontSize(7);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Ce badge est personnel et incessible. Présentation obligatoire à l\'entrée.', pageWidth / 2, 286, { align: 'center' });
+            doc.text('Pour toute information: contact@mirichimbumba.com', pageWidth / 2, 291, { align: 'center' });
 
-                doc.save(`badge-${selectedEvent.title.replace(/\s+/g, '-')}-${currentBooking.fullName.replace(/\s+/g, '-')}.pdf`);
-                console.log('PDF saved successfully');
-            }, 100);
+            // Save immediately
+            doc.save(`badge-${selectedEvent.title.replace(/\s+/g, '-')}-${currentBooking.fullName.replace(/\s+/g, '-')}.pdf`);
+            console.log('PDF saved successfully');
         }
 
         function drawSilhouette(doc, x, y, radius) {
