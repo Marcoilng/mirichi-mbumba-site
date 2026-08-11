@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); color: #f5f0e8; min-height: 100vh; }
@@ -179,7 +180,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        .info-icon .material-icons {
             font-size: 24px;
+            color: white;
         }
         
         /* Progress Bar */
@@ -212,7 +216,7 @@
         <!-- Events List -->
         <div id="events-section">
             <div class="hero">
-                <h1 style="font-size: 48px; margin-bottom: 16px; background: linear-gradient(135deg, #c4922a 0%, #f5f0e8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Événements Mirichi</h1>
+                <h1 style="font-size: 48px; margin-bottom: 16px; background: linear-gradient(135deg, #c4922a 0%, #f5f0e8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Événements Mirichi</h1>
                 <p style="font-size: 18px; color: #888; margin-bottom: 24px;">Découvrez et réservez vos places pour nos événements exclusifs</p>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
@@ -284,7 +288,7 @@
         <!-- Success Message -->
         <div id="success-message" class="hidden">
             <div class="success-container">
-                <div style="font-size: 64px; margin-bottom: 24px;">🎉</div>
+                <div style="font-size: 64px; color: #10b981; margin-bottom: 24px;"><span class="material-icons" style="font-size: 64px;">check_circle</span></div>
                 <h2 style="font-size: 36px; margin-bottom: 16px; color: #10b981;">Réservation confirmée!</h2>
                 <p style="font-size: 18px; color: #888; margin-bottom: 32px;">Votre place a été réservée avec succès. Préparez-vous pour une expérience exceptionnelle.</p>
                 <button onclick="downloadTicket()" class="btn" style="margin-right: 16px;">Télécharger mon ticket</button>
@@ -365,21 +369,21 @@
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
                         <div class="info-card">
-                            <div class="info-icon">📅</div>
+                            <div class="info-icon"><span class="material-icons">event</span></div>
                             <div>
                                 <div style="font-size: 12px; color: #888; text-transform: uppercase;">Date</div>
                                 <div style="font-weight: 600;">${event.date}</div>
                             </div>
                         </div>
                         <div class="info-card">
-                            <div class="info-icon">⏰</div>
+                            <div class="info-icon"><span class="material-icons">schedule</span></div>
                             <div>
                                 <div style="font-size: 12px; color: #888; text-transform: uppercase;">Heure</div>
                                 <div style="font-weight: 600;">${event.time}</div>
                             </div>
                         </div>
                         <div class="info-card">
-                            <div class="info-icon">📍</div>
+                            <div class="info-icon"><span class="material-icons">location_on</span></div>
                             <div>
                                 <div style="font-size: 12px; color: #888; text-transform: uppercase;">Lieu</div>
                                 <div style="font-weight: 600;">${event.location}</div>
@@ -419,7 +423,7 @@
 
             document.getElementById('selected-event-info').innerHTML = `
                 <div class="info-card">
-                    <div class="info-icon">🎯</div>
+                    <div class="info-icon"><span class="material-icons">stars</span></div>
                     <div>
                         <div style="font-size: 24px; font-weight: 700;">${selectedEvent.title}</div>
                         <div style="color: #c4922a;">${selectedEvent.theme}</div>
@@ -427,21 +431,21 @@
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px;">
                     <div class="info-card">
-                        <div class="info-icon">📅</div>
+                        <div class="info-icon"><span class="material-icons">event</span></div>
                         <div>
                             <div style="font-size: 12px; color: #888;">Date</div>
                             <div style="font-weight: 600;">${selectedEvent.date}</div>
                         </div>
                     </div>
                     <div class="info-card">
-                        <div class="info-icon">⏰</div>
+                        <div class="info-icon"><span class="material-icons">schedule</span></div>
                         <div>
                             <div style="font-size: 12px; color: #888;">Heure</div>
                             <div style="font-weight: 600;">${selectedEvent.time}</div>
                         </div>
                     </div>
                     <div class="info-card">
-                        <div class="info-icon">📍</div>
+                        <div class="info-icon"><span class="material-icons">location_on</span></div>
                         <div>
                             <div style="font-size: 12px; color: #888;">Lieu</div>
                             <div style="font-weight: 600;">${selectedEvent.location}</div>
