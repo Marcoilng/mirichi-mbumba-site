@@ -22,6 +22,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -344,14 +347,31 @@
   <script src="site-chrome.js"></script>
   <script src="_shared.js"></script>
   <script>
-    // LocalStorage-based booking system
+    // Firebase initialization
+    const firebaseConfig = {
+      apiKey: "AIzaSyDpdm8el1KWM_WD42HMExRCvFp9ySf4fvI",
+      authDomain: "mirichi-events.firebaseapp.com",
+      databaseURL: "https://mirichi-events-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "mirichi-events",
+      storageBucket: "mirichi-events.firebasestorage.app",
+      messagingSenderId: "582412284374",
+      appId: "1:582412284374:web:3c57614741e8a595f13477"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Firebase-based booking system
     function getMaxParticipants() {
-      const stored = localStorage.getItem('mirichi_max_participants');
-      return stored ? parseInt(stored) : 100; // Default 100
+      // Get from Firebase config
+      return database.ref('config/maxParticipants').once('value').then(snapshot => {
+        return snapshot.val() || 100; // Default 100
+      });
     }
     
     function setMaxParticipants(count) {
-      localStorage.setItem('mirichi_max_participants', count.toString());
+      return database.ref('config/maxParticipants').set(count);
     }
     
     function updateMaxParticipants() {
@@ -359,10 +379,11 @@
       const newValue = parseInt(input.value);
       
       if (newValue && newValue > 0) {
-        setMaxParticipants(newValue);
-        document.getElementById('admin-max').textContent = '/ ' + newValue;
-        loadEvents(); // Reload to update display
-        alert('Nombre maximum de participants mis à jour: ' + newValue);
+        setMaxParticipants(newValue).then(() => {
+          document.getElementById('admin-max').textContent = '/ ' + newValue;
+          loadEvents(); // Reload to update display
+          alert('Nombre maximum de participants mis à jour: ' + newValue);
+        });
       } else {
         alert('Veuillez entrer un nombre valide');
       }
@@ -413,33 +434,37 @@
       }
     }
 
-    // Get current number of registrations from localStorage
+    // Get current number of registrations from Firebase
     function getCurrentRegistrations() {
-      const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
-      return bookings.length;
+      return database.ref('bookings').once('value').then(snapshot => {
+        const bookings = snapshot.val();
+        return bookings ? Object.keys(bookings).length : 0;
+      });
     }
 
     // Get available places
-    function getAvailablePlaces() {
-      const currentRegistrations = getCurrentRegistrations();
-      return getMaxParticipants() - currentRegistrations;
+    async function getAvailablePlaces() {
+      const currentRegistrations = await getCurrentRegistrations();
+      const maxParticipants = await getMaxParticipants();
+      return maxParticipants - currentRegistrations;
     }
 
     // Check if event is full
-    function isEventFull() {
-      const currentRegistrations = getCurrentRegistrations();
-      return currentRegistrations >= getMaxParticipants();
+    async function isEventFull() {
+      const currentRegistrations = await getCurrentRegistrations();
+      const maxParticipants = await getMaxParticipants();
+      return currentRegistrations >= maxParticipants;
     }
 
     // Load events on page load
-    function loadEvents() {
+    async function loadEvents() {
       const eventsGrid = document.getElementById('events-grid');
-      const availablePlaces = getAvailablePlaces();
-      const isFull = isEventFull();
-      const maxParticipants = getMaxParticipants();
+      const availablePlaces = await getAvailablePlaces();
+      const full = await isEventFull();
+      const maxParticipants = await getMaxParticipants();
+      const currentRegistrations = await getCurrentRegistrations();
       
       // Update admin counter
-      const currentRegistrations = getCurrentRegistrations();
       const adminCounter = document.getElementById('admin-counter');
       const adminMax = document.getElementById('admin-max');
       const maxInput = document.getElementById('max-participants-input');
@@ -467,7 +492,7 @@
       
       if (events.length > 0) {
         eventsGrid.innerHTML = events.map(event => `
-          <div class="event-card p-6" style="background:var(--dark-2);border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;" onclick="${isFull ? '' : `selectEvent(${event.id})`}">
+          <div class="event-card p-6" style="background:var(--dark-2);border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;" onclick="${full ? '' : `selectEvent(${event.id})`}">
             <div class="mb-4">
               <span class="text-xs px-3 py-1" style="background:var(--gold-pale);color:var(--gold-light);border-radius:20px;">${event.category}</span>
             </div>
@@ -507,12 +532,12 @@
     }
 
     // Select event and show reservation form
-    function selectEvent(eventId) {
+    async function selectEvent(eventId) {
       selectedEvent = events.find(e => e.id === eventId);
       if (!selectedEvent) return;
 
       // Check if event is full
-      const full = isEventFull();
+      const full = await isEventFull();
       if (full) {
         alert('Désolé, toutes les places sont déjà réservées pour cet événement.');
         return;
@@ -536,8 +561,9 @@
     }
 
     // Update availability indicator in the form
-    function updateAvailabilityIndicator() {
-      const availablePlaces = getAvailablePlaces();
+    async function updateAvailabilityIndicator() {
+      const availablePlaces = await getAvailablePlaces();
+      const maxParticipants = await getMaxParticipants();
       const availabilitySection = document.getElementById('selected-event-info');
       
       // Add availability indicator if it doesn't exist
@@ -552,10 +578,6 @@
             <div class="flex items-center gap-2">
               ${availablePlaces <= 10 ? `
                 <span class="relative flex h-3 w-3">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-3 w-3 bg-error"></span>
-                </span>
-                <span class="font-label-caps text-label-caps text-error" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:#BA1A1A;">Fermeture imminente</span>
               ` : `
                 <span class="material-symbols-outlined text-secondary" style="color:var(--gold);">check_circle</span>
                 <span class="font-label-caps text-label-caps text-secondary" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--gold-light);">Places disponibles</span>
@@ -567,11 +589,11 @@
             <span class="font-headline-md text-headline-md text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;color:var(--muted);">places</span>
           </div>
           <div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden" style="background:rgba(245,240,232,0.15);">
-            <div class="h-2 rounded-full relative transition-all duration-300" style="width:${(availablePlaces / MAX_PARTICIPANTS) * 100}%;background:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold)'};">
+            <div class="h-2 rounded-full relative transition-all duration-300" style="width:${(availablePlaces / maxParticipants) * 100}%;background:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold)'};">
               ${availablePlaces <= 10 ? '<div class="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50 animate-pulse"></div>' : ''}
             </div>
           </div>
-          <p class="font-body-md text-body-md text-on-surface-variant mt-4" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--muted);">Sur ${MAX_PARTICIPANTS} places exclusives disponibles.</p>
+          <p class="font-body-md text-body-md text-on-surface-variant mt-4" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--muted);">Sur ${maxParticipants} places exclusives disponibles.</p>
         `;
         availabilitySection.appendChild(indicator);
       } else {
@@ -598,17 +620,17 @@
             <span class="font-headline-md text-headline-md text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;color:var(--muted);">places</span>
           </div>
           <div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden" style="background:rgba(245,240,232,0.15);">
-            <div class="h-2 rounded-full relative transition-all duration-300" style="width:${(availablePlaces / MAX_PARTICIPANTS) * 100}%;background:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold)'};">
+            <div class="h-2 rounded-full relative transition-all duration-300" style="width:${(availablePlaces / maxParticipants) * 100}%;background:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold)'};">
               ${availablePlaces <= 10 ? '<div class="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50 animate-pulse"></div>' : ''}
             </div>
           </div>
-          <p class="font-body-md text-body-md text-on-surface-variant mt-4" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--muted);">Sur ${MAX_PARTICIPANTS} places exclusives disponibles.</p>
+          <p class="font-body-md text-body-md text-on-surface-variant mt-4" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--muted);">Sur ${maxParticipants} places exclusives disponibles.</p>
         `;
       }
     }
 
     // Show events list
-    function showEvents() {
+    async function showEvents() {
       document.getElementById('events-section').style.display = 'block';
       document.getElementById('reservation-form').classList.remove('active');
       document.getElementById('success-message').classList.remove('active');
@@ -616,11 +638,11 @@
       selectedEvent = null;
       currentBooking = null;
       uploadedPhotoData = null;
-      loadEvents(); // Reload to update availability
+      await loadEvents(); // Reload to update availability
     }
 
     // Handle booking submission
-    function handleBooking(event) {
+    async function handleBooking(event) {
       event.preventDefault();
 
       // Check if photo is uploaded
@@ -630,7 +652,7 @@
       }
 
       // Check if event is full again (double-check)
-      const full = isEventFull();
+      const full = await isEventFull();
       if (full) {
         alert('Désolé, toutes les places sont déjà réservées pour cet événement.');
         showEvents();
@@ -646,16 +668,19 @@
       // Generate unique ticket code
       const ticketCode = 'MIR-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-      // Save to localStorage
-      const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
-      const existingBooking = bookings.find(b => b.email === email && b.event.id === selectedEvent.id);
+      // Check if email already registered for this event in Firebase
+      const bookingsSnapshot = await database.ref('bookings').once('value');
+      const bookings = bookingsSnapshot.val() || {};
+      const existingBooking = Object.values(bookings).find(b => b.email === email && b.eventId === selectedEvent.id);
+      
       if (existingBooking) {
         alert('Vous avez déjà réservé une place pour cet événement avec cet email.');
         return;
       }
 
       currentBooking = {
-        event: selectedEvent,
+        eventId: selectedEvent.id,
+        eventTitle: selectedEvent.title,
         fullName,
         email,
         phone,
@@ -666,11 +691,12 @@
         bookingDate: new Date().toISOString()
       };
 
-      // Save to localStorage (without photo data to avoid storage limits)
+      // Save to Firebase (without photo data to avoid storage limits)
       const bookingWithoutPhoto = { ...currentBooking };
       delete bookingWithoutPhoto.photo;
-      bookings.push(bookingWithoutPhoto);
-      localStorage.setItem('mirichi_bookings', JSON.stringify(bookings));
+      
+      const newBookingRef = database.ref('bookings').push();
+      await newBookingRef.set(bookingWithoutPhoto);
 
       // Directly generate and download the badge PDF
       downloadTicket();
@@ -879,7 +905,7 @@
     }
 
     // Initialize
-    loadEvents();
+    loadEvents().catch(console.error);
   </script>
 </body>
 </html>
