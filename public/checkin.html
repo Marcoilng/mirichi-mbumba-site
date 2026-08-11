@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in Mirichi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f0e8; }
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        .btn { background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%); color: white; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+        .btn:hover { opacity: 0.9; }
+        input { width: 100%; padding: 12px; background: #1e1e1e; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 16px; }
+        input:focus { outline: none; border-color: #c4922a; }
+        .hidden { display: none !important; }
+        #reader { min-height: 300px; background: #1e1e1e; border-radius: 12px; margin-bottom: 20px; }
+        .result-card { padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .valid { background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; }
+        .invalid { background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; }
+        .already-used { background: rgba(245, 158, 11, 0.1); border: 2px solid #f59e0b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Password Protection -->
+        <div id="password-section">
+            <h1 style="font-size: 36px; margin-bottom: 20px; text-align: center;">Accès Administrateur</h1>
+            <p style="text-align: center; margin-bottom: 30px; color: #888;">Entrez le mot de passe pour accéder au système de check-in</p>
+            <input type="password" id="password" placeholder="Mot de passe" onkeypress="if(event.key === 'Enter') verifyPassword()">
+            <button onclick="verifyPassword()" class="btn" style="width: 100%;">Accéder au Système</button>
+            <p id="error-msg" style="color: #ef4444; margin-top: 16px; text-align: center;" class="hidden">Mot de passe incorrect</p>
+        </div>
+
+        <!-- Scanner Section -->
+        <div id="scanner-section" class="hidden">
+            <h1 style="font-size: 36px; margin-bottom: 20px; text-align: center;">Vérification des Tickets</h1>
+            
+            <!-- Scanner -->
+            <div id="reader"></div>
+            
+            <!-- Manual Entry -->
+            <div style="margin-top: 30px;">
+                <h2 style="margin-bottom: 16px;">Ou entrez le code manuellement:</h2>
+                <input type="text" id="manual-code" placeholder="Code du ticket" onkeypress="if(event.key === 'Enter') verifyManual()">
+                <button onclick="verifyManual()" class="btn" style="width: 100%;">Vérifier</button>
+            </div>
+
+            <!-- Result -->
+            <div id="result" class="hidden"></div>
+
+            <!-- Stats -->
+            <div style="margin-top: 40px; padding: 20px; background: #1e1e1e; border-radius: 12px;">
+                <h3 style="margin-bottom: 16px;">Statistiques</h3>
+                <p>Total: <span id="stat-total">0</span></p>
+                <p>Check-in: <span id="stat-checked">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDpdm8el1KWM_WD42HMExRCvFp9ySf4fvI",
+            authDomain: "mirichi-events.firebaseapp.com",
+            databaseURL: "https://mirichi-events-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "mirichi-events",
+            storageBucket: "mirichi-events.firebasestorage.app",
+            messagingSenderId: "582412284374",
+            appId: "1:582412284374:web:3c57614741e8a595f13477"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const ADMIN_PASSWORD = 'mirichi2026';
+        let html5QrcodeScanner = null;
+
+        // Verify password
+        function verifyPassword() {
+            const password = document.getElementById('password').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('password-section').classList.add('hidden');
+                document.getElementById('scanner-section').classList.remove('hidden');
+                initScanner();
+                updateStats();
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // Get bookings from Firebase
+        async function getBookings() {
+            const snapshot = await database.ref('bookings').once('value');
+            const bookings = snapshot.val();
+            return bookings ? Object.values(bookings) : [];
+        }
+
+        // Get checked-in tickets from Firebase
+        async function getCheckedInTickets() {
+            const snapshot = await database.ref('checkedIn').once('value');
+            const checkedIn = snapshot.val();
+            return checkedIn ? Object.keys(checkedIn) : [];
+        }
+
+        // Check if ticket is already checked in
+        async function isCheckedIn(ticketCode) {
+            const checkedIn = await getCheckedInTickets();
+            return checkedIn.includes(ticketCode);
+        }
+
+        // Save checked-in ticket
+        async function saveCheckedIn(ticketCode) {
+            await database.ref(`checkedIn/${ticketCode}`).set({
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        // Verify ticket
+        async function verifyTicket(ticketCode) {
+            const bookings = await getBookings();
+            const booking = bookings.find(b => b.ticketCode === ticketCode);
+            
+            if (!booking) {
+                return { valid: false, message: 'Ticket non trouvé', type: 'invalid' };
+            }
+
+            const alreadyCheckedIn = await isCheckedIn(ticketCode);
+            if (alreadyCheckedIn) {
+                return { valid: false, message: 'Ticket déjà utilisé', type: 'already-used', booking };
+            }
+
+            return { valid: true, message: 'Ticket valide', type: 'valid', booking };
+        }
+
+        // Display result
+        async function displayResult(result) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.remove('hidden');
+            
+            if (result.valid) {
+                await saveCheckedIn(result.booking.ticketCode);
+                resultDiv.innerHTML = `
+                    <div class="result-card valid">
+                        <h2 style="color: #10b981; margin-bottom: 16px;">✓ TICKET VALIDE</h2>
+                        <p><strong>Nom:</strong> ${result.booking.fullName}</p>
+                        <p><strong>Email:</strong> ${result.booking.email}</p>
+                        <p><strong>Téléphone:</strong> ${result.booking.phone}</p>
+                        <p><strong>Code:</strong> ${result.booking.ticketCode}</p>
+                    </div>
+                `;
+                updateStats();
+            } else if (result.type === 'already-used') {
+                resultDiv.innerHTML = `
+                    <div class="result-card already-used">
+                        <h2 style="color: #f59e0b; margin-bottom: 16px;">⚠ TICKET DÉJÀ UTILISÉ</h2>
+                        <p><strong>Nom:</strong> ${result.booking.fullName}</p>
+                        <p><strong>Email:</strong> ${result.booking.email}</p>
+                        <p><strong>Code:</strong> ${result.booking.ticketCode}</p>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="result-card invalid">
+                        <h2 style="color: #ef4444; margin-bottom: 16px;">✗ TICKET INVALIDE</h2>
+                        <p>${result.message}</p>
+                    </div>
+                `;
+            }
+
+            setTimeout(() => {
+                resultDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Manual verification
+        async function verifyManual() {
+            const code = document.getElementById('manual-code').value.trim().toUpperCase();
+            if (!code) return;
+            
+            const result = await verifyTicket(code);
+            await displayResult(result);
+            document.getElementById('manual-code').value = '';
+        }
+
+        // Scanner success
+        async function onScanSuccess(decodedText) {
+            const result = await verifyTicket(decodedText.toUpperCase());
+            await displayResult(result);
+            
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.pause();
+                setTimeout(() => html5QrcodeScanner.resume(), 3000);
+            }
+        }
+
+        // Initialize scanner
+        function initScanner() {
+            html5QrcodeScanner = new Html5QrcodeScanner(
+                "reader",
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                false
+            );
+            html5QrcodeScanner.render(onScanSuccess);
+        }
+
+        // Update stats
+        async function updateStats() {
+            const bookings = await getBookings();
+            const checkedIn = await getCheckedInTickets();
+            document.getElementById('stat-total').textContent = bookings.length;
+            document.getElementById('stat-checked').textContent = checkedIn.length;
+        }
+    </script>
+</body>
+</html>

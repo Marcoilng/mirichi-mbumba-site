@@ -4,505 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Événements Mirichi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet"/>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --text: #6b6375;
-            --text-h: #08060d;
-            --bg: #fff;
-            --border: #e5e4e7;
-            --code-bg: #f4f3ec;
-            --accent: #aa3bff;
-            --accent-bg: rgba(170, 59, 255, 0.1);
-            --accent-border: rgba(170, 59, 255, 0.5);
-            --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-            --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-            --primary: #6b21a8;
-            --secondary: #9333ea;
-            --surface: #ffffff;
-            --surface-container: #f3f4f6;
-            --surface-container-lowest: #ffffff;
-            --on-primary: #ffffff;
-            --on-surface: #1f2937;
-            --on-surface-variant: #6b7280;
-            --outline-variant: #e5e7eb;
-        }
-
-        body {
-            font-family: var(--sans);
-            color: var(--text);
-            background: var(--bg);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .header-icon {
-            color: var(--accent);
-            margin-bottom: 16px;
-        }
-
-        .header h1 {
-            font-size: 56px;
-            color: var(--accent);
-            margin: 0 0 16px;
-            letter-spacing: -1px;
-        }
-
-        .header p {
-            font-size: 20px;
-            color: var(--text);
-        }
-
-        .section-title {
-            font-size: 32px;
-            color: var(--text-h);
-            margin-bottom: 30px;
-            padding-left: 20px;
-            border-left: 4px solid var(--accent);
-        }
-
-        .events-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-        }
-
-        .event-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-
-            &:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-                border-color: var(--accent);
-            }
-        }
-
-        .card-image {
-            background: linear-gradient(135deg, var(--accent-bg) 0%, var(--code-bg) 100%);
-            padding: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            min-height: 150px;
-        }
-
-        .card-icon {
-            color: var(--accent);
-        }
-
-        .card-content {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-title {
-            font-size: 24px;
-            color: var(--text-h);
-            margin: 0 0 8px;
-            font-weight: 700;
-        }
-
-        .card-details {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .event-detail {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 15px;
-            color: var(--text);
-        }
-
-        .detail-icon {
-            color: var(--accent);
-            width: 20px;
-            height: 20px;
-        }
-
-        .card-description {
-            font-size: 14px;
-            color: var(--text);
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .card-button {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: var(--shadow);
-            align-self: flex-start;
-            text-decoration: none;
-            display: inline-block;
-
-            &:hover {
-                background: var(--accent-border);
-                transform: translateY(-2px);
-            }
-        }
-
-        .no-events {
-            text-align: center;
-            padding: 60px 20px;
-            background: var(--code-bg);
-            border-radius: 12px;
-        }
-
-        .no-events p {
-            font-size: 18px;
-            color: var(--text);
-            margin: 10px 0;
-        }
-
-        /* Reservation Form Styles */
-        .reservation-form {
-            display: none;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 40px;
-            box-shadow: var(--shadow);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .reservation-form.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-h);
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 16px;
-            font-family: var(--sans);
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .submit-button {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: var(--shadow);
-            width: 100%;
-
-            &:hover {
-                background: var(--accent-border);
-                transform: translateY(-2px);
-            }
-        }
-
-        .back-button {
-            background: var(--code-bg);
-            color: var(--text);
-            border: 1px solid var(--border);
-            padding: 12px 24px;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 20px;
-
-            &:hover {
-                background: var(--border);
-            }
-        }
-
-        .success-message {
-            display: none;
-            text-align: center;
-            padding: 40px;
-            background: var(--code-bg);
-            border-radius: 12px;
-        }
-
-        .success-message.active {
-            display: block;
-        }
-
-        .success-icon {
-            color: #10b981;
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-
-        .success-message h2 {
-            color: var(--text-h);
-            margin-bottom: 16px;
-        }
-
-        .success-message p {
-            color: var(--text);
-            margin-bottom: 24px;
-        }
-
-        .download-button {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: var(--shadow);
-
-            &:hover {
-                background: var(--accent-border);
-                transform: translateY(-2px);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 36px;
-            }
-
-            .header p {
-                font-size: 16px;
-            }
-
-            .section-title {
-                font-size: 24px;
-            }
-
-            .events-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .container {
-                padding: 20px 16px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f0e8; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .event-card { background: #161616; border: 1px solid #c4922a; border-radius: 12px; padding: 24px; margin-bottom: 20px; cursor: pointer; transition: all 0.3s; }
+        .event-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(196,146,42,0.2); }
+        .btn { background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%); color: white; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+        .btn:hover { opacity: 0.9; }
+        input, textarea { width: 100%; padding: 12px; background: #1e1e1e; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 16px; }
+        input:focus, textarea:focus { outline: none; border-color: #c4922a; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <svg class="header-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            <h1>Événements Mirichi</h1>
-            <p>Découvrez et réservez vos places pour nos événements</p>
-        </header>
+        <h1 style="font-size: 48px; margin-bottom: 40px; text-align: center;">Événements Mirichi</h1>
+        
+        <div id="events-section">
+            <div id="events-grid"></div>
+        </div>
 
-        <section id="events-section">
-            <h2 class="section-title">Événements à venir</h2>
-            <div class="events-grid" id="events-grid">
-                <!-- Events will be loaded dynamically -->
-            </div>
-        </section>
-
-        <!-- Reservation Form -->
-        <div id="reservation-form" class="reservation-form">
-            <button class="back-button" onclick="showEvents()">← Retour aux événements</button>
-            <h2 style="margin-bottom: 20px; color: var(--text-h);">Réserver votre place</h2>
-            <div id="selected-event-info" style="margin-bottom: 20px; padding: 15px; background: var(--code-bg); border-radius: 8px;"></div>
+        <div id="reservation-form" class="hidden">
+            <button onclick="showEvents()" class="btn" style="margin-bottom: 20px;">← Retour</button>
+            <h2 style="margin-bottom: 20px;">Réserver votre place</h2>
+            <div id="selected-event-info" style="padding: 16px; background: #1e1e1e; border-radius: 8px; margin-bottom: 20px;"></div>
             
-            <form id="booking-form" onsubmit="handleBooking(event)">
-                <div class="form-group">
-                    <label for="fullName">Nom complet *</label>
-                    <input type="text" id="fullName" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email *</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Téléphone *</label>
-                    <input type="tel" id="phone" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Message (optionnel)</label>
-                    <textarea id="message"></textarea>
-                </div>
-                <button type="submit" class="submit-button">Réserver ma place</button>
+            <form onsubmit="handleBooking(event)">
+                <input type="text" id="fullName" placeholder="Nom complet *" required>
+                <input type="email" id="email" placeholder="Email *" required>
+                <input type="tel" id="phone" placeholder="Téléphone *" required>
+                <textarea id="message" placeholder="Message (optionnel)" rows="3"></textarea>
+                <button type="submit" class="btn">Réserver ma place</button>
             </form>
         </div>
 
-        <!-- Success Message -->
-        <div id="success-message" class="success-message">
-            <svg class="success-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-            <h2>Réservation confirmée!</h2>
-            <p>Votre place a été réservée avec succès. Votre ticket est prêt.</p>
-            <button class="download-button" onclick="downloadTicket()">Télécharger mon ticket</button>
-            <button class="back-button" style="margin-top: 20px;" onclick="showEvents()">Retour aux événements</button>
+        <div id="success-message" class="hidden">
+            <h2 style="margin-bottom: 20px;">Réservation confirmée!</h2>
+            <p style="margin-bottom: 20px;">Votre place a été réservée avec succès.</p>
+            <button onclick="downloadTicket()" class="btn">Télécharger mon ticket</button>
+            <button onclick="showEvents()" class="btn" style="margin-top: 20px;">Retour aux événements</button>
         </div>
     </div>
 
     <script>
-        // Sample events data
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDpdm8el1KWM_WD42HMExRCvFp9ySf4fvI",
+            authDomain: "mirichi-events.firebaseapp.com",
+            databaseURL: "https://mirichi-events-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "mirichi-events",
+            storageBucket: "mirichi-events.firebasestorage.app",
+            messagingSenderId: "582412284374",
+            appId: "1:582412284374:web:3c57614741e8a595f13477"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Event Data
         const events = [
             {
                 id: 1,
-                title: 'Conférence Leadership',
-                date: 'Samedi 15 novembre 2026',
-                time: 'À partir de 09h00',
-                location: 'Grand Hôtel, Kinshasa',
-                description: 'Une conférence sur le leadership moderne et les compétences essentielles pour réussir dans le monde professionnel.',
+                title: 'TOUCH UP',
+                theme: 'L\'identité avant la réussite',
+                date: 'Samedi 29 août 2026',
+                time: 'À partir de 13h00',
+                location: 'Silikin Village, Kinshasa',
+                description: 'Nous voulons contribuer à une génération de jeunes qui ne cherchent pas seulement à avoir, mais qui travaillent d\'abord à devenir.',
                 category: 'Leadership'
-            },
-            {
-                id: 2,
-                title: 'Workshop Innovation',
-                date: 'Samedi 20 décembre 2026',
-                time: 'À partir de 10h00',
-                location: 'Digital Hub, Kinshasa',
-                description: 'Atelier pratique sur l\'innovation technologique et les opportunités digitales.',
-                category: 'Technologie'
-            },
-            {
-                id: 3,
-                title: 'Networking Business',
-                date: 'Samedi 10 janvier 2027',
-                time: 'À partir de 18h00',
-                location: 'Business Center, Kinshasa',
-                description: 'Soirée de networking pour entrepreneurs et professionnels.',
-                category: 'Business'
             }
         ];
 
         let selectedEvent = null;
         let currentBooking = null;
 
-        // Load events on page load
-        function loadEvents() {
-            const eventsGrid = document.getElementById('events-grid');
-            
-            if (events.length > 0) {
-                eventsGrid.innerHTML = events.map(event => `
-                    <div class="event-card" onclick="selectEvent(${event.id})">
-                        <div class="card-image">
-                            <svg class="card-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">${event.title}</h3>
-                            <div class="card-details">
-                                <div class="event-detail">
-                                    <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                                    </svg>
-                                    <span>${event.date}</span>
-                                </div>
-                                <div class="event-detail">
-                                    <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <polyline points="12 6 12 12 16 14"></polyline>
-                                    </svg>
-                                    <span>${event.time}</span>
-                                </div>
-                                <div class="event-detail">
-                                    <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                        <circle cx="12" cy="10" r="3"></circle>
-                                    </svg>
-                                    <span>${event.location}</span>
-                                </div>
-                            </div>
-                            <p class="card-description">${event.description?.substring(0, 150) || ''}${event.description?.length > 150 ? '...' : ''}</p>
-                            <button class="card-button">Réserver ma place</button>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                eventsGrid.innerHTML = `
-                    <div class="no-events">
-                        <p>Aucun événement programmé pour le moment.</p>
-                        <p>Revenez bientôt pour découvrir nos nouvelles activités!</p>
-                    </div>
-                `;
-            }
+        // Get max participants from Firebase
+        async function getMaxParticipants() {
+            const snapshot = await database.ref('config/maxParticipants').once('value');
+            return snapshot.val() || 100;
         }
 
-        // Select event and show reservation form
+        // Get current registrations from Firebase
+        async function getCurrentRegistrations() {
+            const snapshot = await database.ref('bookings').once('value');
+            const bookings = snapshot.val();
+            return bookings ? Object.keys(bookings).length : 0;
+        }
+
+        // Get available places
+        async function getAvailablePlaces() {
+            const max = await getMaxParticipants();
+            const current = await getCurrentRegistrations();
+            return max - current;
+        }
+
+        // Load events
+        async function loadEvents() {
+            const eventsGrid = document.getElementById('events-grid');
+            const availablePlaces = await getAvailablePlaces();
+            
+            eventsGrid.innerHTML = events.map(event => `
+                <div class="event-card" onclick="selectEvent(${event.id})">
+                    <h2 style="font-size: 24px; margin-bottom: 12px;">${event.title}</h2>
+                    <p style="color: #888; margin-bottom: 8px;">${event.date}</p>
+                    <p style="color: #888; margin-bottom: 8px;">${event.location}</p>
+                    <p style="margin-bottom: 16px;">${event.description}</p>
+                    <p style="color: #c4922a; font-weight: 600;">Places disponibles: ${availablePlaces}</p>
+                </div>
+            `).join('');
+        }
+
+        // Select event
         function selectEvent(eventId) {
             selectedEvent = events.find(e => e.id === eventId);
             if (!selectedEvent) return;
 
-            document.getElementById('events-section').style.display = 'none';
-            document.getElementById('reservation-form').classList.add('active');
-            document.getElementById('success-message').classList.remove('active');
+            document.getElementById('events-section').classList.add('hidden');
+            document.getElementById('reservation-form').classList.remove('hidden');
+            document.getElementById('success-message').classList.add('hidden');
 
             document.getElementById('selected-event-info').innerHTML = `
                 <strong>${selectedEvent.title}</strong><br>
@@ -511,18 +138,18 @@
             `;
         }
 
-        // Show events list
+        // Show events
         function showEvents() {
-            document.getElementById('events-section').style.display = 'block';
-            document.getElementById('reservation-form').classList.remove('active');
-            document.getElementById('success-message').classList.remove('active');
-            document.getElementById('booking-form').reset();
+            document.getElementById('events-section').classList.remove('hidden');
+            document.getElementById('reservation-form').classList.add('hidden');
+            document.getElementById('success-message').classList.add('hidden');
+            document.querySelector('form').reset();
             selectedEvent = null;
             currentBooking = null;
         }
 
-        // Handle booking submission
-        function handleBooking(event) {
+        // Handle booking
+        async function handleBooking(event) {
             event.preventDefault();
 
             const fullName = document.getElementById('fullName').value;
@@ -530,7 +157,14 @@
             const phone = document.getElementById('phone').value;
             const message = document.getElementById('message').value;
 
-            // Generate unique ticket code
+            // Check if event is full
+            const availablePlaces = await getAvailablePlaces();
+            if (availablePlaces <= 0) {
+                alert('Désolé, toutes les places sont réservées.');
+                return;
+            }
+
+            // Generate ticket code
             const ticketCode = 'MIR-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
             currentBooking = {
@@ -543,24 +177,20 @@
                 bookingDate: new Date().toISOString()
             };
 
-            // Save to localStorage
-            const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
-            bookings.push(currentBooking);
-            localStorage.setItem('mirichi_bookings', JSON.stringify(bookings));
+            // Save to Firebase
+            await database.ref('bookings/' + ticketCode).set(currentBooking);
 
-            // Show success message
-            document.getElementById('reservation-form').classList.remove('active');
-            document.getElementById('success-message').classList.add('active');
+            document.getElementById('reservation-form').classList.add('hidden');
+            document.getElementById('success-message').classList.remove('hidden');
         }
 
-        // Generate and download ticket PDF
+        // Download ticket
         function downloadTicket() {
             if (!currentBooking || !selectedEvent) return;
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Generate QR Code
             const qrContainer = document.createElement('div');
             qrContainer.style.display = 'none';
             document.body.appendChild(qrContainer);
@@ -576,88 +206,41 @@
                 const qrDataUrl = qrCanvas.toDataURL('image/png');
                 document.body.removeChild(qrContainer);
 
-                // Header
-                doc.setFillColor(170, 59, 255);
+                doc.setFillColor(196, 146, 42);
                 doc.rect(0, 0, 210, 40, 'F');
                 doc.setTextColor(255, 255, 255);
                 doc.setFontSize(24);
                 doc.text('TICKET ÉVÉNEMENT', 105, 25, { align: 'center' });
 
-                // Event Title
                 doc.setTextColor(0, 0, 0);
                 doc.setFontSize(20);
                 doc.text(selectedEvent.title, 105, 60, { align: 'center' });
 
-                // Event Details
                 doc.setFontSize(12);
-                let yPos = 80;
+                doc.text(`Date: ${selectedEvent.date}`, 20, 80);
+                doc.text(`Heure: ${selectedEvent.time}`, 20, 90);
+                doc.text(`Lieu: ${selectedEvent.location}`, 20, 100);
+                doc.text(`Nom: ${currentBooking.fullName}`, 20, 120);
+                doc.text(`Email: ${currentBooking.email}`, 20, 130);
+                doc.text(`Téléphone: ${currentBooking.phone}`, 20, 140);
 
-                doc.setFontSize(14);
-                doc.setTextColor(170, 59, 255);
-                doc.text('Détails de l\'événement', 20, yPos);
-                yPos += 10;
+                doc.addImage(qrDataUrl, 'PNG', 80, 160, 50, 50);
 
-                doc.setTextColor(0, 0, 0);
-                doc.setFontSize(11);
-                doc.text(`Date: ${selectedEvent.date}`, 20, yPos);
-                yPos += 8;
-                doc.text(`Heure: ${selectedEvent.time}`, 20, yPos);
-                yPos += 8;
-                doc.text(`Lieu: ${selectedEvent.location}`, 20, yPos);
-                yPos += 15;
-
-                // Participant Info
-                doc.setFontSize(14);
-                doc.setTextColor(170, 59, 255);
-                doc.text('Informations du participant', 20, yPos);
-                yPos += 10;
-
-                doc.setTextColor(0, 0, 0);
-                doc.setFontSize(11);
-                doc.text(`Nom: ${currentBooking.fullName}`, 20, yPos);
-                yPos += 8;
-                doc.text(`Email: ${currentBooking.email}`, 20, yPos);
-                yPos += 8;
-                doc.text(`Téléphone: ${currentBooking.phone}`, 20, yPos);
-                yPos += 20;
-
-                // QR Code
-                doc.setFontSize(14);
-                doc.setTextColor(170, 59, 255);
-                doc.text('Code QR - Scannez à l\'entrée', 105, yPos, { align: 'center' });
-                yPos += 10;
-
-                doc.addImage(qrDataUrl, 'PNG', 80, yPos, 50, 50);
-                yPos += 60;
-
-                // Ticket Code
                 doc.setFillColor(245, 240, 255);
-                doc.rect(20, yPos, 170, 30, 'F');
-                doc.setDrawColor(170, 59, 255);
-                doc.rect(20, yPos, 170, 30, 'S');
-
-                doc.setFontSize(10);
-                doc.setTextColor(100, 100, 100);
-                doc.text('Code Ticket Unique', 105, yPos + 12, { align: 'center' });
+                doc.rect(20, 220, 170, 30, 'F');
+                doc.setDrawColor(196, 146, 42);
+                doc.rect(20, 220, 170, 30, 'S');
 
                 doc.setFontSize(14);
-                doc.setTextColor(170, 59, 255);
-                doc.setFont(undefined, 'bold');
-                doc.text(currentBooking.ticketCode, 105, yPos + 24, { align: 'center' });
-                doc.setFont(undefined, 'normal');
+                doc.setTextColor(196, 146, 42);
+                doc.text(currentBooking.ticketCode, 105, 240, { align: 'center' });
 
-                // Footer
-                doc.setFontSize(10);
-                doc.setTextColor(150, 150, 150);
-                doc.text('Présentez ce code ou le QR code à l\'entrée de l\'événement', 105, 280, { align: 'center' });
-
-                // Save PDF
-                doc.save(`ticket-${selectedEvent.title.replace(/\s+/g, '-')}-${currentBooking.fullName.replace(/\s+/g, '-')}.pdf`);
+                doc.save(`ticket-${selectedEvent.title.replace(/\s+/g, '-')}.pdf`);
             }, 100);
         }
 
         // Initialize
-        loadEvents();
+        loadEvents().catch(console.error);
     </script>
 </body>
 </html>
