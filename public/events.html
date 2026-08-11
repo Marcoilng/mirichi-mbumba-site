@@ -616,203 +616,206 @@
             }
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', [100, 160]);
+            const doc = new jsPDF('p', 'mm', 'a4');
             
-            const pageWidth = 100;
-            const pageHeight = 160;
+            const pageWidth = 210;
+            const pageHeight = 297;
 
-            // Paper background
-            doc.setFillColor(246, 241, 230);
+            // Background gradient
+            doc.setFillColor(9, 9, 15);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-            // Inner museum-label frame (0.3mm)
-            doc.setDrawColor(218, 208, 185);
-            doc.setLineWidth(0.3);
-            doc.roundedRect(10, 4.5, pageWidth - 9, pageHeight - 9, 2.4, 2.4, 'S');
-
-            // Masthead with bronze gradient
-            doc.setFillColor(212, 174, 108);
+            // Gold accent bar at top
+            doc.setFillColor(196, 146, 42);
             doc.rect(0, 0, pageWidth, 6, 'F');
-            doc.setFillColor(180, 134, 58);
-            doc.rect(0, 4, pageWidth, 2, 'F');
 
-            // "Touch Up" wordmark in masthead
-            doc.setTextColor(246, 241, 230);
-            doc.setFontSize(3.4);
-            doc.setFont('times', 'bold');
-            doc.text('TOUCH UP', pageWidth / 2, 5, { align: 'center' });
+            // Gold accent bar at bottom
+            doc.setFillColor(196, 146, 42);
+            doc.rect(0, pageHeight - 6, pageWidth, 6, 'F');
 
-            // Lanyard punch hole (rivet style)
-            doc.setFillColor(20, 24, 26);
-            doc.circle(pageWidth / 2, 3, 2.1, 'F');
-            doc.setFillColor(14, 17, 19);
-            doc.circle(pageWidth / 2, 3, 1.5, 'F');
-            doc.setDrawColor(180, 134, 58);
-            doc.setLineWidth(0.3);
-            doc.circle(pageWidth / 2, 3, 2.3, 'S');
-
-            // Eyebrow row
-            doc.setTextColor(122, 112, 95);
-            doc.setFontSize(2.3);
-            doc.setFont('helvetica', 'bold');
-            doc.text('PASS PARTICIPANT', pageWidth / 2, 14, { align: 'center', charSpace: 0.16 });
-
-            doc.setTextColor(180, 134, 58);
-            doc.text('·', pageWidth / 2, 14, { align: 'center', charSpace: 0.16 });
-
-            const participantNum = getCurrentRegistrations();
-            doc.setTextColor(124, 84, 35);
-            doc.text(`N° ${String(participantNum).padStart(2, '0')} ⁄ 100`, pageWidth / 2, 14, { align: 'center', charSpace: 0.16 });
-
-            // Tagline
-            doc.setTextColor(124, 84, 35);
-            doc.setFontSize(3.7);
-            doc.setFont('times', 'italic');
-            doc.text(selectedEvent.theme, pageWidth / 2, 18, { align: 'center' });
-
-            // Hairline divider
-            doc.setDrawColor(218, 208, 185);
-            doc.setLineWidth(0.3);
-            doc.line(8, 22, pageWidth - 8, 22);
-
-            // Photo frame - 32mm circular with double bronze border
-            const photoX = pageWidth / 2;
-            const photoY = 34;
-            const photoRadius = 32;
-
-            // Photo background
-            doc.setFillColor(239, 231, 214);
-            doc.circle(photoX, photoY, photoRadius, 'F');
-
-            // Photo border - double bronze
-            doc.setDrawColor(180, 134, 58);
-            doc.setLineWidth(1.5);
-            doc.circle(photoX, photoY, photoRadius, 'S');
-            doc.setDrawColor(124, 84, 35);
-            doc.setLineWidth(0.5);
-            doc.circle(photoX, photoY, photoRadius - 0.5, 'S');
-
-            // Add photo or silhouette
-            if (currentBooking.photo) {
-                try {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = photoRadius * 2;
-                        canvas.height = photoRadius * 2;
-                        const ctx = canvas.getContext('2d');
-                        
-                        ctx.beginPath();
-                        ctx.arc(photoRadius, photoRadius, photoRadius, 0, Math.PI * 2);
-                        ctx.closePath();
-                        ctx.clip();
-                        
-                        ctx.drawImage(img, 0, 0, photoRadius * 2, photoRadius * 2);
-                        
-                        const circularPhoto = canvas.toDataURL('image/jpeg', 0.8);
-                        doc.addImage(circularPhoto, 'JPEG', photoX - photoRadius, photoY - photoRadius, photoRadius * 2, photoRadius * 2);
-                        
-                        continueBadgeGeneration(doc, pageWidth, pageHeight);
-                    };
-                    img.onerror = function() {
-                        drawSilhouette(doc, photoX, photoY, photoRadius);
-                        continueBadgeGeneration(doc, pageWidth, pageHeight);
-                    };
-                    img.src = currentBooking.photo;
-                } catch (e) {
-                    drawSilhouette(doc, photoX, photoY, photoRadius);
-                    continueBadgeGeneration(doc, pageWidth, pageHeight);
-                }
-            } else {
-                drawSilhouette(doc, photoX, photoY, photoRadius);
-                continueBadgeGeneration(doc, pageWidth, pageHeight);
-            }
+            // Header section with logo
+            doc.setFillColor(15, 15, 26);
+            doc.roundedRect(15, 12, pageWidth - 30, 35, 3, 3, 'F');
+            
+            // Load logo
+            const logoImg = new Image();
+            logoImg.crossOrigin = 'anonymous';
+            logoImg.onload = function() {
+                doc.addImage(logoImg, 'PNG', 20, 16, 25, 25);
+                generateBadge(doc, pageWidth, pageHeight);
+            };
+            logoImg.onerror = function() {
+                // Fallback if logo fails to load
+                generateBadge(doc, pageWidth, pageHeight);
+            };
+            logoImg.src = 'legacy-html/logo-touchup.png';
         }
 
-        function continueBadgeGeneration(doc, pageWidth, pageHeight) {
-            // Name
-            doc.setTextColor(20, 24, 26);
-            doc.setFontSize(6.6);
-            doc.setFont('times', 'bold');
-            doc.text(currentBooking.fullName.toUpperCase(), pageWidth / 2, 54, { align: 'center' });
-
-            // Hairline divider
-            doc.setDrawColor(218, 208, 185);
-            doc.setLineWidth(0.3);
-            doc.line(8, 58, pageWidth - 8, 58);
-
-            // Event details
-            doc.setTextColor(20, 24, 26);
-            doc.setFontSize(3.1);
+        function generateBadge(doc, pageWidth, pageHeight) {
+            // Event title
+            doc.setTextColor(196, 146, 42);
+            doc.setFontSize(26);
             doc.setFont('helvetica', 'bold');
-            doc.text('Samedi 29 août 2026', pageWidth / 2, 63, { align: 'center' });
+            doc.text(selectedEvent.title, 55, 28);
 
-            doc.setFont('helvetica', 'normal');
-            doc.text('Dès 13h00 · Silikin Village', pageWidth / 2, 67, { align: 'center' });
-            doc.text('Kinshasa', pageWidth / 2, 71, { align: 'center' });
+            // Event theme
+            doc.setTextColor(232, 184, 75);
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'italic');
+            doc.text(selectedEvent.theme, 55, 35);
 
-            // Hairline divider
-            doc.setDrawColor(218, 208, 185);
-            doc.setLineWidth(0.3);
-            doc.line(8, 75, pageWidth - 8, 75);
-
-            // QR Code section - 22mm
-            const qrX = 8;
-            const qrY = 78;
-            const qrSize = 22;
-
-            // QR background
-            doc.setFillColor(246, 241, 230);
-            doc.roundedRect(qrX, qrY, qrSize, qrSize, 1, 1, 'F');
-            doc.setDrawColor(218, 208, 185);
+            // Event card
+            doc.setFillColor(15, 15, 26);
+            doc.setDrawColor(196, 146, 42);
             doc.setLineWidth(0.5);
-            doc.roundedRect(qrX, qrY, qrSize, qrSize, 1, 1, 'S');
+            doc.roundedRect(15, 55, pageWidth - 30, 50, 3, 3, 'FD');
 
-            // Generate QR code with QRious
-            const qrCanvas = document.createElement('canvas');
-            qrCanvas.style.display = 'none';
-            document.body.appendChild(qrCanvas);
+            // Event details with icons
+            doc.setTextColor(196, 146, 42);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text('DÉTAILS DE L\'ÉVÉNEMENT', pageWidth / 2, 63, { align: 'center' });
+
+            doc.setTextColor(245, 240, 232);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            
+            const detailsY = 72;
+            const detailsX = 20;
+            const lineHeight = 7;
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('DATE:', detailsX, detailsY);
+            doc.setFont('helvetica', 'normal');
+            doc.text(selectedEvent.date, detailsX + 20, detailsY);
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('HEURE:', detailsX, detailsY + lineHeight);
+            doc.setFont('helvetica', 'normal');
+            doc.text(selectedEvent.time, detailsX + 20, detailsY + lineHeight);
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('LIEU:', detailsX, detailsY + lineHeight * 2);
+            doc.setFont('helvetica', 'normal');
+            doc.text(selectedEvent.location, detailsX + 20, detailsY + lineHeight * 2);
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('CATÉGORIE:', detailsX, detailsY + lineHeight * 3);
+            doc.setFont('helvetica', 'normal');
+            doc.text(selectedEvent.category, detailsX + 20, detailsY + lineHeight * 3);
+
+            // Participant card
+            doc.setFillColor(15, 15, 26);
+            doc.roundedRect(15, 112, pageWidth - 30, 85, 3, 3, 'FD');
+
+            // Photo placeholder
+            if (currentBooking.photo) {
+                try {
+                    doc.addImage(currentBooking.photo, 'JPEG', 20, 118, 40, 55);
+                } catch (e) {
+                    doc.setFillColor(30, 30, 30);
+                    doc.rect(20, 118, 40, 55, 'F');
+                    doc.setTextColor(196, 146, 42);
+                    doc.setFontSize(8);
+                    doc.text('Photo', 40, 145, { align: 'center' });
+                }
+            } else {
+                doc.setFillColor(30, 30, 30);
+                doc.rect(20, 118, 40, 55, 'F');
+                doc.setTextColor(196, 146, 42);
+                doc.setFontSize(8);
+                doc.text('Photo', 40, 145, { align: 'center' });
+            }
+
+            // Photo border with gold
+            doc.setDrawColor(196, 146, 42);
+            doc.setLineWidth(0.5);
+            doc.rect(20, 118, 40, 55);
+
+            // Participant info
+            doc.setTextColor(196, 146, 42);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text('PARTICIPANT', 70, 125);
+
+            doc.setTextColor(245, 240, 232);
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text(currentBooking.fullName, 70, 135);
+
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Email: ' + currentBooking.email, 70, 145);
+            doc.text('Téléphone: ' + currentBooking.phone, 70, 153);
+            doc.text('Ville: ' + currentBooking.city, 70, 161);
+            
+            if (currentBooking.profession) {
+                doc.text('Profession: ' + currentBooking.profession, 70, 169);
+            }
+
+            // Booking info
+            doc.setDrawColor(196, 146, 42);
+            doc.setLineWidth(0.3);
+            doc.line(70, 175, pageWidth - 20, 175);
+            
+            doc.setFontSize(8);
+            doc.setTextColor(153, 153, 153);
+            const bookingDate = new Date(currentBooking.bookingDate).toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            doc.text('Réservation: ' + bookingDate, 70, 182);
+
+            // QR Code section
+            doc.setFillColor(15, 15, 26);
+            doc.roundedRect(15, 205, pageWidth - 30, 65, 3, 3, 'FD');
+
+            const qrContainer = document.createElement('div');
+            qrContainer.style.display = 'none';
+            document.body.appendChild(qrContainer);
             
             new QRious({
-                element: qrCanvas,
+                element: qrContainer.querySelector('canvas') || document.createElement('canvas'),
                 value: currentBooking.ticketCode,
-                size: 150,
-                background: '#F6F1E6',
-                foreground: '#14181A',
-                level: 'H',
-                padding: 8
+                size: 140,
+                background: '#0F0F1A',
+                foreground: '#C4922A'
             });
 
             setTimeout(() => {
+                const qrCanvas = qrContainer.querySelector('canvas') || qrContainer;
                 const qrDataUrl = qrCanvas.toDataURL('image/png');
-                document.body.removeChild(qrCanvas);
+                document.body.removeChild(qrContainer);
 
-                doc.addImage(qrDataUrl, 'PNG', qrX + 1, qrY + 1, qrSize - 2, qrSize - 2);
+                doc.addImage(qrDataUrl, 'PNG', 25, 215, 40, 40);
 
-                // QR info
-                doc.setTextColor(122, 112, 95);
-                doc.setFontSize(2.2);
+                // Ticket code
+                doc.setTextColor(196, 146, 42);
+                doc.setFontSize(20);
                 doc.setFont('helvetica', 'bold');
-                doc.text('CODE D\'ACCÈS', 34, 82);
+                doc.text(currentBooking.ticketCode, 75, 230);
 
-                doc.setTextColor(20, 24, 26);
-                doc.setFontSize(3.4);
-                doc.setFont('helvetica', 'bold');
-                doc.text(currentBooking.ticketCode, 34, 86);
-
-                doc.setTextColor(122, 112, 95);
-                doc.setFontSize(2.4);
+                doc.setTextColor(245, 240, 232);
+                doc.setFontSize(9);
                 doc.setFont('helvetica', 'normal');
-                doc.text('Scannez à l\'entrée pour confirmer', 34, 90, { maxWidth: 55 });
+                doc.text('Code unique de validation', 75, 238);
+                doc.text('Scannez ce code pour accéder à l\'événement', 75, 246);
 
-                // Footer
-                doc.setTextColor(122, 112, 95);
-                doc.setFontSize(3.1);
-                doc.setFont('times', 'italic');
-                doc.text('« Qui veux-tu devenir ? »', pageWidth / 2, 145, { align: 'center' });
+                // Footer with legal info
+                doc.setDrawColor(196, 146, 42);
+                doc.setLineWidth(0.3);
+                doc.line(15, 280, pageWidth - 15, 280);
 
-                // Save the PDF
-                doc.save(`TOUCH-UP-${currentBooking.fullName.replace(/\s+/g, '-').toUpperCase()}.pdf`);
+                doc.setTextColor(153, 153, 153);
+                doc.setFontSize(7);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Ce badge est personnel et incessible. Présentation obligatoire à l\'entrée.', pageWidth / 2, 286, { align: 'center' });
+                doc.text('Pour toute information: contact@mirichimbumba.com', pageWidth / 2, 291, { align: 'center' });
+
+                doc.save(`badge-${selectedEvent.title.replace(/\s+/g, '-')}-${currentBooking.fullName.replace(/\s+/g, '-')}.pdf`);
                 console.log('PDF saved successfully');
             }, 100);
         }
