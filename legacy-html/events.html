@@ -25,6 +25,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -138,7 +139,7 @@
               </div>
             </div>
             <!-- Admin Controls -->
-            <div class="flex items-center gap-4 pt-4 border-t" style="border-color:rgba(196,146,42,0.2);">
+            <div id="admin-controls" class="flex items-center gap-4 pt-4 border-t hidden" style="border-color:rgba(196,146,42,0.2);">
               <div class="flex items-center gap-2 flex-1">
                 <label class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Modifier le max:</label>
                 <input 
@@ -156,6 +157,25 @@
                 style="background:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.75rem;font-weight:600;"
               >
                 Mettre à jour
+              </button>
+            </div>
+            <!-- Admin Login/Logout -->
+            <div class="flex items-center gap-4 pt-4 border-t" style="border-color:rgba(196,146,42,0.2);">
+              <button 
+                id="admin-login-btn"
+                onclick="adminLogin()"
+                class="px-4 py-2 rounded-lg font-label-caps text-label-caps text-on-primary transition-colors"
+                style="background:rgba(196,146,42,0.2);font-family:'Montserrat',sans-serif;font-size:0.75rem;font-weight:600;color:var(--gold-light);"
+              >
+                Connexion Admin
+              </button>
+              <button 
+                id="admin-logout-btn"
+                onclick="adminLogout()"
+                class="px-4 py-2 rounded-lg font-label-caps text-label-caps text-on-primary transition-colors hidden"
+                style="background:rgba(186,26,26,0.2);font-family:'Montserrat',sans-serif;font-size:0.75rem;font-weight:600;color:#BA1A1A;"
+              >
+                Déconnexion
               </button>
             </div>
           </div>
@@ -361,6 +381,57 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
+    const auth = firebase.auth();
+
+    // Admin authentication state
+    let isAdmin = false;
+
+    // Check if user is authenticated as admin
+    auth.onAuthStateChanged((user) => {
+      isAdmin = user !== null;
+      updateAdminUI();
+    });
+
+    function updateAdminUI() {
+      const adminControls = document.getElementById('admin-controls');
+      const loginButton = document.getElementById('admin-login-btn');
+      const logoutButton = document.getElementById('admin-logout-btn');
+      
+      if (isAdmin) {
+        if (adminControls) adminControls.classList.remove('hidden');
+        if (loginButton) loginButton.classList.add('hidden');
+        if (logoutButton) logoutButton.classList.remove('hidden');
+      } else {
+        if (adminControls) adminControls.classList.add('hidden');
+        if (loginButton) loginButton.classList.remove('hidden');
+        if (logoutButton) logoutButton.classList.add('hidden');
+      }
+    }
+
+    // Admin login
+    async function adminLogin() {
+      const email = prompt("Entrez votre email admin:");
+      const password = prompt("Entrez votre mot de passe admin:");
+      
+      if (email && password) {
+        try {
+          await auth.signInWithEmailAndPassword(email, password);
+          alert("Connexion admin réussie!");
+        } catch (error) {
+          alert("Erreur de connexion: " + error.message);
+        }
+      }
+    }
+
+    // Admin logout
+    async function adminLogout() {
+      try {
+        await auth.signOut();
+        alert("Déconnexion réussie!");
+      } catch (error) {
+        alert("Erreur de déconnexion: " + error.message);
+      }
+    }
 
     // Firebase-based booking system
     function getMaxParticipants() {

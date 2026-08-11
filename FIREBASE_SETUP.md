@@ -41,21 +41,50 @@
    - `messagingSenderId`
    - `appId`
 
-## Étape 4: Configurer les règles de sécurité (optionnel mais recommandé)
+## Étape 4: Configurer les règles de sécurité (IMPORTANT pour la production)
 
 1. Dans Realtime Database, cliquez sur l'onglet "Règles" (Rules)
-2. Remplacez les règles par défaut par:
+2. Remplacez les règles par défaut par ces règles sécurisées:
 ```json
 {
   "rules": {
-    ".read": true,
-    ".write": true
+    "bookings": {
+      ".read": true,
+      ".write": "newData.hasChildren(['fullName', 'email', 'ticketCode', 'eventId'])",
+      "$bookingId": {
+        ".write": "!data.exists()" // Empêche la modification de réservations existantes
+      }
+    },
+    "checkedIn": {
+      ".read": true,
+      ".write": "newData.hasChildren(['timestamp'])"
+    },
+    "config": {
+      ".read": true,
+      ".write": "auth != null" // Seuls les utilisateurs authentifiés peuvent modifier la config
+    }
   }
 }
 ```
 3. Cliquez sur "Publier" (Publish)
 
-**Note**: Ces règles permettent à tout le monde de lire et écrire. Pour la production, vous devrez les sécuriser.
+**Explication des règles:**
+- **bookings**: Lecture publique (nécessaire pour le compteur), écriture contrôlée avec validation
+- **checkedIn**: Lecture publique, écriture avec validation du timestamp
+- **config**: Lecture publique, écriture réservée aux utilisateurs authentifiés (admin)
+
+## Étape 4.5: Créer un compte admin dans Firebase Authentication
+
+1. Dans le menu de gauche, cliquez sur "Build" puis "Authentication"
+2. Cliquez sur "Commencer" (Get Started)
+3. Cliquez sur l'onglet "Utilisateurs" (Users)
+4. Cliquez sur "Ajouter un utilisateur" (Add user)
+5. Entrez:
+   - **Email**: Votre email admin (ex: admin@mirichimbumba.com)
+   - **Mot de passe**: Un mot de passe sécurisé
+6. Cliquez sur "Créer un utilisateur"
+
+**Note**: Gardez ces identifiants en sécurité, ils permettent de modifier le nombre maximum de participants.
 
 ## Étape 5: Envoyez-moi les credentials
 
