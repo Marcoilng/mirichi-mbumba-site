@@ -579,7 +579,6 @@
             const year = '2026';
             const randomNum = Math.floor(Math.random() * 900) + 100;
             const ticketCode = `TU-${year}-${String(randomNum)}`;
-            currentBooking.ticketCode = ticketCode;
 
             currentBooking = {
                 event: selectedEvent,
@@ -654,6 +653,20 @@
             doc.setFontSize(3.4);
             doc.setFont('fraunces', 'bold');
             doc.text('TOUCH UP', pageWidth / 2, 5, { align: 'center' });
+
+            // Load logo and add to masthead
+            const logoImg = new Image();
+            logoImg.crossOrigin = 'anonymous';
+            logoImg.onload = function() {
+                // Add logo next to text
+                doc.addImage(logoImg, 'PNG', 12, 1.5, 7, 3);
+                continueBadgeGeneration(doc, pageWidth, pageHeight);
+            };
+            logoImg.onerror = function() {
+                // Fallback without logo
+                continueBadgeGeneration(doc, pageWidth, pageHeight);
+            };
+            logoImg.src = 'legacy-html/logo-touchup.png';
 
             // Lanyard punch hole (rivet style)
             // Outer circle
