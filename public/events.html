@@ -109,17 +109,32 @@
         // Load events
         async function loadEvents() {
             const eventsGrid = document.getElementById('events-grid');
-            const availablePlaces = await getAvailablePlaces();
             
-            eventsGrid.innerHTML = events.map(event => `
-                <div class="event-card" onclick="selectEvent(${event.id})">
-                    <h2 style="font-size: 24px; margin-bottom: 12px;">${event.title}</h2>
-                    <p style="color: #888; margin-bottom: 8px;">${event.date}</p>
-                    <p style="color: #888; margin-bottom: 8px;">${event.location}</p>
-                    <p style="margin-bottom: 16px;">${event.description}</p>
-                    <p style="color: #c4922a; font-weight: 600;">Places disponibles: ${availablePlaces}</p>
-                </div>
-            `).join('');
+            try {
+                const availablePlaces = await getAvailablePlaces();
+                
+                eventsGrid.innerHTML = events.map(event => `
+                    <div class="event-card" onclick="selectEvent(${event.id})">
+                        <h2 style="font-size: 24px; margin-bottom: 12px;">${event.title}</h2>
+                        <p style="color: #888; margin-bottom: 8px;">${event.date}</p>
+                        <p style="color: #888; margin-bottom: 8px;">${event.location}</p>
+                        <p style="margin-bottom: 16px;">${event.description}</p>
+                        <p style="color: #c4922a; font-weight: 600;">Places disponibles: ${availablePlaces}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erreur Firebase:', error);
+                // Afficher l'événement même si Firebase échoue
+                eventsGrid.innerHTML = events.map(event => `
+                    <div class="event-card" onclick="selectEvent(${event.id})">
+                        <h2 style="font-size: 24px; margin-bottom: 12px;">${event.title}</h2>
+                        <p style="color: #888; margin-bottom: 8px;">${event.date}</p>
+                        <p style="color: #888; margin-bottom: 8px;">${event.location}</p>
+                        <p style="margin-bottom: 16px;">${event.description}</p>
+                        <p style="color: #c4922a; font-weight: 600;">Places disponibles: 100</p>
+                    </div>
+                `).join('');
+            }
         }
 
         // Select event
