@@ -569,224 +569,125 @@
             if (!currentBooking || !selectedEvent) return;
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
+            const doc = new jsPDF('p', 'mm', [100, 160]); // Museum-style badge format
             
-            const pageWidth = 210;
-            const pageHeight = 297;
+            const pageWidth = 100;
+            const pageHeight = 160;
 
-            // Background - dark gradient effect
-            doc.setFillColor(9, 9, 15);
+            // Paper background
+            doc.setFillColor(246, 241, 230);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-            // Top gold accent with gradient effect
-            doc.setFillColor(196, 146, 42);
-            doc.rect(0, 0, pageWidth, 4, 'F');
-            doc.setFillColor(232, 184, 75);
-            doc.rect(0, 4, pageWidth, 2, 'F');
+            // Inner museum-label frame
+            doc.setDrawColor(218, 208, 185);
+            doc.setLineWidth(0.3);
+            doc.roundedRect(10, 4.5, pageWidth - 9, pageHeight - 9, 2, 2, 'S');
 
-            // Bottom gold accent
-            doc.setFillColor(232, 184, 75);
-            doc.rect(0, pageHeight - 2, pageWidth, 2, 'F');
-            doc.setFillColor(196, 146, 42);
-            doc.rect(0, pageHeight - 4, pageWidth, 2, 'F');
+            // Masthead with bronze gradient
+            doc.setFillColor(212, 174, 108);
+            doc.rect(0, 0, pageWidth, 8, 'F');
+            doc.setFillColor(180, 134, 58);
+            doc.rect(0, 6, pageWidth, 2, 'F');
 
-            // Load logo and generate badge
-            const logoImg = new Image();
-            logoImg.crossOrigin = 'anonymous';
-            logoImg.onload = function() {
-                generateWorldClassBadge(doc, pageWidth, pageHeight, logoImg);
-            };
-            logoImg.onerror = function() {
-                // Fallback without logo
-                generateWorldClassBadge(doc, pageWidth, pageHeight, null);
-            };
-            logoImg.src = 'legacy-html/logo-touchup.png';
-        }
+            // "Touch Up" text in masthead
+            doc.setTextColor(246, 241, 230);
+            doc.setFontSize(3.4);
+            doc.setFont('times', 'bold');
+            doc.text('TOUCH UP', pageWidth / 2, 5, { align: 'center' });
 
-        function generateWorldClassBadge(doc, pageWidth, pageHeight, logoImg) {
-            // Header section with modern design
-            doc.setFillColor(15, 15, 26);
-            doc.roundedRect(15, 12, pageWidth - 30, 40, 5, 5, 'F');
-            
-            // Add logo if available
-            if (logoImg) {
-                doc.addImage(logoImg, 'PNG', 22, 18, 30, 28);
-            }
+            // Punch hole
+            doc.setFillColor(14, 17, 19);
+            doc.circle(pageWidth / 2, 4, 2.1, 'F');
 
-            // Event title with modern typography
-            doc.setTextColor(196, 146, 42);
-            doc.setFontSize(28);
+            // Content section
+            // Eyebrow row
+            doc.setTextColor(122, 112, 95);
+            doc.setFontSize(2.3);
             doc.setFont('helvetica', 'bold');
-            doc.text(selectedEvent.title, logoImg ? 60 : 20, 30);
+            doc.text('PASS PARTICIPANT', pageWidth / 2, 14, { align: 'center' });
 
-            // Event theme with elegant styling
-            doc.setTextColor(232, 184, 75);
-            doc.setFontSize(12);
-            doc.setFont('helvetica', 'italic');
-            doc.text(selectedEvent.theme, logoImg ? 60 : 20, 38);
+            doc.setTextColor(180, 134, 58);
+            doc.text('·', pageWidth / 2, 14, { align: 'center', charSpace: 2 });
 
-            // Decorative line
-            doc.setDrawColor(196, 146, 42);
-            doc.setLineWidth(0.5);
-            doc.line(logoImg ? 60 : 20, 42, pageWidth - 20, 42);
+            const participantNum = getCurrentRegistrations();
+            doc.setTextColor(124, 84, 35);
+            doc.text(`N° ${String(participantNum).padStart(3, '0')} ⁄ 100`, pageWidth / 2, 14, { align: 'center', charSpace: 2 });
 
-            // Event details card with modern design
-            doc.setFillColor(15, 15, 26);
-            doc.setDrawColor(196, 146, 42);
-            doc.setLineWidth(0.8);
-            doc.roundedRect(15, 60, pageWidth - 30, 55, 5, 5, 'FD');
+            // Tagline
+            doc.setTextColor(124, 84, 35);
+            doc.setFontSize(3.7);
+            doc.setFont('times', 'italic');
+            doc.setFont('times', 'normal');
+            doc.text(selectedEvent.theme, pageWidth / 2, 18, { align: 'center' });
 
-            // Section header
-            doc.setTextColor(196, 146, 42);
-            doc.setFontSize(11);
-            doc.setFont('helvetica', 'bold');
-            doc.text('INFORMATIONS DE L\'ÉVÉNEMENT', pageWidth / 2, 70, { align: 'center' });
+            // Hairline
+            doc.setDrawColor(218, 208, 185);
+            doc.setLineWidth(0.3);
+            doc.line(8, 22, pageWidth - 8, 22);
 
-            // Event details with modern layout
-            doc.setTextColor(245, 240, 232);
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'normal');
-            
-            const detailsY = 80;
-            const detailsX = 25;
-            const lineHeight = 8;
-            const labelWidth = 22;
+            // Photo frame - circular
+            const photoX = pageWidth / 2;
+            const photoY = 32;
+            const photoRadius = 16;
 
-            // Date
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(196, 146, 42);
-            doc.text('DATE', detailsX, detailsY);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(245, 240, 232);
-            doc.text(selectedEvent.date, detailsX + labelWidth, detailsY);
+            // Photo background
+            doc.setFillColor(239, 231, 214);
+            doc.circle(photoX, photoY, photoRadius, 'F');
 
-            // Time
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(196, 146, 42);
-            doc.text('HEURE', detailsX, detailsY + lineHeight);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(245, 240, 232);
-            doc.text(selectedEvent.time, detailsX + labelWidth, detailsY + lineHeight);
-
-            // Location
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(196, 146, 42);
-            doc.text('LIEU', detailsX, detailsY + lineHeight * 2);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(245, 240, 232);
-            doc.text(selectedEvent.location, detailsX + labelWidth, detailsY + lineHeight * 2);
-
-            // Category
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(196, 146, 42);
-            doc.text('TYPE', detailsX, detailsY + lineHeight * 3);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(245, 240, 232);
-            doc.text(selectedEvent.category, detailsX + labelWidth, detailsY + lineHeight * 3);
-
-            // Participant card with premium design
-            doc.setFillColor(15, 15, 26);
-            doc.roundedRect(15, 122, pageWidth - 30, 90, 5, 5, 'FD');
-
-            // Section header
-            doc.setTextColor(196, 146, 42);
-            doc.setFontSize(11);
-            doc.setFont('helvetica', 'bold');
-            doc.text('INFORMATIONS DU PARTICIPANT', pageWidth / 2, 132, { align: 'center' });
-
-            // Photo with elegant frame
-            const photoX = 22;
-            const photoY = 138;
-            const photoW = 45;
-            const photoH = 60;
+            // Photo border
+            doc.setDrawColor(180, 134, 58);
+            doc.setLineWidth(1.5);
+            doc.circle(photoX, photoY, photoRadius, 'S');
 
             if (currentBooking.photo) {
                 try {
-                    doc.addImage(currentBooking.photo, 'JPEG', photoX, photoY, photoW, photoH);
+                    // Add circular photo
+                    doc.addImage(currentBooking.photo, 'JPEG', photoX - photoRadius, photoY - photoRadius, photoRadius * 2, photoRadius * 2);
                 } catch (e) {
-                    doc.setFillColor(30, 30, 30);
-                    doc.roundedRect(photoX, photoY, photoW, photoH, 3, 3, 'F');
-                    doc.setTextColor(196, 146, 42);
-                    doc.setFontSize(8);
-                    doc.text('Photo', photoX + photoW/2, photoY + photoH/2, { align: 'center' });
+                    // Fallback silhouette
+                    drawSilhouette(doc, photoX, photoY, photoRadius);
                 }
             } else {
-                doc.setFillColor(30, 30, 30);
-                doc.roundedRect(photoX, photoY, photoW, photoH, 3, 3, 'F');
-                doc.setTextColor(196, 146, 42);
-                doc.setFontSize(8);
-                doc.text('Photo', photoX + photoW/2, photoY + photoH/2, { align: 'center' });
+                drawSilhouette(doc, photoX, photoY, photoRadius);
             }
 
-            // Photo frame with gold border
-            doc.setDrawColor(196, 146, 42);
-            doc.setLineWidth(1);
-            doc.roundedRect(photoX, photoY, photoW, photoH, 3, 3, 'S');
+            // Name
+            doc.setTextColor(20, 24, 26);
+            doc.setFontSize(6.6);
+            doc.setFont('times', 'bold');
+            doc.text(currentBooking.fullName.toUpperCase(), pageWidth / 2, 54, { align: 'center' });
 
-            // Participant info with modern typography
-            const infoX = 75;
-            let infoY = 145;
-
-            doc.setTextColor(196, 146, 42);
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'bold');
-            doc.text('NOM COMPLET', infoX, infoY);
-
-            doc.setTextColor(245, 240, 232);
-            doc.setFontSize(16);
-            doc.setFont('helvetica', 'bold');
-            doc.text(currentBooking.fullName, infoX, infoY + 8);
-
-            infoY += 20;
-            doc.setFontSize(9);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(245, 240, 232);
-            
-            const contactInfo = [
-                { label: 'Email', value: currentBooking.email },
-                { label: 'Téléphone', value: currentBooking.phone },
-                { label: 'Ville', value: currentBooking.city }
-            ];
-
-            if (currentBooking.profession) {
-                contactInfo.push({ label: 'Profession', value: currentBooking.profession });
-            }
-
-            contactInfo.forEach(info => {
-                doc.setTextColor(196, 146, 42);
-                doc.setFont('helvetica', 'bold');
-                doc.text(info.label + ':', infoX, infoY);
-                doc.setTextColor(245, 240, 232);
-                doc.setFont('helvetica', 'normal');
-                doc.text(info.value, infoX + 35, infoY);
-                infoY += 7;
-            });
-
-            // Booking timestamp
-            doc.setDrawColor(196, 146, 42);
+            // Hairline
+            doc.setDrawColor(218, 208, 185);
             doc.setLineWidth(0.3);
-            doc.line(infoX, infoY + 3, pageWidth - 20, infoY + 3);
-            
-            doc.setFontSize(7);
-            doc.setTextColor(153, 153, 153);
-            const bookingDate = new Date(currentBooking.bookingDate).toLocaleDateString('fr-FR', {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-            doc.text('Réservé le: ' + bookingDate, infoX, infoY + 8);
+            doc.line(8, 58, pageWidth - 8, 58);
 
-            // QR Code section with premium design
-            doc.setFillColor(15, 15, 26);
-            doc.roundedRect(15, 220, pageWidth - 30, 65, 5, 5, 'FD');
-
-            // Section header
-            doc.setTextColor(196, 146, 42);
-            doc.setFontSize(11);
+            // Event details
+            doc.setTextColor(20, 24, 26);
+            doc.setFontSize(3.1);
             doc.setFont('helvetica', 'bold');
-            doc.text('CODE D\'ACCÈS', pageWidth / 2, 230, { align: 'center' });
+            doc.text(selectedEvent.date, pageWidth / 2, 63, { align: 'center' });
+
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${selectedEvent.time} · ${selectedEvent.location}`, pageWidth / 2, 67, { align: 'center' });
+            doc.text('Kinshasa', pageWidth / 2, 71, { align: 'center' });
+
+            // Hairline
+            doc.setDrawColor(218, 208, 185);
+            doc.setLineWidth(0.3);
+            doc.line(8, 75, pageWidth - 8, 75);
+
+            // QR Code section
+            const qrX = 8;
+            const qrY = 78;
+            const qrSize = 22;
+
+            // QR background
+            doc.setFillColor(246, 241, 230);
+            doc.roundedRect(qrX, qrY, qrSize, qrSize, 1, 1, 'F');
+            doc.setDrawColor(218, 208, 185);
+            doc.setLineWidth(0.5);
+            doc.roundedRect(qrX, qrY, qrSize, qrSize, 1, 1, 'S');
 
             const qrContainer = document.createElement('div');
             qrContainer.style.display = 'none';
@@ -796,8 +697,8 @@
                 text: currentBooking.ticketCode,
                 width: 150,
                 height: 150,
-                colorDark: '#C4922A',
-                colorLight: '#0F0F1A'
+                colorDark: '#14181A',
+                colorLight: '#F6F1E6'
             });
 
             setTimeout(() => {
@@ -805,34 +706,47 @@
                 const qrDataUrl = qrCanvas.toDataURL('image/png');
                 document.body.removeChild(qrContainer);
 
-                // QR Code with elegant frame
-                doc.addImage(qrDataUrl, 'PNG', 25, 238, 45, 45);
+                doc.addImage(qrDataUrl, 'PNG', qrX + 1, qrY + 1, qrSize - 2, qrSize - 2);
 
-                // Ticket code with large, bold typography
-                doc.setTextColor(196, 146, 42);
-                doc.setFontSize(22);
+                // QR info
+                doc.setTextColor(122, 112, 95);
+                doc.setFontSize(2.2);
                 doc.setFont('helvetica', 'bold');
-                doc.text(currentBooking.ticketCode, 80, 255);
+                doc.text('CODE D\'ACCÈS', 34, 82);
 
-                doc.setTextColor(245, 240, 232);
-                doc.setFontSize(9);
+                doc.setTextColor(20, 24, 26);
+                doc.setFontSize(3.4);
+                doc.setFont('helvetica', 'bold');
+                doc.text(currentBooking.ticketCode, 34, 86);
+
+                doc.setTextColor(122, 112, 95);
+                doc.setFontSize(2.4);
                 doc.setFont('helvetica', 'normal');
-                doc.text('Scannez ce code pour entrer', 80, 263);
-                doc.text('Code unique et personnel', 80, 270);
+                doc.text('Scannez à l\'entrée', 34, 90, { maxWidth: 55 });
 
-                // Footer with elegant design
-                doc.setDrawColor(196, 146, 42);
-                doc.setLineWidth(0.5);
-                doc.line(15, 292, pageWidth - 15, 292);
+                // Footer
+                doc.setTextColor(122, 112, 95);
+                doc.setFontSize(3.1);
+                doc.setFont('times', 'italic');
+                doc.text('« Qui veux-tu devenir ? »', pageWidth / 2, 145, { align: 'center' });
 
-                doc.setTextColor(153, 153, 153);
-                doc.setFontSize(7);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Badge personnel et incessible. Présentation obligatoire à l\'entrée.', pageWidth / 2, 296, { align: 'center' });
-                doc.text('© 2026 Mirichi Mbumba - contact@mirichimbumba.com', pageWidth / 2, 300, { align: 'center' });
-
-                doc.save(`TOUCH-UP-BADGE-${currentBooking.fullName.replace(/\s+/g, '-').toUpperCase()}.pdf`);
+                doc.save(`TOUCH-UP-${currentBooking.fullName.replace(/\s+/g, '-').toUpperCase()}.pdf`);
             }, 100);
+        }
+
+        function drawSilhouette(doc, x, y, radius) {
+            doc.setDrawColor(180, 134, 58);
+            doc.setLineWidth(1);
+            
+            // Head
+            doc.circle(x, y - 5, 7, 'S');
+            
+            // Body
+            doc.line(x - 12, y + 12, x + 12, y + 12);
+            doc.line(x - 12, y + 12, x - 8, y + 20);
+            doc.line(x + 12, y + 12, x + 8, y + 20);
+            doc.line(x - 8, y + 20, x, y + 25);
+            doc.line(x + 8, y + 20, x, y + 25);
         }
 
         // Initialize
