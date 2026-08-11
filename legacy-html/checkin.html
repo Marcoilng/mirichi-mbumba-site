@@ -323,7 +323,7 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // Password verification
+    // Password verification - defined early to avoid initialization issues
     const ADMIN_PASSWORD = 'mirichi2026'; // Change this to your desired password
     
     function verifyPassword() {
