@@ -7,48 +7,289 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f0e8; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); color: #f5f0e8; min-height: 100vh; }
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .event-card { background: #161616; border: 1px solid #c4922a; border-radius: 12px; padding: 24px; margin-bottom: 20px; cursor: pointer; transition: all 0.3s; }
-        .event-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(196,146,42,0.2); }
-        .btn { background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%); color: white; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
-        .btn:hover { opacity: 0.9; }
-        input, textarea { width: 100%; padding: 12px; background: #1e1e1e; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 16px; }
-        input:focus, textarea:focus { outline: none; border-color: #c4922a; }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(196,146,42,0.2) 0%, rgba(26,26,26,0.8) 100%);
+            border: 1px solid rgba(196,146,42,0.3);
+            border-radius: 20px;
+            padding: 60px 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(196,146,42,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+        
+        /* Event Card */
+        .event-card {
+            background: linear-gradient(145deg, #161616 0%, #1e1e1e 100%);
+            border: 1px solid rgba(196,146,42,0.3);
+            border-radius: 16px;
+            padding: 32px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #c4922a, #b8860b, #c4922a);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        .event-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(196,146,42,0.3);
+            border-color: rgba(196,146,42,0.6);
+        }
+        .event-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(196,146,42,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(196,146,42,0.5);
+        }
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Form */
+        .form-container {
+            background: linear-gradient(145deg, #161616 0%, #1e1e1e 100%);
+            border: 1px solid rgba(196,146,42,0.3);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #c4922a;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 16px;
+            background: rgba(30,30,30,0.8);
+            border: 2px solid rgba(196,146,42,0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #c4922a;
+            box-shadow: 0 0 20px rgba(196,146,42,0.2);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        /* Success Message */
+        .success-container {
+            background: linear-gradient(145deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.05) 100%);
+            border: 2px solid #10b981;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Info Cards */
+        .info-card {
+            background: rgba(30,30,30,0.6);
+            border: 1px solid rgba(196,146,42,0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .info-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            height: 8px;
+            background: rgba(196,146,42,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #c4922a, #b8860b);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
         .hidden { display: none !important; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero { padding: 40px 20px; }
+            .form-container { padding: 24px; }
+            .container { padding: 20px 16px; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 style="font-size: 48px; margin-bottom: 40px; text-align: center;">Événements Mirichi</h1>
-        
+        <!-- Events List -->
         <div id="events-section">
+            <div class="hero">
+                <h1 style="font-size: 48px; margin-bottom: 16px; background: linear-gradient(135deg, #c4922a 0%, #f5f0e8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Événements Mirichi</h1>
+                <p style="font-size: 18px; color: #888; margin-bottom: 24px;">Découvrez et réservez vos places pour nos événements exclusifs</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            
             <div id="events-grid"></div>
         </div>
 
+        <!-- Reservation Form -->
         <div id="reservation-form" class="hidden">
-            <button onclick="showEvents()" class="btn" style="margin-bottom: 20px;">← Retour</button>
-            <h2 style="margin-bottom: 20px;">Réserver votre place</h2>
-            <div id="selected-event-info" style="padding: 16px; background: #1e1e1e; border-radius: 8px; margin-bottom: 20px;"></div>
+            <button onclick="showEvents()" class="btn" style="margin-bottom: 24px;">← Retour aux événements</button>
             
-            <form onsubmit="handleBooking(event)">
-                <input type="text" id="fullName" placeholder="Nom complet *" required>
-                <input type="email" id="email" placeholder="Email *" required>
-                <input type="tel" id="phone" placeholder="Téléphone *" required>
-                <textarea id="message" placeholder="Message (optionnel)" rows="3"></textarea>
-                <button type="submit" class="btn">Réserver ma place</button>
-            </form>
+            <div class="form-container">
+                <h2 style="font-size: 32px; margin-bottom: 24px; color: #c4922a;">Réserver votre place</h2>
+                
+                <div id="selected-event-info" style="margin-bottom: 32px;"></div>
+                
+                <form onsubmit="handleBooking(event)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="fullName">Nom complet *</label>
+                            <input type="text" id="fullName" placeholder="Votre nom complet" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" placeholder="votre@email.com" required>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="phone">Téléphone *</label>
+                            <input type="tel" id="phone" placeholder="+243 XXX XXX XXX" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">Ville *</label>
+                            <input type="text" id="city" placeholder="Votre ville" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profession">Profession</label>
+                        <input type="text" id="profession" placeholder="Votre profession">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="motivation">Pourquoi souhaitez-vous participer ? *</label>
+                        <textarea id="motivation" placeholder="Partagez vos motivations..." rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expectations">Qu'attendez-vous de cet événement ?</label>
+                        <textarea id="expectations" placeholder="Vos attentes..." rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="newsletter" style="width: auto; margin-right: 8px;">
+                            Je souhaite recevoir des informations sur les futurs événements
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 16px;">Confirmer ma réservation</button>
+                </form>
+            </div>
         </div>
 
+        <!-- Success Message -->
         <div id="success-message" class="hidden">
-            <h2 style="margin-bottom: 20px;">Réservation confirmée!</h2>
-            <p style="margin-bottom: 20px;">Votre place a été réservée avec succès.</p>
-            <button onclick="downloadTicket()" class="btn">Télécharger mon ticket</button>
-            <button onclick="showEvents()" class="btn" style="margin-top: 20px;">Retour aux événements</button>
+            <div class="success-container">
+                <div style="font-size: 64px; margin-bottom: 24px;">🎉</div>
+                <h2 style="font-size: 36px; margin-bottom: 16px; color: #10b981;">Réservation confirmée!</h2>
+                <p style="font-size: 18px; color: #888; margin-bottom: 32px;">Votre place a été réservée avec succès. Préparez-vous pour une expérience exceptionnelle.</p>
+                <button onclick="downloadTicket()" class="btn" style="margin-right: 16px;">Télécharger mon ticket</button>
+                <button onclick="showEvents()" class="btn" style="background: rgba(30,30,30,0.8); border: 2px solid rgba(196,146,42,0.3);">Retour aux événements</button>
+            </div>
         </div>
     </div>
 
@@ -62,8 +303,16 @@
                 date: 'Samedi 29 août 2026',
                 time: 'À partir de 13h00',
                 location: 'Silikin Village, Kinshasa',
-                description: 'Nous voulons contribuer à une génération de jeunes qui ne cherchent pas seulement à avoir, mais qui travaillent d\'abord à devenir.',
-                category: 'Leadership'
+                description: 'Nous voulons contribuer à une génération de jeunes qui ne cherchent pas seulement à avoir, mais qui travaillent d\'abord à devenir. Des jeunes capables de connaître leur valeur, de développer leurs talents, de créer des solutions et, ensuite, de construire des entreprises et des projets qui ont un impact.',
+                category: 'Leadership',
+                program: [
+                    '13h00 - Accueil et réseautage',
+                    '14h00 - Ouverture officielle',
+                    '14h30 - Session principale: L\'identité avant la réussite',
+                    '16h00 - Atelier pratique',
+                    '17h30 - Questions-réponses',
+                    '18h00 - Clôture et cocktail'
+                ]
             }
         ];
 
@@ -79,7 +328,6 @@
 
         // Get available places
         function getAvailablePlaces() {
-            console.log('Calcul des places disponibles...');
             return MAX_PARTICIPANTS - getCurrentRegistrations();
         }
 
@@ -94,16 +342,66 @@
             }
             
             const availablePlaces = getAvailablePlaces();
+            const progress = ((MAX_PARTICIPANTS - availablePlaces) / MAX_PARTICIPANTS) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            
             console.log('Places disponibles:', availablePlaces);
             console.log('Nombre d\'événements:', events.length);
             
             eventsGrid.innerHTML = events.map(event => `
                 <div class="event-card" onclick="selectEvent(${event.id})">
-                    <h2 style="font-size: 24px; margin-bottom: 12px;">${event.title}</h2>
-                    <p style="color: #888; margin-bottom: 8px;">${event.date}</p>
-                    <p style="color: #888; margin-bottom: 8px;">${event.location}</p>
-                    <p style="margin-bottom: 16px;">${event.description}</p>
-                    <p style="color: #c4922a; font-weight: 600;">Places disponibles: ${availablePlaces}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 24px;">
+                        <div>
+                            <span style="background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%); color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">${event.category}</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 32px; font-weight: 700; color: #c4922a;">${availablePlaces}</div>
+                            <div style="font-size: 12px; color: #888; text-transform: uppercase;">Places restantes</div>
+                        </div>
+                    </div>
+                    
+                    <h2 style="font-size: 32px; margin-bottom: 12px; font-weight: 700;">${event.title}</h2>
+                    <p style="font-size: 18px; color: #c4922a; margin-bottom: 16px; font-style: italic;">${event.theme}</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                        <div class="info-card">
+                            <div class="info-icon">📅</div>
+                            <div>
+                                <div style="font-size: 12px; color: #888; text-transform: uppercase;">Date</div>
+                                <div style="font-weight: 600;">${event.date}</div>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-icon">⏰</div>
+                            <div>
+                                <div style="font-size: 12px; color: #888; text-transform: uppercase;">Heure</div>
+                                <div style="font-weight: 600;">${event.time}</div>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-icon">📍</div>
+                            <div>
+                                <div style="font-size: 12px; color: #888; text-transform: uppercase;">Lieu</div>
+                                <div style="font-weight: 600;">${event.location}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p style="color: #888; line-height: 1.8; margin-bottom: 24px;">${event.description}</p>
+                    
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 16px; color: #c4922a; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Programme</h3>
+                        <ul style="list-style: none;">
+                            ${event.program.map(item => `
+                                <li style="padding: 8px 0; border-bottom: 1px solid rgba(196,146,42,0.1); display: flex; align-items: center; gap: 12px;">
+                                    <span style="width: 8px; height: 8px; background: #c4922a; border-radius: 50%;"></span>
+                                    ${item}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    
+                    <button class="btn" style="width: 100%;">Réserver ma place</button>
                 </div>
             `).join('');
             
@@ -120,9 +418,36 @@
             document.getElementById('success-message').classList.add('hidden');
 
             document.getElementById('selected-event-info').innerHTML = `
-                <strong>${selectedEvent.title}</strong><br>
-                ${selectedEvent.date}<br>
-                ${selectedEvent.location}
+                <div class="info-card">
+                    <div class="info-icon">🎯</div>
+                    <div>
+                        <div style="font-size: 24px; font-weight: 700;">${selectedEvent.title}</div>
+                        <div style="color: #c4922a;">${selectedEvent.theme}</div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px;">
+                    <div class="info-card">
+                        <div class="info-icon">📅</div>
+                        <div>
+                            <div style="font-size: 12px; color: #888;">Date</div>
+                            <div style="font-weight: 600;">${selectedEvent.date}</div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">⏰</div>
+                        <div>
+                            <div style="font-size: 12px; color: #888;">Heure</div>
+                            <div style="font-weight: 600;">${selectedEvent.time}</div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon">📍</div>
+                        <div>
+                            <div style="font-size: 12px; color: #888;">Lieu</div>
+                            <div style="font-weight: 600;">${selectedEvent.location}</div>
+                        </div>
+                    </div>
+                </div>
             `;
         }
 
@@ -144,7 +469,11 @@
             const fullName = document.getElementById('fullName').value;
             const email = document.getElementById('email').value;
             const phone = document.getElementById('phone').value;
-            const message = document.getElementById('message').value;
+            const city = document.getElementById('city').value;
+            const profession = document.getElementById('profession').value;
+            const motivation = document.getElementById('motivation').value;
+            const expectations = document.getElementById('expectations').value;
+            const newsletter = document.getElementById('newsletter').checked;
 
             // Check if event is full
             const availablePlaces = getAvailablePlaces();
@@ -161,7 +490,11 @@
                 fullName,
                 email,
                 phone,
-                message,
+                city,
+                profession,
+                motivation,
+                expectations,
+                newsletter,
                 ticketCode,
                 bookingDate: new Date().toISOString()
             };
@@ -231,7 +564,10 @@
         }
 
         // Initialize
-        loadEvents();
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM chargé, initialisation...');
+            loadEvents();
+        });
     </script>
 </body>
 </html>
