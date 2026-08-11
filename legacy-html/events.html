@@ -1,1008 +1,237 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="robots" content="index, follow">
-  <title>Événements Mirichi — Réservations & Billetterie</title>
-  <meta name="description"
-    content="Découvrez et réservez vos places pour les événements organisés par Mirichi Mbumba. Conférences, workshops, coaching et networking.">
-  <meta property="og:title" content="Événements — Mirichi Mbumba">
-  <meta property="og:description"
-    content="Participez aux événements de Mirichi Mbumba : conférences, workshops, coaching et networking.">
-  <meta property="og:image" content="/images/photo4.jpeg">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="fr_FR">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="canonical" href="https://mirichimbumba.com/events.html">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=stylesheet"
-    rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="_shared.css">
-  <script id="tailwind-config">
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            secondary: '#C4922A',
-            'secondary-container': '#E8B84B',
-            surface: '#0F0F1A',
-            'surface-container': '#16162A',
-            'surface-container-low': '#1a1a2e',
-            'surface-container-lowest': '#09090F',
-            background: '#09090F',
-            'on-surface': '#F5F0E8',
-            'on-surface-variant': 'rgba(245, 240, 232, 0.7)',
-            'on-background': '#F5F0E8',
-            primary: '#C4922A',
-            'on-primary': '#09090F',
-            'primary-container': '#16162A',
-            'on-primary-container': '#F5F0E8',
-            outline: 'rgba(245, 240, 232, 0.3)',
-            'outline-variant': 'rgba(245, 240, 232, 0.15)',
-            error: '#BA1A1A',
-            'error-container': '#FFDAD6',
-            'on-error': '#FFFFFF',
-            'on-error-container': '#410002',
-          },
-          fontFamily: {
-            'display-lg': ['Montserrat', 'sans-serif'],
-            'headline-md': ['Montserrat', 'sans-serif'],
-            'headline-sm': ['Montserrat', 'sans-serif'],
-            'body-lg': ['Inter', 'sans-serif'],
-            'body-md': ['Inter', 'sans-serif'],
-            'label-caps': ['Montserrat', 'sans-serif'],
-          },
-          spacing: {
-            'margin-desktop': '64px',
-            'margin-mobile': '20px',
-            'gutter': '24px',
-            'container-max': '1280px',
-          },
-        }
-      }
-    }
-  </script>
-  <style>
-    .event-card {
-      transition: all 0.3s ease;
-    }
-    .event-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(196, 146, 42, 0.3);
-    }
-    .reservation-form {
-      display: none;
-    }
-    .reservation-form.active {
-      display: block;
-    }
-    .success-message {
-      display: none;
-    }
-    .success-message.active {
-      display: block;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Événements Mirichi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f0e8; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .event-card { background: #161616; border: 1px solid #c4922a; border-radius: 12px; padding: 24px; margin-bottom: 20px; cursor: pointer; transition: all 0.3s; }
+        .event-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(196,146,42,0.2); }
+        .btn { background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%); color: white; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+        .btn:hover { opacity: 0.9; }
+        input, textarea { width: 100%; padding: 12px; background: #1e1e1e; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 16px; }
+        input:focus, textarea:focus { outline: none; border-color: #c4922a; }
+        .hidden { display: none !important; }
+    </style>
 </head>
-
 <body>
-
-  <div id="mm-nav-root"></div>
-
-  <main class="page-shell">
-    <section class="section-alt py-16 px-6 lg:px-12">
-      <div class="max-w-7xl mx-auto">
-        <p class="breadcrumb mb-6"><a href="index.html">Accueil</a> · Événements</p>
-        <div class="section-label flex items-center gap-3 mb-4 reveal">
-          <div class="gold-line"></div>Événements
-        </div>
-        <h1 class="reveal reveal-delay-1" style="font-size:clamp(2.25rem,4vw,3.25rem);font-weight:300;line-height:1.15">
-          Réservez votre <span style="color:var(--gold-light);font-style:italic">place</span>
-        </h1>
-        <p class="reveal reveal-delay-2" style="color:var(--muted);max-width:640px;margin-top:1rem;line-height:1.8">
-          Découvrez et participez aux événements organisés par Mirichi Mbumba : conférences, workshops, coaching et networking.
-        </p>
-      </div>
-    </section>
-
-    <section class="section-main py-20 px-6 lg:px-12">
-      <div class="max-w-7xl mx-auto">
+    <div class="container">
+        <h1 style="font-size: 48px; margin-bottom: 40px; text-align: center;">Événements Mirichi</h1>
         
-        <!-- Events List -->
         <div id="events-section">
-          <!-- Admin Counter (hidden by default, shown only when admin is logged in) -->
-          <div id="admin-section" class="mb-8 p-4 rounded-lg hidden" style="background:rgba(196,146,42,0.1);border:1px solid rgba(196,146,42,0.3);">
-            <div class="flex items-center justify-between mb-4">
-              <div>
-                <span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Compteur Admin</span>
-                <p class="font-body-md text-body-md text-on-surface-variant mt-1" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Suivi des réservations en temps réel</p>
-              </div>
-              <div class="text-right">
-                <span id="admin-counter" class="font-display-lg text-display-lg text-secondary" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;">0</span>
-                <span id="admin-max" class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:1rem;">/ 100</span>
-              </div>
-            </div>
-            <!-- Admin Controls -->
-            <div id="admin-controls" class="flex items-center gap-4 pt-4 border-t hidden" style="border-color:rgba(196,146,42,0.2);">
-              <div class="flex items-center gap-2 flex-1">
-                <label class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Modifier le max:</label>
-                <input 
-                  type="number" 
-                  id="max-participants-input" 
-                  value="100"
-                  min="1"
-                  class="w-24 bg-surface-container-low border border-outline-variant rounded px-3 py-2 text-on-surface focus:outline-none focus:border-primary transition-colors"
-                  style="background:var(--dark-2);border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;"
-                >
-              </div>
-              <button 
-                onclick="updateMaxParticipants()"
-                class="px-4 py-2 rounded-lg font-label-caps text-label-caps text-on-primary transition-colors"
-                style="background:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.75rem;font-weight:600;"
-              >
-                Mettre à jour
-              </button>
-            </div>
-            <!-- Admin Login/Logout -->
-            <div class="flex items-center gap-4 pt-4 border-t" style="border-color:rgba(196,146,42,0.2);">
-              <button 
-                id="admin-login-btn"
-                onclick="adminLogin()"
-                class="px-4 py-2 rounded-lg font-label-caps text-label-caps text-on-primary transition-colors"
-                style="background:rgba(196,146,42,0.2);font-family:'Montserrat',sans-serif;font-size:0.75rem;font-weight:600;color:var(--gold-light);"
-              >
-                Connexion Admin
-              </button>
-              <button 
-                id="admin-logout-btn"
-                onclick="adminLogout()"
-                class="px-4 py-2 rounded-lg font-label-caps text-label-caps text-on-primary transition-colors hidden"
-                style="background:rgba(186,26,26,0.2);font-family:'Montserrat',sans-serif;font-size:0.75rem;font-weight:600;color:#BA1A1A;"
-              >
-                Déconnexion
-              </button>
-            </div>
-          </div>
-          
-          <h1 class="font-display-lg text-display-lg text-on-background mb-4 text-balance" style="font-family:'Montserrat',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:700;line-height:1.1;">
-            Événements <span class="text-secondary">à venir</span>
-          </h1>
-          <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-12" style="font-family:'Inter',sans-serif;font-size:1.125rem;line-height:1.7;">
-            Découvrez nos conférences, workshops et sessions de coaching conçus pour vous aider à développer votre identité et vos talents.
-          </p>
-          
-          <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Events will be loaded here -->
-          </div>
+            <div id="events-grid"></div>
         </div>
 
-        <!-- Stitch-style Reservation Form -->
-        <div id="reservation-form" class="reservation-form">
-          <div class="w-full px-margin-mobile md:px-margin-desktop py-margin-desktop md:py-24 max-w-container-max mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-gutter">
-            <!-- Decorative background -->
-            <div class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-0">
-              <div class="absolute top-[-10%] right-[-5%] w-1/2 h-[50vh] bg-surface-container-high/40 rounded-full blur-3xl opacity-60"></div>
-              <div class="absolute bottom-[20%] left-[-10%] w-1/3 h-[40vh] bg-secondary-container/20 rounded-full blur-3xl opacity-50"></div>
-            </div>
+        <div id="reservation-form" class="hidden">
+            <button onclick="showEvents()" class="btn" style="margin-bottom: 20px;">← Retour</button>
+            <h2 style="margin-bottom: 20px;">Réserver votre place</h2>
+            <div id="selected-event-info" style="padding: 16px; background: #1e1e1e; border-radius: 8px; margin-bottom: 20px;"></div>
             
-            <!-- Left Column: Context & Remaining Spots -->
-            <div class="col-span-1 lg:col-span-5 flex flex-col gap-12 relative z-10">
-              <div>
-                <button onclick="showEvents()" class="mb-6 text-sm font-label-caps text-on-surface-variant hover:text-secondary transition-colors" style="background:none;border:none;cursor:pointer;">
-                  ← Retour aux événements
-                </button>
-                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-background mb-4 text-balance" style="font-family:'Montserrat',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:700;line-height:1.1;">
-                  Sécurisez votre <span class="text-secondary relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-secondary">place.</span>
-                </h1>
-                <p class="font-body-lg text-body-lg text-on-surface-variant max-w-md" style="font-family:'Inter',sans-serif;font-size:1.125rem;line-height:1.7;">
-                  L'identité avant la réussite commence ici. Rejoignez les jeunes acteurs du changement de Kinshasa pour une journée de découverte et de création de valeur.
-                </p>
-              </div>
-              
-              <!-- Event Info -->
-              <div id="selected-event-info" class="bg-surface-container rounded-xl p-8 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
-                <div class="absolute top-0 left-0 w-1 h-full bg-secondary"></div>
-                <div class="flex items-start justify-between mb-6">
-                  <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Événement sélectionné</span>
-                </div>
-                <div class="space-y-3">
-                  <h3 class="font-headline-md text-headline-md text-on-surface" style="font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:600;"></h3>
-                  <div class="flex items-center gap-2 text-sm" style="color:var(--muted);">
-                    <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
-                    <span class="event-date"></span>
-                  </div>
-                  <div class="flex items-center gap-2 text-sm" style="color:var(--muted);">
-                    <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">location_on</span>
-                    <span class="event-location"></span>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Visual Element -->
-              <div class="h-64 rounded-xl shadow-md overflow-hidden relative" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAsLJRdrQPJ5cx-Aynpzdec7e50lrl5HTxmw_Lc9nQqThAmh6nZf0QABcaPdYUrd_YgkEQccfwEhd_1a-ycamxWvic0cbGrHm2YFumkDc6N6IgzUkR3sxyenAK4MjqZ5RXXCr_t-L4WXzbDjTxRLN58tO8J81FSe_YxVKwcKIHO8TJw62oFscGTQz8EovWB87pkuLB8eN9xhkc7nni-LpxAdGd13gW_b_vUP14ePebmXmsj4o6lvMog');">
-                <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-                <div class="absolute bottom-4 left-4 p-4 bg-surface/90 backdrop-blur-md rounded-lg shadow-lg">
-                  <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">location_on</span>
-                    <div>
-                      <p class="font-label-caps text-label-caps text-on-surface" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Kinshasa, RDC</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <form onsubmit="handleBooking(event)">
+                <input type="text" id="fullName" placeholder="Nom complet *" required>
+                <input type="email" id="email" placeholder="Email *" required>
+                <input type="tel" id="phone" placeholder="Téléphone *" required>
+                <textarea id="message" placeholder="Message (optionnel)" rows="3"></textarea>
+                <button type="submit" class="btn">Réserver ma place</button>
+            </form>
+        </div>
+
+        <div id="success-message" class="hidden">
+            <h2 style="margin-bottom: 20px;">Réservation confirmée!</h2>
+            <p style="margin-bottom: 20px;">Votre place a été réservée avec succès.</p>
+            <button onclick="downloadTicket()" class="btn">Télécharger mon ticket</button>
+            <button onclick="showEvents()" class="btn" style="margin-top: 20px;">Retour aux événements</button>
+        </div>
+    </div>
+
+    <script>
+        // Event Data
+        const events = [
+            {
+                id: 1,
+                title: 'TOUCH UP',
+                theme: 'L\'identité avant la réussite',
+                date: 'Samedi 29 août 2026',
+                time: 'À partir de 13h00',
+                location: 'Silikin Village, Kinshasa',
+                description: 'Nous voulons contribuer à une génération de jeunes qui ne cherchent pas seulement à avoir, mais qui travaillent d\'abord à devenir.',
+                category: 'Leadership'
+            }
+        ];
+
+        const MAX_PARTICIPANTS = 100;
+        let selectedEvent = null;
+        let currentBooking = null;
+
+        // Get current registrations from localStorage
+        function getCurrentRegistrations() {
+            const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
+            return bookings.length;
+        }
+
+        // Get available places
+        function getAvailablePlaces() {
+            console.log('Calcul des places disponibles...');
+            return MAX_PARTICIPANTS - getCurrentRegistrations();
+        }
+
+        // Load events
+        function loadEvents() {
+            console.log('Chargement des événements...');
+            const eventsGrid = document.getElementById('events-grid');
             
-            <!-- Right Column: Registration Form & Ticket Preview -->
-            <div class="col-span-1 lg:col-span-7 flex flex-col lg:pl-12 relative z-10">
-              <!-- Ticket Preview -->
-              <div class="w-full bg-primary-container text-on-primary-container rounded-t-xl p-8 relative overflow-hidden shadow-xl -mb-4 z-20 transition-transform hover:-translate-y-2 duration-300" style="background:var(--dark-2);border:1px solid var(--gold-pale);">
-                <!-- Cutouts -->
-                <div class="absolute bottom-[-16px] left-[-16px] w-8 h-8 bg-background rounded-full z-10 shadow-inner" style="background:var(--dark);"></div>
-                <div class="absolute bottom-[-16px] right-[-16px] w-8 h-8 bg-background rounded-full z-10 shadow-inner" style="background:var(--dark);"></div>
-                <div class="flex justify-between items-start mb-12 relative z-10">
-                  <div>
-                    <span class="font-label-caps text-label-caps text-secondary-fixed opacity-80 mb-2 block uppercase" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--gold-light);">Pass Événement</span>
-                    <h3 class="font-headline-md text-headline-md text-on-primary-container event-title-preview" style="font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:600;color:var(--white);"></h3>
-                  </div>
-                  <div class="text-right">
-                    <span class="font-display-lg-mobile text-display-lg-mobile text-on-primary-container" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;color:var(--gold-light);">Gratuit</span>
-                    <span class="font-body-md text-body-md opacity-70 block" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--muted);">Réservation</span>
-                  </div>
+            if (!eventsGrid) {
+                console.error('events-grid element not found');
+                return;
+            }
+            
+            const availablePlaces = getAvailablePlaces();
+            console.log('Places disponibles:', availablePlaces);
+            console.log('Nombre d\'événements:', events.length);
+            
+            eventsGrid.innerHTML = events.map(event => `
+                <div class="event-card" onclick="selectEvent(${event.id})">
+                    <h2 style="font-size: 24px; margin-bottom: 12px;">${event.title}</h2>
+                    <p style="color: #888; margin-bottom: 8px;">${event.date}</p>
+                    <p style="color: #888; margin-bottom: 8px;">${event.location}</p>
+                    <p style="margin-bottom: 16px;">${event.description}</p>
+                    <p style="color: #c4922a; font-weight: 600;">Places disponibles: ${availablePlaces}</p>
                 </div>
-                <div class="flex justify-between items-end relative z-10">
-                  <div class="flex flex-col gap-1">
-                    <span class="font-label-caps text-label-caps opacity-60 uppercase text-[10px]" style="font-family:'Montserrat',sans-serif;color:var(--muted);">Statut</span>
-                    <span class="px-3 py-1 bg-secondary-fixed/20 rounded-full font-label-caps text-label-caps text-secondary-fixed text-xs" style="font-family:'Montserrat',sans-serif;background:var(--gold-pale);color:var(--gold-light);">En attente d'inscription</span>
-                  </div>
-                </div>
-                <!-- Perforated line effect at bottom -->
-                <div class="absolute bottom-0 left-8 right-8 h-px border-b-2 border-dashed border-on-primary-container/20" style="border-color:rgba(196,146,42,0.2);"></div>
-              </div>
-              
-              <!-- Form Container -->
-              <div class="bg-surface-container-lowest p-8 md:p-12 rounded-b-xl shadow-lg relative z-10" style="background:var(--dark-3);border:1px solid var(--gold-pale);">
-                <form id="booking-form" onsubmit="handleBooking(event)" class="flex flex-col gap-8">
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="flex flex-col gap-2 relative group">
-                      <label class="font-label-caps text-label-caps text-on-surface-variant" for="fullName" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--muted);">Nom Complet</label>
-                      <input class="w-full bg-transparent border-b-2 border-outline-variant py-3 text-body-lg text-on-surface focus:outline-none focus:border-primary transition-colors peer" id="fullName" name="fullName" placeholder="Jean Dupont" required type="text" style="border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;font-size:1.125rem;">
-                      <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary transition-all duration-300 peer-focus:w-full" style="background:var(--gold);"></div>
-                    </div>
-                    <div class="flex flex-col gap-2 relative group">
-                      <label class="font-label-caps text-label-caps text-on-surface-variant" for="email" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--muted);">Adresse Email</label>
-                      <input class="w-full bg-transparent border-b-2 border-outline-variant py-3 text-body-lg text-on-surface focus:outline-none focus:border-primary transition-colors peer" id="email" name="email" placeholder="jean.dupont@example.com" required type="email" style="border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;font-size:1.125rem;">
-                      <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary transition-all duration-300 peer-focus:w-full" style="background:var(--gold);"></div>
-                    </div>
-                  </div>
-                  <div class="flex flex-col gap-2 relative group">
-                    <label class="font-label-caps text-label-caps text-on-surface-variant" for="phone" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--muted);">Numéro de Téléphone</label>
-                    <input class="w-full bg-transparent border-b-2 border-outline-variant py-3 text-body-lg text-on-surface focus:outline-none focus:border-primary transition-colors peer" id="phone" name="phone" placeholder="+243 000 000 000" required type="tel" style="border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;font-size:1.125rem;">
-                    <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary transition-all duration-300 peer-focus:w-full" style="background:var(--gold);"></div>
-                  </div>
-                  <div class="flex flex-col gap-2 relative group">
-                    <label class="font-label-caps text-label-caps text-on-surface-variant" for="whatsapp" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--muted);">Numéro WhatsApp (pour recevoir votre badge)</label>
-                    <input class="w-full bg-transparent border-b-2 border-outline-variant py-3 text-body-lg text-on-surface focus:outline-none focus:border-primary transition-colors peer" id="whatsapp" name="whatsapp" placeholder="+243 000 000 000" type="tel" style="border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;font-size:1.125rem;">
-                    <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary transition-all duration-300 peer-focus:w-full" style="background:var(--gold);"></div>
-                    <p class="font-body-md text-body-md text-outline-variant text-sm mt-1" style="font-family:'Inter',sans-serif;color:rgba(245,240,232,0.5);">Optionnel: Vous recevrez un lien pour télécharger votre badge</p>
-                  </div>
-                  <div class="flex flex-col gap-2 relative group">
-                    <label class="font-label-caps text-label-caps text-on-surface-variant" for="message" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--muted);">Message (optionnel)</label>
-                    <textarea class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-4 text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors resize-none mt-2" id="message" name="message" placeholder="Partagez vos attentes..." rows="4" style="background:var(--dark-2);border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;font-size:1rem;"></textarea>
-                  </div>
-                    <div class="flex flex-col gap-2 relative group">
-                    <label class="font-label-caps text-label-caps text-on-surface-variant" for="photo" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--muted);">Votre photo (pour le badge d'accès) *</label>
-                    <div class="relative">
-                      <input type="file" id="photo" name="photo" accept="image/*" class="hidden" onchange="previewPhoto(event)">
-                      <div class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-6 text-center cursor-pointer hover:border-primary transition-colors" onclick="document.getElementById('photo').click()" style="background:var(--dark-2);border-color:rgba(245,240,232,0.3);">
-                        <div id="photo-preview" class="hidden mb-4">
-                          <img id="photo-preview-img" class="w-24 h-24 object-cover rounded-full mx-auto border-2" style="border-color:var(--gold);">
-                        </div>
-                        <div id="photo-placeholder">
-                          <span class="material-symbols-outlined text-4xl mb-2" style="color:var(--gold);">add_a_photo</span>
-                          <p class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;color:var(--muted);">Cliquez pour ajouter votre photo</p>
-                          <p class="font-body-md text-body-md text-outline-variant text-sm mt-1" style="font-family:'Inter',sans-serif;color:rgba(245,240,232,0.5);">Format: JPG, PNG (max 5MB)</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="pt-4 flex items-center justify-between border-t border-outline-variant mt-4" style="border-color:rgba(245,240,232,0.15);">
-                    <div class="flex flex-col">
-                      <span class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;color:var(--muted);">Réservation gratuite</span>
-                    </div>
-                    <button class="bg-primary text-on-primary font-label-caps text-label-caps uppercase px-8 py-4 rounded-lg shadow-md hover:bg-secondary hover:text-on-secondary transition-all duration-300 flex items-center gap-2 group" type="submit" style="background:var(--gold);color:var(--dark);font-family:'Montserrat',sans-serif;font-size:0.75rem;">
-                      <span>Réserver ma place</span>
-                      <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Success Message -->
-        <div id="success-message" class="success-message">
-          <div class="w-full px-margin-mobile md:px-margin-desktop py-margin-desktop md:py-24 max-w-container-max mx-auto text-center">
-            <div class="inline-flex items-center justify-center p-4 rounded-full mb-8" style="background:var(--gold-pale);">
-              <span class="material-symbols-outlined text-6xl" style="color:var(--gold);font-size:3rem;">check_circle</span>
-            </div>
-            <h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-background mb-6 leading-tight" style="font-family:'Montserrat',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;color:var(--white);">
-              Réservation confirmée!
-            </h2>
-            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-12" style="font-family:'Inter',sans-serif;font-size:1.125rem;line-height:1.7;color:var(--muted);">
-              Votre place a été réservée avec succès. Votre ticket est prêt.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-              <button onclick="downloadTicket()" class="inline-flex items-center justify-center px-10 py-5 bg-primary text-on-primary font-label-caps text-label-caps tracking-widest uppercase hover:bg-secondary hover:text-on-secondary transition-all duration-300 shadow-xl shadow-primary/20" style="background:var(--gold);color:var(--dark);font-family:'Montserrat',sans-serif;font-size:0.75rem;">
-                Télécharger mon ticket
-                <span class="material-symbols-outlined ml-3 text-[20px]">download</span>
-              </button>
-              <button onclick="showEvents()" class="inline-flex items-center justify-center px-10 py-5 bg-surface-container text-on-surface font-label-caps text-label-caps tracking-widest uppercase hover:bg-surface-container-low transition-all duration-300" style="background:var(--dark-2);color:var(--white);border:1px solid var(--gold-pale);font-family:'Montserrat',sans-serif;font-size:0.75rem;">
-                Retour aux événements
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-  </main>
-
-  <script src="site-chrome.js"></script>
-  <script src="_shared.js"></script>
-  <script>
-    // Firebase initialization
-    const firebaseConfig = {
-      apiKey: "AIzaSyDpdm8el1KWM_WD42HMExRCvFp9ySf4fvI",
-      authDomain: "mirichi-events.firebaseapp.com",
-      databaseURL: "https://mirichi-events-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "mirichi-events",
-      storageBucket: "mirichi-events.firebasestorage.app",
-      messagingSenderId: "582412284374",
-      appId: "1:582412284374:web:3c57614741e8a595f13477"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const auth = firebase.auth();
-
-    // Admin authentication state
-    let isAdmin = false;
-
-    // Check if user is authenticated as admin
-    auth.onAuthStateChanged((user) => {
-      isAdmin = user !== null;
-      updateAdminUI();
-    });
-
-    function updateAdminUI() {
-      const adminSection = document.getElementById('admin-section');
-      const adminControls = document.getElementById('admin-controls');
-      const loginButton = document.getElementById('admin-login-btn');
-      const logoutButton = document.getElementById('admin-logout-btn');
-      
-      if (isAdmin) {
-        if (adminSection) adminSection.classList.remove('hidden');
-        if (adminControls) adminControls.classList.remove('hidden');
-        if (loginButton) loginButton.classList.add('hidden');
-        if (logoutButton) logoutButton.classList.remove('hidden');
-      } else {
-        if (adminSection) adminSection.classList.add('hidden');
-        if (adminControls) adminControls.classList.add('hidden');
-        if (loginButton) loginButton.classList.remove('hidden');
-        if (logoutButton) logoutButton.classList.add('hidden');
-      }
-    }
-
-    // Admin login
-    async function adminLogin() {
-      const email = prompt("Entrez votre email admin:");
-      const password = prompt("Entrez votre mot de passe admin:");
-      
-      if (email && password) {
-        try {
-          await auth.signInWithEmailAndPassword(email, password);
-          alert("Connexion admin réussie!");
-        } catch (error) {
-          alert("Erreur de connexion: " + error.message);
-        }
-      }
-    }
-
-    // Admin logout
-    async function adminLogout() {
-      try {
-        await auth.signOut();
-        alert("Déconnexion réussie!");
-      } catch (error) {
-        alert("Erreur de déconnexion: " + error.message);
-      }
-    }
-
-    // Firebase-based booking system
-    function getMaxParticipants() {
-      // Get from Firebase config
-      return database.ref('config/maxParticipants').once('value').then(snapshot => {
-        return snapshot.val() || 100; // Default 100
-      });
-    }
-    
-    function setMaxParticipants(count) {
-      return database.ref('config/maxParticipants').set(count);
-    }
-    
-    function updateMaxParticipants() {
-      const input = document.getElementById('max-participants-input');
-      const newValue = parseInt(input.value);
-      
-      if (newValue && newValue > 0) {
-        setMaxParticipants(newValue).then(() => {
-          document.getElementById('admin-max').textContent = '/ ' + newValue;
-          loadEvents(); // Reload to update display
-          alert('Nombre maximum de participants mis à jour: ' + newValue);
-        });
-      } else {
-        alert('Veuillez entrer un nombre valide');
-      }
-    }
-
-    // Event data - TOUCH UP
-    const events = [
-      {
-        id: 1,
-        title: 'TOUCH UP',
-        theme: 'L\'identité avant la réussite',
-        date: 'Samedi 29 août 2026',
-        time: 'À partir de 13h00',
-        location: 'Silikin Village, Kinshasa',
-        description: 'Nous voulons contribuer à une génération de jeunes qui ne cherchent pas seulement à avoir, mais qui travaillent d\'abord à devenir. Des jeunes capables de connaître leur valeur, de développer leurs talents, de créer des solutions et, ensuite, de construire des entreprises et des projets qui ont un impact.',
-        category: 'Leadership',
-        maxParticipants: 100
-      }
-    ];
-
-    let selectedEvent = null;
-    let currentBooking = null;
-    let uploadedPhotoData = null;
-
-    // Preview uploaded photo
-    function previewPhoto(event) {
-      const file = event.target.files[0];
-      if (file) {
-        // Check file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          alert('L\'image est trop volumineuse. Maximum 5MB.');
-          event.target.value = '';
-          return;
+            `).join('');
+            
+            console.log('Événements affichés');
         }
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          uploadedPhotoData = e.target.result;
-          const preview = document.getElementById('photo-preview');
-          const previewImg = document.getElementById('photo-preview-img');
-          const placeholder = document.getElementById('photo-placeholder');
-          
-          previewImg.src = e.target.result;
-          preview.classList.remove('hidden');
-          placeholder.classList.add('hidden');
-        };
-        reader.readAsDataURL(file);
-      }
-    }
+        // Select event
+        function selectEvent(eventId) {
+            selectedEvent = events.find(e => e.id === eventId);
+            if (!selectedEvent) return;
 
-    // Get current number of registrations from Firebase
-    function getCurrentRegistrations() {
-      return database.ref('bookings').once('value').then(snapshot => {
-        const bookings = snapshot.val();
-        return bookings ? Object.keys(bookings).length : 0;
-      });
-    }
+            document.getElementById('events-section').classList.add('hidden');
+            document.getElementById('reservation-form').classList.remove('hidden');
+            document.getElementById('success-message').classList.add('hidden');
 
-    // Get available places
-    async function getAvailablePlaces() {
-      const currentRegistrations = await getCurrentRegistrations();
-      const maxParticipants = await getMaxParticipants();
-      return maxParticipants - currentRegistrations;
-    }
-
-    // Check if event is full
-    async function isEventFull() {
-      const currentRegistrations = await getCurrentRegistrations();
-      const maxParticipants = await getMaxParticipants();
-      return currentRegistrations >= maxParticipants;
-    }
-
-    // Load events on page load
-    async function loadEvents() {
-      console.log('Chargement des événements...');
-      const eventsGrid = document.getElementById('events-grid');
-      
-      if (!eventsGrid) {
-        console.error('events-grid element not found');
-        return;
-      }
-      
-      try {
-        const availablePlaces = await getAvailablePlaces();
-        const full = await isEventFull();
-        const maxParticipants = await getMaxParticipants();
-        const currentRegistrations = await getCurrentRegistrations();
-        
-        console.log('Données chargées:', { availablePlaces, full, maxParticipants, currentRegistrations });
-        
-        // Update admin counter
-        const adminCounter = document.getElementById('admin-counter');
-        const adminMax = document.getElementById('admin-max');
-        const maxInput = document.getElementById('max-participants-input');
-        
-        if (adminCounter) {
-          adminCounter.textContent = currentRegistrations;
-        }
-        if (adminMax) {
-          adminMax.textContent = '/ ' + maxParticipants;
-        }
-        if (maxInput) {
-          maxInput.value = maxParticipants;
-        }
-        
-        // Change color if approaching limit
-        if (adminCounter) {
-          if (currentRegistrations >= maxParticipants - 10) {
-            adminCounter.style.color = '#BA1A1A'; // Red warning
-          } else if (currentRegistrations >= maxParticipants - 30) {
-            adminCounter.style.color = '#F59E0B'; // Orange warning
-          } else {
-            adminCounter.style.color = 'var(--gold)'; // Normal
-          }
-        }
-        
-        console.log('Nombre d\'événements:', events.length);
-        
-        if (events.length > 0) {
-          eventsGrid.innerHTML = events.map(event => `
-            <div class="event-card p-6" style="background:var(--dark-2);border:1px solid var(--gold-pale);border-radius:8px;cursor:pointer;" onclick="${full ? '' : `selectEvent(${event.id})`}">
-              <div class="mb-4">
-                <span class="text-xs px-3 py-1" style="background:var(--gold-pale);color:var(--gold-light);border-radius:20px;">${event.category}</span>
-              </div>
-              <h3 class="mb-3" style="font-family:'Cormorant Garant',serif;font-size:1.5rem;font-weight:300;color:var(--white);">${event.title}</h3>
-              <div class="space-y-2 mb-4">
-                <div class="flex items-center gap-2 text-sm" style="color:var(--muted);">
-                  <span class="material-symbols-outlined" style="font-size:18px;color:var(--gold);">calendar_today</span>
-                  <span>${event.date}</span>
-                </div>
-                <div class="flex items-center gap-2 text-sm" style="color:var(--muted);">
-                  <span class="material-symbols-outlined" style="font-size:18px;color:var(--gold);">location_on</span>
-                  <span>${event.location}</span>
-                </div>
-              </div>
-              <div class="pt-4 border-t" style="border-color:rgba(196,146,42,0.15);">
-                <div class="flex items-center justify-between mb-2">
-                  <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Places disponibles</span>
-                  <span class="font-display-sm text-display-sm text-secondary" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:700;color:var(--gold-light);">${availablePlaces}</span>
-                </div>
-                <div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden" style="background:rgba(245,240,232,0.15);">
-                  <div class="h-2 rounded-full relative transition-all duration-300" style="width:${(availablePlaces / maxParticipants) * 100}%;background:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold)'};">
-                    ${availablePlaces <= 10 ? '<div class="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50 animate-pulse"></div>' : ''}
-                  </div>
-                </div>
-                <p class="font-body-md text-body-md text-on-surface-variant mt-4" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--muted);">Sur ${maxParticipants} places exclusives disponibles.</p>
-              </div>
-            </div>
-          `).join('');
-          console.log('Événements affichés avec succès');
-        } else {
-          eventsGrid.innerHTML = `
-            <div class="text-center py-12 col-span-full">
-              <p style="color:var(--muted);">Aucun événement programmé pour le moment.</p>
-              <p style="color:var(--muted);">Revenez bientôt pour découvrir nos nouvelles activités!</p>
-            </div>
-          `;
-          console.log('Aucun événement à afficher');
-        }
-      } catch (error) {
-        console.error('Erreur lors du chargement des événements:', error);
-        eventsGrid.innerHTML = `
-          <div class="text-center py-12 col-span-full">
-            <p style="color:var(--error);">Erreur lors du chargement des événements.</p>
-            <p style="color:var(--muted);">Veuillez réessayer plus tard.</p>
-          </div>
-        `;
-      }
-    }
-
-    // Select event and show reservation form
-    async function selectEvent(eventId) {
-      selectedEvent = events.find(e => e.id === eventId);
-      if (!selectedEvent) return;
-
-      // Check if event is full
-      const full = await isEventFull();
-      if (full) {
-        alert('Désolé, toutes les places sont déjà réservées pour cet événement.');
-        return;
-      }
-
-      document.getElementById('events-section').style.display = 'none';
-      document.getElementById('reservation-form').classList.add('active');
-      document.getElementById('success-message').classList.remove('active');
-
-      // Update event info display
-      const eventInfo = document.getElementById('selected-event-info');
-      eventInfo.querySelector('.font-headline-md').textContent = selectedEvent.title;
-      eventInfo.querySelector('.event-date').textContent = selectedEvent.date;
-      eventInfo.querySelector('.event-location').textContent = selectedEvent.location;
-      
-      // Update ticket preview
-      document.querySelector('.event-title-preview').textContent = selectedEvent.title;
-      
-      // Update availability indicator in form
-      updateAvailabilityIndicator();
-    }
-
-    // Update availability indicator in the form
-    async function updateAvailabilityIndicator() {
-      const availablePlaces = await getAvailablePlaces();
-      const maxParticipants = await getMaxParticipants();
-      const availabilitySection = document.getElementById('selected-event-info');
-      
-      // Add availability indicator if it doesn't exist
-      if (!document.getElementById('form-availability')) {
-        const indicator = document.createElement('div');
-        indicator.id = 'form-availability';
-        indicator.className = 'mt-4 pt-4 border-t';
-        indicator.style.borderColor = 'rgba(245,240,232,0.15)';
-        indicator.innerHTML = `
-          <div class="flex items-start justify-between mb-3">
-            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Disponibilité</span>
-            <div class="flex items-center gap-2">
-              ${availablePlaces <= 10 ? `
-                <span class="relative flex h-3 w-3">
-              ` : `
-                <span class="material-symbols-outlined text-secondary" style="color:var(--gold);">check_circle</span>
-                <span class="font-label-caps text-label-caps text-secondary" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--gold-light);">Places disponibles</span>
-              `}
-            </div>
-          </div>
-          <div class="flex items-baseline gap-4 mb-2">
-            <span class="font-display-lg text-display-lg text-on-surface" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;color:var(--white);">${availablePlaces}</span>
-            <span class="font-headline-md text-headline-md text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;color:var(--muted);">places</span>
-          </div>
-          <div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden" style="background:rgba(245,240,232,0.15);">
-            <div class="h-2 rounded-full relative transition-all duration-300" style="width:${(availablePlaces / maxParticipants) * 100}%;background:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold)'};">
-              ${availablePlaces <= 10 ? '<div class="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50 animate-pulse"></div>' : ''}
-            </div>
-          </div>
-          <p class="font-body-md text-body-md text-on-surface-variant mt-4" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--muted);">Sur ${maxParticipants} places exclusives disponibles.</p>
-        `;
-        availabilitySection.appendChild(indicator);
-      } else {
-        // Update existing indicator
-        const indicator = document.getElementById('form-availability');
-        indicator.innerHTML = `
-          <div class="flex items-start justify-between mb-3">
-            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Disponibilité</span>
-            <div class="flex items-center gap-2">
-              ${availablePlaces <= 10 ? `
-                <span class="relative flex h-3 w-3">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-3 w-3 bg-error"></span>
-                </span>
-                <span class="font-label-caps text-label-caps text-error" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:#BA1A1A;">Fermeture imminente</span>
-              ` : `
-                <span class="material-symbols-outlined text-secondary" style="color:var(--gold);">check_circle</span>
-                <span class="font-label-caps text-label-caps text-secondary" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:var(--gold-light);">Places disponibles</span>
-              `}
-            </div>
-          </div>
-          <div class="flex items-baseline gap-4 mb-2">
-            <span class="font-display-lg text-display-lg text-on-surface" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;color:var(--white);">${availablePlaces}</span>
-            <span class="font-headline-md text-headline-md text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;color:var(--muted);">places</span>
-          </div>
-          <div class="w-full bg-surface-variant rounded-full h-2 overflow-hidden" style="background:rgba(245,240,232,0.15);">
-            <div class="h-2 rounded-full relative transition-all duration-300" style="width:${(availablePlaces / maxParticipants) * 100}%;background:${availablePlaces <= 10 ? '#BA1A1A' : 'var(--gold)'};">
-              ${availablePlaces <= 10 ? '<div class="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50 animate-pulse"></div>' : ''}
-            </div>
-          </div>
-          <p class="font-body-md text-body-md text-on-surface-variant mt-4" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--muted);">Sur ${maxParticipants} places exclusives disponibles.</p>
-        `;
-      }
-    }
-
-    // Show events list
-    async function showEvents() {
-      document.getElementById('events-section').style.display = 'block';
-      document.getElementById('reservation-form').classList.remove('active');
-      document.getElementById('success-message').classList.remove('active');
-      document.getElementById('booking-form').reset();
-      selectedEvent = null;
-      currentBooking = null;
-      uploadedPhotoData = null;
-      await loadEvents(); // Reload to update availability
-    }
-
-    // Handle booking submission
-    async function handleBooking(event) {
-      event.preventDefault();
-
-      // Check if photo is uploaded
-      if (!uploadedPhotoData) {
-        alert('Veuillez ajouter votre photo pour le badge d\'accès.');
-        return;
-      }
-
-      // Check if event is full again (double-check)
-      const full = await isEventFull();
-      if (full) {
-        alert('Désolé, toutes les places sont déjà réservées pour cet événement.');
-        showEvents();
-        return;
-      }
-
-      const fullName = document.getElementById('fullName').value;
-      const email = document.getElementById('email').value;
-      const phone = document.getElementById('phone').value;
-      const whatsapp = document.getElementById('whatsapp').value;
-      const message = document.getElementById('message').value;
-
-      // Generate unique ticket code
-      const ticketCode = 'MIR-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-
-      // Check if email already registered for this event in Firebase
-      const bookingsSnapshot = await database.ref('bookings').once('value');
-      const bookings = bookingsSnapshot.val() || {};
-      const existingBooking = Object.values(bookings).find(b => b.email === email && b.eventId === selectedEvent.id);
-      
-      if (existingBooking) {
-        alert('Vous avez déjà réservé une place pour cet événement avec cet email.');
-        return;
-      }
-
-      currentBooking = {
-        eventId: selectedEvent.id,
-        eventTitle: selectedEvent.title,
-        fullName,
-        email,
-        phone,
-        whatsapp,
-        message,
-        photo: uploadedPhotoData,
-        ticketCode,
-        bookingDate: new Date().toISOString()
-      };
-
-      // Save to Firebase (without photo data to avoid storage limits)
-      const bookingWithoutPhoto = { ...currentBooking };
-      delete bookingWithoutPhoto.photo;
-      
-      const newBookingRef = database.ref('bookings').push();
-      await newBookingRef.set(bookingWithoutPhoto);
-
-      // Directly generate and download the badge PDF
-      downloadTicket();
-      
-      // Send via WhatsApp if number provided
-      if (whatsapp) {
-        sendViaWhatsApp(whatsapp, fullName, ticketCode);
-      }
-      
-      // Show success message after PDF generation
-      document.getElementById('reservation-form').classList.remove('active');
-      document.getElementById('success-message').classList.add('active');
-    }
-
-    // Send badge via WhatsApp
-    function sendViaWhatsApp(whatsappNumber, fullName, ticketCode) {
-      // Clean the number (remove +, spaces, etc.)
-      const cleanNumber = whatsappNumber.replace(/[^0-9]/g, '');
-      
-      // Create WhatsApp message
-      const message = `Bonjour ${fullName}! 🎉\n\nVotre réservation pour l'événement TOUCH UP est confirmée!\n\n🎫 Code ticket: ${ticketCode}\n\nVotre badge PDF a été téléchargé automatiquement. Présentez ce code à l'entrée.\n\nMerci de votre participation!`;
-      
-      // Create WhatsApp link
-      const whatsappLink = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
-      
-      // Open WhatsApp in new tab
-      window.open(whatsappLink, '_blank');
-    }
-
-    // Generate and download ticket PDF
-    function downloadTicket() {
-      if (!currentBooking || !selectedEvent) return;
-
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('p', 'mm', 'a4');
-
-      // Generate QR Code
-      const qrContainer = document.createElement('div');
-      qrContainer.style.display = 'none';
-      document.body.appendChild(qrContainer);
-      
-      new QRCode(qrContainer, {
-        text: currentBooking.ticketCode,
-        width: 128,
-        height: 128
-      });
-
-      setTimeout(() => {
-        const qrCanvas = qrContainer.querySelector('canvas');
-        const qrDataUrl = qrCanvas.toDataURL('image/png');
-        document.body.removeChild(qrContainer);
-
-        // Background
-        doc.setFillColor(9, 9, 15);
-        doc.rect(0, 0, 210, 297, 'F');
-
-        // Gold accent header
-        doc.setFillColor(196, 146, 42);
-        doc.rect(0, 0, 210, 50, 'F');
-
-        // Logo (placeholder - will be replaced with actual logo)
-        try {
-          doc.addImage('logo-touchup.png', 'PNG', 15, 10, 30, 30);
-        } catch (e) {
-          // Fallback if logo not loaded
-          doc.setTextColor(9, 9, 15);
-          doc.setFontSize(16);
-          doc.setFont(undefined, 'bold');
-          doc.text('TOUCH UP', 30, 25);
-          doc.setFont(undefined, 'normal');
+            document.getElementById('selected-event-info').innerHTML = `
+                <strong>${selectedEvent.title}</strong><br>
+                ${selectedEvent.date}<br>
+                ${selectedEvent.location}
+            `;
         }
 
-        // Event name in header
-        doc.setTextColor(9, 9, 15);
-        doc.setFontSize(18);
-        doc.setFont(undefined, 'bold');
-        doc.text('BADGE D\'ACCÈS', 105, 25, { align: 'center' });
-        doc.setFont(undefined, 'normal');
-
-        // Decorative line
-        doc.setDrawColor(196, 146, 42);
-        doc.setLineWidth(0.5);
-        doc.line(15, 55, 195, 55);
-
-        // Event Title
-        doc.setTextColor(245, 240, 232);
-        doc.setFontSize(24);
-        doc.setFont(undefined, 'bold');
-        doc.text(selectedEvent.title, 105, 70, { align: 'center' });
-        doc.setFont(undefined, 'normal');
-
-        // Event Theme
-        doc.setFontSize(12);
-        doc.setTextColor(196, 146, 42);
-        doc.text(selectedEvent.theme, 105, 80, { align: 'center' });
-
-        // Photo section
-        doc.setFillColor(22, 22, 26);
-        doc.roundedRect(15, 90, 60, 70, 5, 5, 'F');
-        doc.setDrawColor(196, 146, 42);
-        doc.setLineWidth(0.5);
-        doc.roundedRect(15, 90, 60, 70, 5, 5, 'S');
-
-        // Add photo
-        if (currentBooking.photo) {
-          doc.addImage(currentBooking.photo, 'JPEG', 20, 95, 50, 60);
-        } else {
-          doc.setTextColor(117, 119, 126);
-          doc.setFontSize(10);
-          doc.text('Photo', 45, 125, { align: 'center' });
+        // Show events
+        function showEvents() {
+            document.getElementById('events-section').classList.remove('hidden');
+            document.getElementById('reservation-form').classList.add('hidden');
+            document.getElementById('success-message').classList.add('hidden');
+            document.querySelector('form').reset();
+            selectedEvent = null;
+            currentBooking = null;
+            loadEvents();
         }
 
-        // Participant Info
-        let yPos = 95;
-        doc.setFontSize(14);
-        doc.setTextColor(196, 146, 42);
-        doc.setFont(undefined, 'bold');
-        doc.text('PARTICIPANT', 85, yPos);
-        doc.setFont(undefined, 'normal');
-        yPos += 15;
+        // Handle booking
+        function handleBooking(event) {
+            event.preventDefault();
 
-        doc.setTextColor(245, 240, 232);
-        doc.setFontSize(12);
-        doc.text(`Nom: ${currentBooking.fullName}`, 85, yPos);
-        yPos += 10;
-        doc.text(`Email: ${currentBooking.email}`, 85, yPos);
-        yPos += 10;
-        doc.text(`Téléphone: ${currentBooking.phone}`, 85, yPos);
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
 
-        // Event Details
-        yPos = 175;
-        doc.setFontSize(14);
-        doc.setTextColor(196, 146, 42);
-        doc.setFont(undefined, 'bold');
-        doc.text('DÉTAILS DE L\'ÉVÉNEMENT', 15, yPos);
-        doc.setFont(undefined, 'normal');
-        yPos += 15;
+            // Check if event is full
+            const availablePlaces = getAvailablePlaces();
+            if (availablePlaces <= 0) {
+                alert('Désolé, toutes les places sont réservées.');
+                return;
+            }
 
-        doc.setTextColor(245, 240, 232);
-        doc.setFontSize(11);
-        
-        // Date with icon
-        doc.setTextColor(196, 146, 42);
-        doc.setFontSize(10);
-        doc.text('DATE', 15, yPos);
-        doc.setTextColor(245, 240, 232);
-        doc.setFontSize(12);
-        doc.text(selectedEvent.date, 15, yPos + 8);
-        yPos += 20;
+            // Generate ticket code
+            const ticketCode = 'MIR-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-        // Time with icon
-        doc.setTextColor(196, 146, 42);
-        doc.setFontSize(10);
-        doc.text('HEURE', 15, yPos);
-        doc.setTextColor(245, 240, 232);
-        doc.setFontSize(12);
-        doc.text(selectedEvent.time, 15, yPos + 8);
-        yPos += 20;
+            currentBooking = {
+                event: selectedEvent,
+                fullName,
+                email,
+                phone,
+                message,
+                ticketCode,
+                bookingDate: new Date().toISOString()
+            };
 
-        // Location with icon
-        doc.setTextColor(196, 146, 42);
-        doc.setFontSize(10);
-        doc.text('LIEU', 15, yPos);
-        doc.setTextColor(245, 240, 232);
-        doc.setFontSize(12);
-        doc.text(selectedEvent.location, 15, yPos + 8);
+            // Save to localStorage
+            const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
+            bookings.push(currentBooking);
+            localStorage.setItem('mirichi_bookings', JSON.stringify(bookings));
 
-        // QR Code section
-        yPos = 230;
-        doc.setFillColor(22, 22, 26);
-        doc.roundedRect(130, 220, 65, 65, 5, 5, 'F');
-        doc.setDrawColor(196, 146, 42);
-        doc.setLineWidth(0.5);
-        doc.roundedRect(130, 220, 65, 65, 5, 5, 'S');
+            document.getElementById('reservation-form').classList.add('hidden');
+            document.getElementById('success-message').classList.remove('hidden');
+        }
 
-        doc.addImage(qrDataUrl, 'PNG', 140, 230, 45, 45);
+        // Download ticket
+        function downloadTicket() {
+            if (!currentBooking || !selectedEvent) return;
 
-        // Ticket Code
-        yPos = 230;
-        doc.setFontSize(10);
-        doc.setTextColor(196, 146, 42);
-        doc.setFont(undefined, 'bold');
-        doc.text('CODE TICKET', 15, yPos);
-        doc.setFont(undefined, 'normal');
-        yPos += 10;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
 
-        doc.setFillColor(22, 22, 26);
-        doc.roundedRect(15, 235, 105, 20, 3, 3, 'F');
-        doc.setDrawColor(196, 146, 42);
-        doc.roundedRect(15, 235, 105, 20, 3, 3, 'S');
+            const qrContainer = document.createElement('div');
+            qrContainer.style.display = 'none';
+            document.body.appendChild(qrContainer);
+            
+            new QRCode(qrContainer, {
+                text: currentBooking.ticketCode,
+                width: 128,
+                height: 128
+            });
 
-        doc.setTextColor(245, 240, 232);
-        doc.setFontSize(11);
-        doc.setFont(undefined, 'bold');
-        doc.text(currentBooking.ticketCode, 67.5, 248, { align: 'center' });
-        doc.setFont(undefined, 'normal');
+            setTimeout(() => {
+                const qrCanvas = qrContainer.querySelector('canvas');
+                const qrDataUrl = qrCanvas.toDataURL('image/png');
+                document.body.removeChild(qrContainer);
 
-        // Footer
-        doc.setFontSize(9);
-        doc.setTextColor(117, 119, 126);
-        doc.text('Présentez ce badge à l\'entrée de l\'événement', 105, 290, { align: 'center' });
+                doc.setFillColor(196, 146, 42);
+                doc.rect(0, 0, 210, 40, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(24);
+                doc.text('TICKET ÉVÉNEMENT', 105, 25, { align: 'center' });
 
-        // Save PDF
-        doc.save(`badge-${selectedEvent.title.replace(/\s+/g, '-')}-${currentBooking.fullName.replace(/\s+/g, '-')}.pdf`);
-      }, 100);
-    }
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(20);
+                doc.text(selectedEvent.title, 105, 60, { align: 'center' });
 
-    // Initialize
-    loadEvents().catch(console.error);
-  </script>
+                doc.setFontSize(12);
+                doc.text(`Date: ${selectedEvent.date}`, 20, 80);
+                doc.text(`Heure: ${selectedEvent.time}`, 20, 90);
+                doc.text(`Lieu: ${selectedEvent.location}`, 20, 100);
+                doc.text(`Nom: ${currentBooking.fullName}`, 20, 120);
+                doc.text(`Email: ${currentBooking.email}`, 20, 130);
+                doc.text(`Téléphone: ${currentBooking.phone}`, 20, 140);
+
+                doc.addImage(qrDataUrl, 'PNG', 80, 160, 50, 50);
+
+                doc.setFillColor(245, 240, 255);
+                doc.rect(20, 220, 170, 30, 'F');
+                doc.setDrawColor(196, 146, 42);
+                doc.rect(20, 220, 170, 30, 'S');
+
+                doc.setFontSize(14);
+                doc.setTextColor(196, 146, 42);
+                doc.text(currentBooking.ticketCode, 105, 240, { align: 'center' });
+
+                doc.save(`ticket-${selectedEvent.title.replace(/\s+/g, '-')}.pdf`);
+            }, 100);
+        }
+
+        // Initialize
+        loadEvents();
+    </script>
 </body>
 </html>

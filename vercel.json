@@ -1,6 +1,6 @@
 {
   "buildCommand": "node scripts/prepare-deploy.mjs",
-  "outputDirectory": "public",
+  "outputDirectory": "legacy-html",
   "cleanUrls": true,
   "trailingSlash": false,
   "headers": [

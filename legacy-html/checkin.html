@@ -1,692 +1,204 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vérification des Tickets - Mirichi Mbumba</title>
-  <meta name="description" content="Système de vérification des tickets pour les événements Mirichi Mbumba">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <link rel="stylesheet" href="_shared.css">
-  <script id="tailwind-config">
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            secondary: '#C4922A',
-            'secondary-container': '#E8B84B',
-            surface: '#0F0F1A',
-            'surface-container': '#16162A',
-            'surface-container-low': '#1a1a2e',
-            'surface-container-lowest': '#09090F',
-            background: '#09090F',
-            'on-surface': '#F5F0E8',
-            'on-surface-variant': 'rgba(245, 240, 232, 0.7)',
-            'on-background': '#F5F0E8',
-            primary: '#C4922A',
-            'on-primary': '#09090F',
-            'primary-container': '#16162A',
-            gold: '#C4922A',
-            'gold-light': '#E8B84B',
-            'gold-pale': 'rgba(196, 146, 42, 0.2)',
-            muted: 'rgba(245, 240, 232, 0.6)',
-            white: '#F5F0E8',
-            error: '#BA1A1A',
-            success: '#10B981'
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--background);
-      color: var(--on-background);
-      min-height: 100vh;
-    }
-    #reader {
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-    #reader video {
-      border-radius: 12px;
-    }
-    #reader__scan_region {
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    #reader__dashboard {
-      display: none !important;
-    }
-    .scanner-container {
-      position: relative;
-      background: linear-gradient(135deg, rgba(196, 146, 42, 0.1) 0%, rgba(196, 146, 42, 0.05) 100%);
-      border: 2px solid var(--gold);
-      border-radius: 16px;
-      padding: 20px;
-      min-height: 350px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .scanner-overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 250px;
-      height: 250px;
-      border: 3px solid var(--gold);
-      border-radius: 12px;
-      pointer-events: none;
-    }
-    .scanner-overlay::before,
-    .scanner-overlay::after {
-      content: '';
-      position: absolute;
-      width: 30px;
-      height: 30px;
-      border: 4px solid var(--gold);
-    }
-    .scanner-overlay::before {
-      top: -4px;
-      left: -4px;
-      border-right: none;
-      border-bottom: none;
-    }
-    .scanner-overlay::after {
-      bottom: -4px;
-      right: -4px;
-      border-left: none;
-      border-top: none;
-    }
-    .scan-line {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-      animation: scan 2s linear infinite;
-    }
-    @keyframes scan {
-      0% { top: 0; }
-      100% { top: 100%; }
-    }
-    .pulse-ring {
-      animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-    }
-    @keyframes pulse-ring {
-      0% { transform: scale(0.8); opacity: 1; }
-      80%, 100% { transform: scale(1.3); opacity: 0; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in Mirichi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f5f0e8; }
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        .btn { background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%); color: white; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+        .btn:hover { opacity: 0.9; }
+        input { width: 100%; padding: 12px; background: #1e1e1e; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 16px; }
+        input:focus { outline: none; border-color: #c4922a; }
+        .hidden { display: none !important; }
+        #reader { min-height: 300px; background: #1e1e1e; border-radius: 12px; margin-bottom: 20px; }
+        .result-card { padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .valid { background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; }
+        .invalid { background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; }
+        .already-used { background: rgba(245, 158, 11, 0.1); border: 2px solid #f59e0b; }
+    </style>
 </head>
 <body>
-  <section class="section-main py-20 px-6 lg:px-12">
-    <div class="max-w-4xl mx-auto">
-      <!-- Password Protection -->
-      <div id="password-protection" class="text-center py-20">
-        <div class="bg-surface-container rounded-2xl p-10 shadow-2xl max-w-md mx-auto" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(196,146,42,0.1) 100%);border:1px solid var(--gold-pale);">
-          <div class="mb-8 relative">
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="w-24 h-24 rounded-full pulse-ring" style="background:var(--gold);"></div>
-            </div>
-            <div class="relative flex items-center justify-center">
-              <span class="material-symbols-outlined text-6xl" style="color:var(--gold);">lock</span>
-            </div>
-          </div>
-          <h1 class="font-display-lg text-display-lg text-on-background mb-4" style="font-family:'Montserrat',sans-serif;font-size:1.75rem;font-weight:700;color:var(--white);">
-            Accès Administrateur
-          </h1>
-          <p class="font-body-md text-body-md text-on-surface-variant mb-8" style="font-family:'Inter',sans-serif;font-size:0.95rem;line-height:1.6;">
-            Entrez le mot de passe pour accéder au système de vérification des tickets
-          </p>
-          <input 
-            type="password" 
-            id="admin-password" 
-            placeholder="Mot de passe"
-            class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-5 py-4 text-on-surface focus:outline-none focus:border-primary transition-all mb-6 text-lg"
-            style="background:rgba(245,240,232,0.05);border-color:rgba(245,240,232,0.2);color:var(--white);font-family:'Inter',sans-serif;"
-            onkeypress="if(event.key === 'Enter') verifyPassword()"
-          >
-          <button 
-            onclick="verifyPassword()"
-            class="w-full px-6 py-4 rounded-xl font-label-caps text-label-caps text-on-primary transition-all transform hover:scale-105 shadow-lg"
-            style="background:linear-gradient(135deg, var(--gold) 0%, #B8860B 100%);font-family:'Montserrat',sans-serif;font-size:0.9rem;font-weight:600;box-shadow:0 4px 15px rgba(196,146,42,0.3);"
-          >
-            Accéder au Système
-          </button>
-          <p id="password-error" class="mt-6 text-error font-semibold" style="color:var(--error);font-family:'Inter',sans-serif;font-size:0.9rem;display:none;">
-            Mot de passe incorrect. Veuillez réessayer.
-          </p>
-        </div>
-      </div>
-
-      <!-- Scanner Section (hidden until password verified) -->
-      <div id="scanner-section" class="hidden">
-        <!-- Header -->
-        <div class="text-center mb-12">
-          <h1 class="font-display-lg text-display-lg text-on-background mb-4" style="font-family:'Montserrat',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;line-height:1.1;">
-            Vérification des <span class="text-secondary">Tickets</span>
-          </h1>
-          <p class="font-body-lg text-body-lg text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:1.125rem;line-height:1.7;">
-            Scannez le QR code du badge d'accès pour vérifier l'entrée
-          </p>
+    <div class="container">
+        <!-- Password Protection -->
+        <div id="password-section">
+            <h1 style="font-size: 36px; margin-bottom: 20px; text-align: center;">Accès Administrateur</h1>
+            <p style="text-align: center; margin-bottom: 30px; color: #888;">Entrez le mot de passe pour accéder au système de check-in</p>
+            <input type="password" id="password" placeholder="Mot de passe" onkeypress="if(event.key === 'Enter') verifyPassword()">
+            <button onclick="verifyPassword()" class="btn" style="width: 100%;">Accéder au Système</button>
+            <p id="error-msg" style="color: #ef4444; margin-top: 16px; text-align: center;" class="hidden">Mot de passe incorrect</p>
         </div>
 
-      <!-- Scanner Section -->
-      <div class="bg-surface-container rounded-2xl p-8 shadow-2xl mb-8" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(196,146,42,0.05) 100%);border:1px solid var(--gold-pale);">
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:var(--gold-pale);">
-              <span class="material-symbols-outlined text-2xl" style="color:var(--gold);">qr_code_scanner</span>
+        <!-- Scanner Section -->
+        <div id="scanner-section" class="hidden">
+            <h1 style="font-size: 36px; margin-bottom: 20px; text-align: center;">Vérification des Tickets</h1>
+            
+            <!-- Scanner -->
+            <div id="reader"></div>
+            
+            <!-- Manual Entry -->
+            <div style="margin-top: 30px;">
+                <h2 style="margin-bottom: 16px;">Ou entrez le code manuellement:</h2>
+                <input type="text" id="manual-code" placeholder="Code du ticket" onkeypress="if(event.key === 'Enter') verifyManual()">
+                <button onclick="verifyManual()" class="btn" style="width: 100%;">Vérifier</button>
             </div>
-            <div>
-              <h2 class="font-headline-md text-headline-md text-on-surface" style="font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:600;color:var(--white);">
-                Scanner par caméra
-              </h2>
-              <p class="font-body-sm text-body-sm text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.85rem;color:var(--muted);">
-                Positionnez le QR code dans le cadre
-              </p>
-            </div>
-          </div>
-          <div class="scanner-container">
-            <div id="reader" style="min-height: 350px;"></div>
-            <div class="scanner-overlay"></div>
-            <div class="scan-line"></div>
-          </div>
-        </div>
-        
-        <div class="mb-8">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:var(--gold-pale);">
-              <span class="material-symbols-outlined text-2xl" style="color:var(--gold);">photo_library</span>
-            </div>
-            <div>
-              <h2 class="font-headline-md text-headline-md text-on-surface" style="font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:600;color:var(--white);">
-                Scanner une photo
-              </h2>
-              <p class="font-body-sm text-body-sm text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.85rem;color:var(--muted);">
-                Uploadez une image du QR code
-              </p>
-            </div>
-          </div>
-          <div class="relative">
-            <input 
-              type="file" 
-              id="file-input" 
-              accept="image/*"
-              class="w-full bg-surface-container-low border-2 border-dashed border-outline-variant rounded-xl px-6 py-5 text-on-surface focus:outline-none focus:border-primary transition-all cursor-pointer"
-              style="background:rgba(245,240,232,0.05);border-color:rgba(245,240,232,0.2);color:var(--white);font-family:'Inter',sans-serif;"
-              onchange="scanFromFile(this)"
-            >
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none" style="top:50%;left:50%;transform:translate(-50%,-50%);">
-              <span class="material-symbols-outlined mr-2" style="color:var(--gold);">cloud_upload</span>
-              <span style="color:var(--muted);font-family:'Inter',sans-serif;font-size:0.9rem;">Cliquez ou glissez une image ici</span>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Scan Result Display -->
-        <div id="scan-result" class="hidden">
-          <div id="result-card" class="rounded-xl overflow-hidden" style="background:var(--surface-container-low);">
-            <!-- Result will be displayed here -->
-          </div>
-        </div>
-      </div>
 
-      <!-- Manual Entry -->
-      <div class="bg-surface-container rounded-2xl p-8 shadow-2xl" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(196,146,42,0.05) 100%);border:1px solid var(--gold-pale);">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:var(--gold-pale);">
-            <span class="material-symbols-outlined text-2xl" style="color:var(--gold);">keyboard</span>
-          </div>
-          <div>
-            <h2 class="font-headline-md text-headline-md text-on-surface" style="font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:600;color:var(--white);">
-              Vérification manuelle
-            </h2>
-            <p class="font-body-sm text-body-sm text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.85rem;color:var(--muted);">
-              Entrez le code du ticket manuellement
-            </p>
-          </div>
-        </div>
-        <div class="flex gap-4">
-          <input 
-            type="text" 
-            id="manual-code" 
-            placeholder="Ex: MIR-ABC123-XYZ789"
-            class="flex-1 bg-surface-container-low border-2 border-outline-variant rounded-xl px-5 py-4 text-on-surface focus:outline-none focus:border-primary transition-all text-lg font-mono"
-            style="background:rgba(245,240,232,0.05);border-color:rgba(245,240,232,0.2);color:var(--white);font-family:'Inter',sans-serif;letter-spacing:0.05em;"
-            onkeypress="if(event.key === 'Enter') verifyManualCode()"
-          >
-          <button 
-            onclick="verifyManualCode()"
-            class="px-8 py-4 rounded-xl font-label-caps text-label-caps text-on-primary transition-all transform hover:scale-105 shadow-lg"
-            style="background:linear-gradient(135deg, var(--gold) 0%, #B8860B 100%);font-family:'Montserrat',sans-serif;font-size:0.9rem;font-weight:600;box-shadow:0 4px 15px rgba(196,146,42,0.3);"
-          >
-            Vérifier
-          </button>
-        </div>
-      </div>
+            <!-- Result -->
+            <div id="result" class="hidden"></div>
 
-      <!-- Stats -->
-      <div class="mt-8 grid grid-cols-3 gap-6">
-        <div class="bg-surface-container rounded-2xl p-6 text-center transform hover:scale-105 transition-all" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(196,146,42,0.1) 100%);border:1px solid var(--gold-pale);">
-          <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:var(--gold-pale);">
-            <span class="material-symbols-outlined text-2xl" style="color:var(--gold);">event</span>
-          </div>
-          <div class="font-display-lg text-display-lg text-secondary mb-1" style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:700;color:var(--gold);" id="stat-total">0</div>
-          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.9rem;color:var(--muted);">Total Réservations</div>
+            <!-- Stats -->
+            <div style="margin-top: 40px; padding: 20px; background: #1e1e1e; border-radius: 12px;">
+                <h3 style="margin-bottom: 16px;">Statistiques</h3>
+                <p>Total: <span id="stat-total">0</span></p>
+                <p>Check-in: <span id="stat-checked">0</span></p>
+            </div>
         </div>
-        <div class="bg-surface-container rounded-2xl p-6 text-center transform hover:scale-105 transition-all" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(16,185,129,0.1) 100%);border:1px solid rgba(16,185,129,0.3);">
-          <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:rgba(16,185,129,0.2);">
-            <span class="material-symbols-outlined text-2xl" style="color:#10B981;">check_circle</span>
-          </div>
-          <div class="font-display-lg text-display-lg text-success mb-1" style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:700;color:#10B981;" id="stat-checked">0</div>
-          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.9rem;color:var(--muted);">Tickets Validés</div>
-        </div>
-        <div class="bg-surface-container rounded-2xl p-6 text-center transform hover:scale-105 transition-all" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(186,26,26,0.1) 100%);border:1px solid rgba(186,26,26,0.3);">
-          <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:rgba(186,26,26,0.2);">
-            <span class="material-symbols-outlined text-2xl" style="color:#BA1A1A;">cancel</span>
-          </div>
-          <div class="font-display-lg text-display-lg text-error mb-1" style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:700;color:#BA1A1A;" id="stat-invalid">0</div>
-          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.9rem;color:var(--muted);">Tickets Invalides</div>
-        </div>
-      </div>
-      </div>
     </div>
-  </section>
 
-  <script>
-    // Firebase initialization
-    const firebaseConfig = {
-      apiKey: "AIzaSyDpdm8el1KWM_WD42HMExRCvFp9ySf4fvI",
-      authDomain: "mirichi-events.firebaseapp.com",
-      databaseURL: "https://mirichi-events-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "mirichi-events",
-      storageBucket: "mirichi-events.firebasestorage.app",
-      messagingSenderId: "582412284374",
-      appId: "1:582412284374:web:3c57614741e8a595f13477"
-    };
+    <script>
+        const ADMIN_PASSWORD = 'mirichi2026';
+        let html5QrcodeScanner = null;
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+        // Verify password
+        function verifyPassword() {
+            const password = document.getElementById('password').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('password-section').classList.add('hidden');
+                document.getElementById('scanner-section').classList.remove('hidden');
+                initScanner();
+                updateStats();
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+                document.getElementById('password').value = '';
+            }
+        }
 
-    // Password verification - defined early to avoid initialization issues
-    const ADMIN_PASSWORD = 'mirichi2026'; // Change this to your desired password
-    
-    function verifyPassword() {
-      const password = document.getElementById('admin-password').value;
-      const errorElement = document.getElementById('password-error');
-      const passwordProtection = document.getElementById('password-protection');
-      const scannerSection = document.getElementById('scanner-section');
-      
-      console.log('Tentative de vérification du mot de passe');
-      console.log('Mot de passe entré:', password);
-      
-      if (password === ADMIN_PASSWORD) {
-        console.log('Mot de passe correct, accès autorisé');
-        passwordProtection.classList.add('hidden');
-        scannerSection.classList.remove('hidden');
-        scannerSection.style.display = 'block';
-        
+        // Get bookings from localStorage
+        function getBookings() {
+            return JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
+        }
+
+        // Get checked-in tickets from localStorage
+        function getCheckedInTickets() {
+            return JSON.parse(localStorage.getItem('mirichi_checked_in') || '[]');
+        }
+
+        // Check if ticket is already checked in
+        function isCheckedIn(ticketCode) {
+            const checkedIn = getCheckedInTickets();
+            return checkedIn.includes(ticketCode);
+        }
+
+        // Save checked-in ticket
+        function saveCheckedIn(ticketCode) {
+            const checkedIn = getCheckedInTickets();
+            if (!checkedIn.includes(ticketCode)) {
+                checkedIn.push(ticketCode);
+                localStorage.setItem('mirichi_checked_in', JSON.stringify(checkedIn));
+            }
+        }
+
+        // Verify ticket
+        function verifyTicket(ticketCode) {
+            const bookings = getBookings();
+            const booking = bookings.find(b => b.ticketCode === ticketCode);
+            
+            if (!booking) {
+                return { valid: false, message: 'Ticket non trouvé', type: 'invalid' };
+            }
+
+            const alreadyCheckedIn = isCheckedIn(ticketCode);
+            if (alreadyCheckedIn) {
+                return { valid: false, message: 'Ticket déjà utilisé', type: 'already-used', booking };
+            }
+
+            return { valid: true, message: 'Ticket valide', type: 'valid', booking };
+        }
+
+        // Display result
+        function displayResult(result) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.remove('hidden');
+            
+            if (result.valid) {
+                saveCheckedIn(result.booking.ticketCode);
+                resultDiv.innerHTML = `
+                    <div class="result-card valid">
+                        <h2 style="color: #10b981; margin-bottom: 16px;">✓ TICKET VALIDE</h2>
+                        <p><strong>Nom:</strong> ${result.booking.fullName}</p>
+                        <p><strong>Email:</strong> ${result.booking.email}</p>
+                        <p><strong>Téléphone:</strong> ${result.booking.phone}</p>
+                        <p><strong>Code:</strong> ${result.booking.ticketCode}</p>
+                    </div>
+                `;
+                updateStats();
+            } else if (result.type === 'already-used') {
+                resultDiv.innerHTML = `
+                    <div class="result-card already-used">
+                        <h2 style="color: #f59e0b; margin-bottom: 16px;">⚠ TICKET DÉJÀ UTILISÉ</h2>
+                        <p><strong>Nom:</strong> ${result.booking.fullName}</p>
+                        <p><strong>Email:</strong> ${result.booking.email}</p>
+                        <p><strong>Code:</strong> ${result.booking.ticketCode}</p>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="result-card invalid">
+                        <h2 style="color: #ef4444; margin-bottom: 16px;">✗ TICKET INVALIDE</h2>
+                        <p>${result.message}</p>
+                    </div>
+                `;
+            }
+
+            setTimeout(() => {
+                resultDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Manual verification
+        function verifyManual() {
+            const code = document.getElementById('manual-code').value.trim().toUpperCase();
+            if (!code) return;
+            
+            const result = verifyTicket(code);
+            displayResult(result);
+            document.getElementById('manual-code').value = '';
+        }
+
+        // Scanner success
+        function onScanSuccess(decodedText) {
+            const result = verifyTicket(decodedText.toUpperCase());
+            displayResult(result);
+            
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.pause();
+                setTimeout(() => html5QrcodeScanner.resume(), 3000);
+            }
+        }
+
         // Initialize scanner
-        if (typeof initScanner === 'function') {
-          initScanner();
-        } else {
-          console.error('La fonction initScanner n\'est pas définie');
+        function initScanner() {
+            html5QrcodeScanner = new Html5QrcodeScanner(
+                "reader",
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                false
+            );
+            html5QrcodeScanner.render(onScanSuccess);
         }
-      } else {
-        console.log('Mot de passe incorrect');
-        errorElement.style.display = 'block';
-        errorElement.textContent = 'Mot de passe incorrect. Veuillez réessayer.';
-        document.getElementById('admin-password').value = '';
-        document.getElementById('admin-password').focus();
-      }
-    }
 
-    // Load checked-in tickets from Firebase
-    function getCheckedInTickets() {
-      return database.ref('checkedIn').once('value').then(snapshot => {
-        const checkedIn = snapshot.val();
-        return checkedIn ? Object.keys(checkedIn) : [];
-      });
-    }
-
-    // Save checked-in ticket to Firebase
-    async function saveCheckedInTicket(ticketCode) {
-      const checkedIn = await getCheckedInTickets();
-      if (!checkedIn.includes(ticketCode)) {
-        await database.ref(`checkedIn/${ticketCode}`).set({
-          timestamp: new Date().toISOString()
-        });
-      }
-    }
-
-    // Load bookings from Firebase
-    function getBookings() {
-      return database.ref('bookings').once('value').then(snapshot => {
-        const bookings = snapshot.val();
-        return bookings ? Object.values(bookings) : [];
-      });
-    }
-
-    // Check if ticket is already checked in
-    function isCheckedIn(ticketCode) {
-      return getCheckedInTickets().then(checkedIn => checkedIn.includes(ticketCode));
-    }
-
-    // Verify ticket code
-    async function verifyTicket(ticketCode) {
-      const bookings = await getBookings();
-      const booking = bookings.find(b => b.ticketCode === ticketCode);
-      
-      if (!booking) {
-        return {
-          valid: false,
-          message: 'Ticket non trouvé',
-          color: 'var(--error)'
-        };
-      }
-
-      const checkedIn = await isCheckedIn(ticketCode);
-      if (checkedIn) {
-        return {
-          valid: false,
-          message: 'Ticket déjà utilisé',
-          color: 'var(--error)',
-          alreadyUsed: true,
-          booking: booking
-        };
-      }
-
-      return {
-        valid: true,
-        message: 'Ticket valide',
-        color: 'var(--success)',
-        booking: booking
-      };
-    }
-
-    // Display result
-    async function displayResult(result) {
-      const resultCard = document.getElementById('result-card');
-      const scanResult = document.getElementById('scan-result');
-      
-      scanResult.classList.remove('hidden');
-      
-      if (result.valid) {
-        // Mark as checked in
-        await saveCheckedIn(result.booking.ticketCode);
-        
-        resultCard.innerHTML = `
-          <div class="p-6" style="background:linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);border:2px solid #10B981;">
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:#10B981;">
-                <span class="material-symbols-outlined text-4xl" style="color:white;">check_circle</span>
-              </div>
-              <div>
-                <h3 class="font-headline-lg text-headline-lg" style="font-family:'Montserrat',sans-serif;font-size:1.75rem;font-weight:700;color:#10B981;">TICKET VALIDE</h3>
-                <p class="font-body-lg text-body-lg" style="font-family:'Inter',sans-serif;font-size:1rem;color:#065F46;">Entrée autorisée ✓</p>
-              </div>
-            </div>
-            <div class="space-y-3 p-4 rounded-lg" style="background:rgba(255,255,255,0.05);">
-              <div class="flex justify-between items-center py-2 border-b" style="border-color:rgba(16, 185, 129, 0.2);">
-                <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">NOM COMPLET</span>
-                <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--white);">${result.booking.fullName}</span>
-              </div>
-              <div class="flex justify-between items-center py-2 border-b" style="border-color:rgba(16, 185, 129, 0.2);">
-                <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">EMAIL</span>
-                <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--white);">${result.booking.email}</span>
-              </div>
-              <div class="flex justify-between items-center py-2 border-b" style="border-color:rgba(16, 185, 129, 0.2);">
-                <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">TÉLÉPHONE</span>
-                <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--white);">${result.booking.phone || 'N/A'}</span>
-              </div>
-              <div class="flex justify-between items-center py-2">
-                <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">CODE TICKET</span>
-                <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Montserrat',sans-serif;font-size:1.1rem;color:#10B981;letter-spacing:0.05em;">${result.booking.ticketCode}</span>
-              </div>
-            </div>
-          </div>
-        `;
-        
         // Update stats
-        updateStats('checked');
-      } else {
-        const bgColor = result.alreadyUsed ? 'rgba(245, 158, 11, 0.1)' : 'rgba(186, 26, 26, 0.1)';
-        const borderColor = result.alreadyUsed ? '#F59E0B' : '#BA1A1A';
-        const iconColor = result.alreadyUsed ? '#F59E0B' : '#BA1A1A';
-        const title = result.alreadyUsed ? 'DÉJÀ UTILISÉ' : 'TICKET INVALIDE';
-        const subtitle = result.alreadyUsed ? 'Ce ticket a déjà été scanné' : result.message;
-        
-        resultCard.innerHTML = `
-          <div class="p-6" style="background:linear-gradient(135deg, ${bgColor} 0%, ${bgColor.replace('0.1', '0.05')} 100%);border:2px solid ${borderColor};">
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background:${iconColor};">
-                <span class="material-symbols-outlined text-4xl" style="color:white;">${result.alreadyUsed ? 'history' : 'cancel'}</span>
-              </div>
-              <div>
-                <h3 class="font-headline-lg text-headline-lg" style="font-family:'Montserrat',sans-serif;font-size:1.75rem;font-weight:700;color:${iconColor};">${title}</h3>
-                <p class="font-body-lg text-body-lg" style="font-family:'Inter',sans-serif;font-size:1rem;color:${result.alreadyUsed ? '#92400E' : '#7F1D1D'};">${subtitle}</p>
-              </div>
-            </div>
-            ${result.booking ? `
-              <div class="space-y-3 p-4 rounded-lg" style="background:rgba(255,255,255,0.05);">
-                <div class="flex justify-between items-center py-2 border-b" style="border-color:${borderColor}40;">
-                  <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">NOM COMPLET</span>
-                  <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--white);">${result.booking.fullName}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b" style="border-color:${borderColor}40;">
-                  <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">EMAIL</span>
-                  <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Inter',sans-serif;font-size:1rem;color:var(--white);">${result.booking.email}</span>
-                </div>
-                <div class="flex justify-between items-center py-2">
-                  <span class="font-label-caps text-label-caps text-on-surface-variant" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;color:rgba(245,240,232,0.7);">CODE TICKET</span>
-                  <span class="font-body-lg text-body-lg text-on-surface font-semibold" style="font-family:'Montserrat',sans-serif;font-size:1.1rem;color:${iconColor};letter-spacing:0.05em;">${result.booking.ticketCode}</span>
-                </div>
-              </div>
-            ` : ''}
-          </div>
-        `;
-        
-        // Update stats
-        updateStats('invalid');
-      }
-      
-      // Auto-hide after 8 seconds
-      setTimeout(() => {
-        scanResult.classList.add('hidden');
-      }, 8000);
-    }
-
-    // Update statistics
-    async function updateStats(type) {
-      const bookings = await getBookings();
-      const checkedIn = await getCheckedInTickets();
-      
-      document.getElementById('stat-total').textContent = bookings.length;
-      document.getElementById('stat-checked').textContent = checkedIn.length;
-      document.getElementById('stat-invalid').textContent = type === 'invalid' ? 
-        parseInt(document.getElementById('stat-invalid').textContent) + 1 : 
-        document.getElementById('stat-invalid').textContent;
-    }
-
-    // Manual code verification
-    async function verifyManualCode() {
-      const code = document.getElementById('manual-code').value.trim().toUpperCase();
-      const inputField = document.getElementById('manual-code');
-      
-      if (!code) {
-        // Show error state
-        inputField.style.borderColor = '#BA1A1A';
-        inputField.style.animation = 'shake 0.5s';
-        setTimeout(() => {
-          inputField.style.borderColor = 'rgba(245,240,232,0.2)';
-          inputField.style.animation = '';
-        }, 500);
-        return;
-      }
-      
-      // Validate code format (basic validation)
-      if (code.length < 10) {
-        inputField.style.borderColor = '#BA1A1A';
-        inputField.style.animation = 'shake 0.5s';
-        setTimeout(() => {
-          inputField.style.borderColor = 'rgba(245,240,232,0.2)';
-          inputField.style.animation = '';
-        }, 500);
-        alert('Le code du ticket doit contenir au moins 10 caractères');
-        return;
-      }
-      
-      // Show loading state
-      const verifyButton = document.querySelector('button[onclick="verifyManualCode()"]');
-      const originalText = verifyButton.textContent;
-      verifyButton.textContent = 'Vérification...';
-      verifyButton.disabled = true;
-      verifyButton.style.opacity = '0.7';
-      
-      console.log('Vérification du code:', code);
-      
-      try {
-        const result = await verifyTicket(code);
-        console.log('Résultat:', result);
-        await displayResult(result);
-        
-        // Clear input on success
-        if (result.valid) {
-          inputField.value = '';
+        function updateStats() {
+            const bookings = getBookings();
+            const checkedIn = getCheckedInTickets();
+            document.getElementById('stat-total').textContent = bookings.length;
+            document.getElementById('stat-checked').textContent = checkedIn.length;
         }
-      } catch (error) {
-        console.error('Erreur de vérification:', error);
-        alert('Erreur lors de la vérification. Veuillez réessayer.');
-      } finally {
-        // Reset button state
-        verifyButton.textContent = originalText;
-        verifyButton.disabled = false;
-        verifyButton.style.opacity = '1';
-      }
-    }
-
-    // Add shake animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-10px); }
-        75% { transform: translateX(10px); }
-      }
-    `;
-    document.head.appendChild(style);
-
-    // Scan from file (photo)
-    async function scanFromFile(input) {
-      if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const html5QrCode = new Html5Qrcode("reader");
-        
-        html5QrCode.scanFile(file, true)
-          .then(async decodedText => {
-            console.log('QR code scanné depuis photo:', decodedText);
-            const result = await verifyTicket(decodedText.toUpperCase());
-            await displayResult(result);
-            input.value = ''; // Clear input
-          })
-          .catch(err => {
-            console.error('Erreur de scan depuis photo:', err);
-            alert('Impossible de lire le QR code depuis cette photo. Essayez une autre photo.');
-            input.value = '';
-          });
-      }
-    }
-
-    // Initialize QR scanner
-    async function onScanSuccess(decodedText, decodedResult) {
-      console.log('QR code scanné:', decodedText);
-      
-      // Play success sound
-      playScanSound();
-      
-      const result = await verifyTicket(decodedText.toUpperCase());
-      await displayResult(result);
-      
-      // Pause scanning briefly to prevent multiple scans
-      html5QrcodeScanner.pause();
-      setTimeout(() => {
-        html5QrcodeScanner.resume();
-      }, 4000);
-    }
-
-    function onScanFailure(error) {
-      // Handle scan failure silently - this is normal when no QR code is in view
-      // console.warn('Scan failure:', error);
-    }
-
-    // Play scan sound
-    function playScanSound() {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.value = 800;
-      oscillator.type = 'sine';
-      gainNode.gain.value = 0.3;
-      
-      oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.1);
-    }
-
-    // Initialize scanner (called after password verification)
-    async function initScanner() {
-      // Initialize stats
-      const bookings = await getBookings();
-      const checkedIn = await getCheckedInTickets();
-      
-      document.getElementById('stat-total').textContent = bookings.length;
-      document.getElementById('stat-checked').textContent = checkedIn.length;
-      
-      // Initialize QR scanner with better configuration
-      html5QrcodeScanner = new Html5QrcodeScanner(
-        "reader",
-        { 
-          fps: 15, // Higher FPS for faster scanning
-          qrbox: {width: 280, height: 280}, // Larger scan area
-          aspectRatio: 1.0,
-          showTorchButtonIfSupported: true, // Show torch button if available
-          experimentalFeatures: {
-            useBarCodeDetectorIfSupported: true
-          }
-        },
-        /* verbose= */ false
-      );
-      
-      html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-      
-      console.log('Scanner initialisé avec succès');
-    }
-
-    // Initialize
-    let html5QrcodeScanner;
-    
-    document.addEventListener('DOMContentLoaded', function() {
-      // Don't initialize scanner until password is verified
-      // The scanner will be initialized after verifyPassword() succeeds
-    });
-  </script>
+    </script>
 </body>
 </html>
