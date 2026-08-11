@@ -329,14 +329,30 @@
     function verifyPassword() {
       const password = document.getElementById('admin-password').value;
       const errorElement = document.getElementById('password-error');
+      const passwordProtection = document.getElementById('password-protection');
+      const scannerSection = document.getElementById('scanner-section');
+      
+      console.log('Tentative de vérification du mot de passe');
+      console.log('Mot de passe entré:', password);
       
       if (password === ADMIN_PASSWORD) {
-        document.getElementById('password-protection').classList.add('hidden');
-        document.getElementById('scanner-section').classList.remove('hidden');
-        initScanner();
+        console.log('Mot de passe correct, accès autorisé');
+        passwordProtection.classList.add('hidden');
+        scannerSection.classList.remove('hidden');
+        scannerSection.style.display = 'block';
+        
+        // Initialize scanner
+        if (typeof initScanner === 'function') {
+          initScanner();
+        } else {
+          console.error('La fonction initScanner n\'est pas définie');
+        }
       } else {
+        console.log('Mot de passe incorrect');
         errorElement.style.display = 'block';
+        errorElement.textContent = 'Mot de passe incorrect. Veuillez réessayer.';
         document.getElementById('admin-password').value = '';
+        document.getElementById('admin-password').focus();
       }
     }
 

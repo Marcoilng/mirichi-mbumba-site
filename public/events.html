@@ -126,8 +126,8 @@
         
         <!-- Events List -->
         <div id="events-section">
-          <!-- Admin Counter -->
-          <div class="mb-8 p-4 rounded-lg" style="background:rgba(196,146,42,0.1);border:1px solid rgba(196,146,42,0.3);">
+          <!-- Admin Counter (hidden by default, shown only when admin is logged in) -->
+          <div id="admin-section" class="mb-8 p-4 rounded-lg hidden" style="background:rgba(196,146,42,0.1);border:1px solid rgba(196,146,42,0.3);">
             <div class="flex items-center justify-between mb-4">
               <div>
                 <span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider" style="font-family:'Montserrat',sans-serif;font-size:0.75rem;">Compteur Admin</span>
@@ -393,15 +393,18 @@
     });
 
     function updateAdminUI() {
+      const adminSection = document.getElementById('admin-section');
       const adminControls = document.getElementById('admin-controls');
       const loginButton = document.getElementById('admin-login-btn');
       const logoutButton = document.getElementById('admin-logout-btn');
       
       if (isAdmin) {
+        if (adminSection) adminSection.classList.remove('hidden');
         if (adminControls) adminControls.classList.remove('hidden');
         if (loginButton) loginButton.classList.add('hidden');
         if (logoutButton) logoutButton.classList.remove('hidden');
       } else {
+        if (adminSection) adminSection.classList.add('hidden');
         if (adminControls) adminControls.classList.add('hidden');
         if (loginButton) loginButton.classList.remove('hidden');
         if (logoutButton) logoutButton.classList.add('hidden');
