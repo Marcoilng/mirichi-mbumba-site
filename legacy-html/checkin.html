@@ -60,6 +60,75 @@
     #reader video {
       border-radius: 12px;
     }
+    #reader__scan_region {
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    #reader__dashboard {
+      display: none !important;
+    }
+    .scanner-container {
+      position: relative;
+      background: linear-gradient(135deg, rgba(196, 146, 42, 0.1) 0%, rgba(196, 146, 42, 0.05) 100%);
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      padding: 20px;
+      min-height: 350px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .scanner-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 250px;
+      height: 250px;
+      border: 3px solid var(--gold);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+    .scanner-overlay::before,
+    .scanner-overlay::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border: 4px solid var(--gold);
+    }
+    .scanner-overlay::before {
+      top: -4px;
+      left: -4px;
+      border-right: none;
+      border-bottom: none;
+    }
+    .scanner-overlay::after {
+      bottom: -4px;
+      right: -4px;
+      border-left: none;
+      border-top: none;
+    }
+    .scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      animation: scan 2s linear infinite;
+    }
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+    .pulse-ring {
+      animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.8); opacity: 1; }
+      80%, 100% { transform: scale(1.3); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -67,33 +136,38 @@
     <div class="max-w-4xl mx-auto">
       <!-- Password Protection -->
       <div id="password-protection" class="text-center py-20">
-        <div class="bg-surface-container rounded-xl p-8 shadow-lg max-w-md mx-auto" style="background:var(--surface-container);">
-          <div class="mb-6">
-            <span class="material-symbols-outlined text-5xl" style="color:var(--gold);">lock</span>
+        <div class="bg-surface-container rounded-2xl p-10 shadow-2xl max-w-md mx-auto" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(196,146,42,0.1) 100%);border:1px solid var(--gold-pale);">
+          <div class="mb-8 relative">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-24 h-24 rounded-full pulse-ring" style="background:var(--gold);"></div>
+            </div>
+            <div class="relative flex items-center justify-center">
+              <span class="material-symbols-outlined text-6xl" style="color:var(--gold);">lock</span>
+            </div>
           </div>
-          <h1 class="font-display-lg text-display-lg text-on-background mb-4" style="font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:700;">
+          <h1 class="font-display-lg text-display-lg text-on-background mb-4" style="font-family:'Montserrat',sans-serif;font-size:1.75rem;font-weight:700;color:var(--white);">
             Accès Administrateur
           </h1>
-          <p class="font-body-md text-body-md text-on-surface-variant mb-6" style="font-family:'Inter',sans-serif;font-size:0.875rem;">
-            Entrez le mot de passe pour accéder au système de check-in
+          <p class="font-body-md text-body-md text-on-surface-variant mb-8" style="font-family:'Inter',sans-serif;font-size:0.95rem;line-height:1.6;">
+            Entrez le mot de passe pour accéder au système de vérification des tickets
           </p>
           <input 
             type="password" 
             id="admin-password" 
             placeholder="Mot de passe"
-            class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors mb-4"
-            style="background:var(--surface-container-low);border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;"
+            class="w-full bg-surface-container-low border border-outline-variant rounded-xl px-5 py-4 text-on-surface focus:outline-none focus:border-primary transition-all mb-6 text-lg"
+            style="background:rgba(245,240,232,0.05);border-color:rgba(245,240,232,0.2);color:var(--white);font-family:'Inter',sans-serif;"
             onkeypress="if(event.key === 'Enter') verifyPassword()"
           >
           <button 
             onclick="verifyPassword()"
-            class="w-full px-6 py-3 rounded-lg font-label-caps text-label-caps text-on-primary transition-colors"
-            style="background:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.875rem;font-weight:600;"
+            class="w-full px-6 py-4 rounded-xl font-label-caps text-label-caps text-on-primary transition-all transform hover:scale-105 shadow-lg"
+            style="background:linear-gradient(135deg, var(--gold) 0%, #B8860B 100%);font-family:'Montserrat',sans-serif;font-size:0.9rem;font-weight:600;box-shadow:0 4px 15px rgba(196,146,42,0.3);"
           >
-            Accéder
+            Accéder au Système
           </button>
-          <p id="password-error" class="mt-4 text-error" style="color:var(--error);font-family:'Inter',sans-serif;font-size:0.875rem;display:none;">
-            Mot de passe incorrect
+          <p id="password-error" class="mt-6 text-error font-semibold" style="color:var(--error);font-family:'Inter',sans-serif;font-size:0.9rem;display:none;">
+            Mot de passe incorrect. Veuillez réessayer.
           </p>
         </div>
       </div>
@@ -111,26 +185,56 @@
         </div>
 
       <!-- Scanner Section -->
-      <div class="bg-surface-container rounded-xl p-8 shadow-lg mb-8" style="background:var(--surface-container);">
-        <div class="mb-6">
-          <h2 class="font-headline-md text-headline-md text-on-surface mb-4" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;">
-            Scanner par caméra
-          </h2>
-          <div id="reader" style="min-height: 300px;"></div>
+      <div class="bg-surface-container rounded-2xl p-8 shadow-2xl mb-8" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(196,146,42,0.05) 100%);border:1px solid var(--gold-pale);">
+        <div class="mb-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:var(--gold-pale);">
+              <span class="material-symbols-outlined text-2xl" style="color:var(--gold);">qr_code_scanner</span>
+            </div>
+            <div>
+              <h2 class="font-headline-md text-headline-md text-on-surface" style="font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:600;color:var(--white);">
+                Scanner par caméra
+              </h2>
+              <p class="font-body-sm text-body-sm text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.85rem;color:var(--muted);">
+                Positionnez le QR code dans le cadre
+              </p>
+            </div>
+          </div>
+          <div class="scanner-container">
+            <div id="reader" style="min-height: 350px;"></div>
+            <div class="scanner-overlay"></div>
+            <div class="scan-line"></div>
+          </div>
         </div>
         
-        <div class="mb-6">
-          <h2 class="font-headline-md text-headline-md text-on-surface mb-4" style="font-family:'Montserrat',sans-serif;font-size:1.25rem;font-weight:600;">
-            Ou scanner une photo
-          </h2>
-          <input 
-            type="file" 
-            id="file-input" 
-            accept="image/*"
-            class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors"
-            style="background:var(--surface-container-low);border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;"
-            onchange="scanFromFile(this)"
-          >
+        <div class="mb-8">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:var(--gold-pale);">
+              <span class="material-symbols-outlined text-2xl" style="color:var(--gold);">photo_library</span>
+            </div>
+            <div>
+              <h2 class="font-headline-md text-headline-md text-on-surface" style="font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:600;color:var(--white);">
+                Scanner une photo
+              </h2>
+              <p class="font-body-sm text-body-sm text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.85rem;color:var(--muted);">
+                Uploadez une image du QR code
+              </p>
+            </div>
+          </div>
+          <div class="relative">
+            <input 
+              type="file" 
+              id="file-input" 
+              accept="image/*"
+              class="w-full bg-surface-container-low border-2 border-dashed border-outline-variant rounded-xl px-6 py-5 text-on-surface focus:outline-none focus:border-primary transition-all cursor-pointer"
+              style="background:rgba(245,240,232,0.05);border-color:rgba(245,240,232,0.2);color:var(--white);font-family:'Inter',sans-serif;"
+              onchange="scanFromFile(this)"
+            >
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none" style="top:50%;left:50%;transform:translate(-50%,-50%);">
+              <span class="material-symbols-outlined mr-2" style="color:var(--gold);">cloud_upload</span>
+              <span style="color:var(--muted);font-family:'Inter',sans-serif;font-size:0.9rem;">Cliquez ou glissez une image ici</span>
+            </div>
+          </div>
         </div>
         
         <!-- Scan Result Display -->
@@ -142,22 +246,33 @@
       </div>
 
       <!-- Manual Entry -->
-      <div class="bg-surface-container rounded-xl p-8 shadow-lg" style="background:var(--surface-container);">
-        <h2 class="font-headline-md text-headline-md text-on-surface mb-6" style="font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:600;">
-          Ou entrez le code manuellement
-        </h2>
+      <div class="bg-surface-container rounded-2xl p-8 shadow-2xl" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(196,146,42,0.05) 100%);border:1px solid var(--gold-pale);">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:var(--gold-pale);">
+            <span class="material-symbols-outlined text-2xl" style="color:var(--gold);">keyboard</span>
+          </div>
+          <div>
+            <h2 class="font-headline-md text-headline-md text-on-surface" style="font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:600;color:var(--white);">
+              Vérification manuelle
+            </h2>
+            <p class="font-body-sm text-body-sm text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.85rem;color:var(--muted);">
+              Entrez le code du ticket manuellement
+            </p>
+          </div>
+        </div>
         <div class="flex gap-4">
           <input 
             type="text" 
             id="manual-code" 
             placeholder="Ex: MIR-ABC123-XYZ789"
-            class="flex-1 bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary transition-colors"
-            style="background:var(--surface-container-low);border-color:rgba(245,240,232,0.3);color:var(--white);font-family:'Inter',sans-serif;"
+            class="flex-1 bg-surface-container-low border-2 border-outline-variant rounded-xl px-5 py-4 text-on-surface focus:outline-none focus:border-primary transition-all text-lg font-mono"
+            style="background:rgba(245,240,232,0.05);border-color:rgba(245,240,232,0.2);color:var(--white);font-family:'Inter',sans-serif;letter-spacing:0.05em;"
+            onkeypress="if(event.key === 'Enter') verifyManualCode()"
           >
           <button 
             onclick="verifyManualCode()"
-            class="px-6 py-3 rounded-lg font-label-caps text-label-caps text-on-primary transition-colors"
-            style="background:var(--gold);font-family:'Montserrat',sans-serif;font-size:0.875rem;font-weight:600;"
+            class="px-8 py-4 rounded-xl font-label-caps text-label-caps text-on-primary transition-all transform hover:scale-105 shadow-lg"
+            style="background:linear-gradient(135deg, var(--gold) 0%, #B8860B 100%);font-family:'Montserrat',sans-serif;font-size:0.9rem;font-weight:600;box-shadow:0 4px 15px rgba(196,146,42,0.3);"
           >
             Vérifier
           </button>
@@ -165,18 +280,27 @@
       </div>
 
       <!-- Stats -->
-      <div class="mt-8 grid grid-cols-3 gap-4">
-        <div class="bg-surface-container rounded-lg p-4 text-center" style="background:var(--surface-container);">
-          <div class="font-display-lg text-display-lg text-secondary" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;" id="stat-total">0</div>
-          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Total</div>
+      <div class="mt-8 grid grid-cols-3 gap-6">
+        <div class="bg-surface-container rounded-2xl p-6 text-center transform hover:scale-105 transition-all" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(196,146,42,0.1) 100%);border:1px solid var(--gold-pale);">
+          <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:var(--gold-pale);">
+            <span class="material-symbols-outlined text-2xl" style="color:var(--gold);">event</span>
+          </div>
+          <div class="font-display-lg text-display-lg text-secondary mb-1" style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:700;color:var(--gold);" id="stat-total">0</div>
+          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.9rem;color:var(--muted);">Total Réservations</div>
         </div>
-        <div class="bg-surface-container rounded-lg p-4 text-center" style="background:var(--surface-container);">
-          <div class="font-display-lg text-display-lg text-success" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;" id="stat-checked">0</div>
-          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Validés</div>
+        <div class="bg-surface-container rounded-2xl p-6 text-center transform hover:scale-105 transition-all" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(16,185,129,0.1) 100%);border:1px solid rgba(16,185,129,0.3);">
+          <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:rgba(16,185,129,0.2);">
+            <span class="material-symbols-outlined text-2xl" style="color:#10B981;">check_circle</span>
+          </div>
+          <div class="font-display-lg text-display-lg text-success mb-1" style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:700;color:#10B981;" id="stat-checked">0</div>
+          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.9rem;color:var(--muted);">Tickets Validés</div>
         </div>
-        <div class="bg-surface-container rounded-lg p-4 text-center" style="background:var(--surface-container);">
-          <div class="font-display-lg text-display-lg text-error" style="font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:700;" id="stat-invalid">0</div>
-          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.875rem;">Invalides</div>
+        <div class="bg-surface-container rounded-2xl p-6 text-center transform hover:scale-105 transition-all" style="background:linear-gradient(135deg, var(--surface-container) 0%, rgba(186,26,26,0.1) 100%);border:1px solid rgba(186,26,26,0.3);">
+          <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:rgba(186,26,26,0.2);">
+            <span class="material-symbols-outlined text-2xl" style="color:#BA1A1A;">cancel</span>
+          </div>
+          <div class="font-display-lg text-display-lg text-error mb-1" style="font-family:'Montserrat',sans-serif;font-size:2.5rem;font-weight:700;color:#BA1A1A;" id="stat-invalid">0</div>
+          <div class="font-body-md text-body-md text-on-surface-variant" style="font-family:'Inter',sans-serif;font-size:0.9rem;color:var(--muted);">Tickets Invalides</div>
         </div>
       </div>
       </div>
@@ -386,17 +510,70 @@
     // Manual code verification
     async function verifyManualCode() {
       const code = document.getElementById('manual-code').value.trim().toUpperCase();
+      const inputField = document.getElementById('manual-code');
+      
       if (!code) {
-        alert('Veuillez entrer un code de ticket');
+        // Show error state
+        inputField.style.borderColor = '#BA1A1A';
+        inputField.style.animation = 'shake 0.5s';
+        setTimeout(() => {
+          inputField.style.borderColor = 'rgba(245,240,232,0.2)';
+          inputField.style.animation = '';
+        }, 500);
         return;
       }
       
+      // Validate code format (basic validation)
+      if (code.length < 10) {
+        inputField.style.borderColor = '#BA1A1A';
+        inputField.style.animation = 'shake 0.5s';
+        setTimeout(() => {
+          inputField.style.borderColor = 'rgba(245,240,232,0.2)';
+          inputField.style.animation = '';
+        }, 500);
+        alert('Le code du ticket doit contenir au moins 10 caractères');
+        return;
+      }
+      
+      // Show loading state
+      const verifyButton = document.querySelector('button[onclick="verifyManualCode()"]');
+      const originalText = verifyButton.textContent;
+      verifyButton.textContent = 'Vérification...';
+      verifyButton.disabled = true;
+      verifyButton.style.opacity = '0.7';
+      
       console.log('Vérification du code:', code);
-      const result = await verifyTicket(code);
-      console.log('Résultat:', result);
-      await displayResult(result);
-      document.getElementById('manual-code').value = '';
+      
+      try {
+        const result = await verifyTicket(code);
+        console.log('Résultat:', result);
+        await displayResult(result);
+        
+        // Clear input on success
+        if (result.valid) {
+          inputField.value = '';
+        }
+      } catch (error) {
+        console.error('Erreur de vérification:', error);
+        alert('Erreur lors de la vérification. Veuillez réessayer.');
+      } finally {
+        // Reset button state
+        verifyButton.textContent = originalText;
+        verifyButton.disabled = false;
+        verifyButton.style.opacity = '1';
+      }
     }
+
+    // Add shake animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
+      }
+    `;
+    document.head.appendChild(style);
 
     // Scan from file (photo)
     async function scanFromFile(input) {
@@ -421,18 +598,41 @@
 
     // Initialize QR scanner
     async function onScanSuccess(decodedText, decodedResult) {
+      console.log('QR code scanné:', decodedText);
+      
+      // Play success sound
+      playScanSound();
+      
       const result = await verifyTicket(decodedText.toUpperCase());
       await displayResult(result);
       
-      // Pause scanning briefly
+      // Pause scanning briefly to prevent multiple scans
       html5QrcodeScanner.pause();
       setTimeout(() => {
         html5QrcodeScanner.resume();
-      }, 3000);
+      }, 4000);
     }
 
     function onScanFailure(error) {
-      // Handle scan failure silently
+      // Handle scan failure silently - this is normal when no QR code is in view
+      // console.warn('Scan failure:', error);
+    }
+
+    // Play scan sound
+    function playScanSound() {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = 800;
+      oscillator.type = 'sine';
+      gainNode.gain.value = 0.3;
+      
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.1);
     }
 
     // Initialize scanner (called after password verification)
@@ -444,18 +644,24 @@
       document.getElementById('stat-total').textContent = bookings.length;
       document.getElementById('stat-checked').textContent = checkedIn.length;
       
-      // Initialize QR scanner
+      // Initialize QR scanner with better configuration
       html5QrcodeScanner = new Html5QrcodeScanner(
         "reader",
         { 
-          fps: 10, 
-          qrbox: {width: 250, height: 250},
-          aspectRatio: 1.0
+          fps: 15, // Higher FPS for faster scanning
+          qrbox: {width: 280, height: 280}, // Larger scan area
+          aspectRatio: 1.0,
+          showTorchButtonIfSupported: true, // Show torch button if available
+          experimentalFeatures: {
+            useBarCodeDetectorIfSupported: true
+          }
         },
         /* verbose= */ false
       );
       
       html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+      
+      console.log('Scanner initialisé avec succès');
     }
 
     // Initialize
