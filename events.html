@@ -734,7 +734,9 @@
         let uploadedPhoto = null;
 
         const MAX_PARTICIPANTS_LOCAL = window.MAX_PARTICIPANTS || 100;
-        const EVENT_ID_LOCAL = window.EVENT_ID || 'touch-up-2026';
+        // Chemins Firebase définis dans firebase-config.js
+        const BOOKINGS_PATH = window.FIREBASE_BOOKINGS_PATH || 'touchup/bookings';
+        const CHECKINS_PATH = window.FIREBASE_CHECKINS_PATH || 'touchup/checkins';
 
         // ──── Event Data ────
         const events = [
@@ -804,8 +806,8 @@
                 });
 
                 // ════ ÉCOUTE EN TEMPS RÉEL DU COMPTEUR ════
-                // Écoute le chemin bookings/EVENT_ID dans Firebase
-                const bookingsRef = db.ref(`bookings/${EVENT_ID_LOCAL}`);
+                // Chemin : touchup/bookings (défini dans firebase-config.js)
+                const bookingsRef = db.ref(BOOKINGS_PATH);
 
                 bookingsRef.on('value', (snapshot) => {
                     const data = snapshot.val();
@@ -901,8 +903,8 @@
                 throw new Error('Désolé, toutes les places sont réservées.');
             }
 
-            // Référence unique dans Firebase
-            const newRef = db.ref(`bookings/${EVENT_ID_LOCAL}`).push();
+            // Référence unique dans Firebase — chemin : touchup/bookings
+            const newRef = db.ref(BOOKINGS_PATH).push();
             const bookingId = newRef.key;
 
             // Données à sauvegarder (sans la photo — trop lourde pour RTDB)
@@ -917,7 +919,7 @@
                 expectations: String(bookingData.expectations || '').slice(0, 1000),
                 newsletter: bookingData.newsletter || false,
                 ticketCode: bookingData.ticketCode,
-                eventId: EVENT_ID_LOCAL,
+                eventId: 'touchup',
                 eventTitle: bookingData.event.title,
                 bookingDate: new Date().toISOString(),
                 status: 'confirmed'

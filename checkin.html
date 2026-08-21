@@ -428,7 +428,9 @@
         // ════════════════════════════════════════════
 
         const ADMIN_PASSWORD = 'mirichi2026';
-        const EVENT_ID_LOCAL = window.EVENT_ID || 'touch-up-2026';
+        // Chemins définis dans firebase-config.js
+        const BOOKINGS_PATH = window.FIREBASE_BOOKINGS_PATH || 'touchup/bookings';
+        const CHECKINS_PATH = window.FIREBASE_CHECKINS_PATH || 'touchup/checkins';
 
         let db = null;
         let firebaseReady = false;
@@ -474,7 +476,8 @@
                 });
 
                 // ════ ÉCOUTE EN TEMPS RÉEL — RÉSERVATIONS ════
-                db.ref(`bookings/${EVENT_ID_LOCAL}`).on('value', snapshot => {
+                // Chemin : touchup/bookings
+                db.ref(BOOKINGS_PATH).on('value', snapshot => {
                     const data = snapshot.val() || {};
                     allBookings = data;
                     updateStats();
@@ -482,7 +485,8 @@
                 });
 
                 // ════ ÉCOUTE EN TEMPS RÉEL — CHECK-INS ════
-                db.ref(`checkins/${EVENT_ID_LOCAL}`).on('value', snapshot => {
+                // Chemin : touchup/checkins
+                db.ref(CHECKINS_PATH).on('value', snapshot => {
                     const data = snapshot.val() || {};
                     // Reconstruire map { ticketCode → record }
                     checkedInMap = {};
@@ -563,16 +567,16 @@
                 return;
             }
 
-            // Enregistrer le check-in dans Firebase
+            // Enregistrer le check-in dans Firebase — chemin : touchup/checkins
             try {
-                const checkInRef = db.ref(`checkins/${EVENT_ID_LOCAL}`).push();
+                const checkInRef = db.ref(CHECKINS_PATH).push();
                 await checkInRef.set({
                     ticketCode: code,
                     bookingId: booking.bookingId || '',
                     fullName: booking.fullName,
                     email: booking.email,
                     timestamp: new Date().toISOString(),
-                    eventId: EVENT_ID_LOCAL
+                    eventId: 'touchup'
                 });
                 showResult({ valid: true, type: 'valid', message: 'Accès autorisé', booking });
             } catch (err) {
