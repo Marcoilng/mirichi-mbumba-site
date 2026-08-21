@@ -1,47 +1,264 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Événements Mirichi</title>
+    <title>Événements Mirichi — TOUCH UP 2026</title>
+    <meta name="description"
+        content="Réservez votre place pour TOUCH UP, l'événement exceptionnel de Mirichi Mbumba le 29 août 2026 à Silikin Village, Kinshasa.">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,560;1,9..144,420&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,560;1,9..144,420&family=Archivo:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <!-- Firebase SDK v9 (compat mode for CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); color: #f5f0e8; min-height: 100vh; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        
-        /* Mobile-first optimizations */
-        @media (max-width: 768px) {
-            .container { padding: 20px 16px; }
-            .hero { padding: 24px 16px; }
-            .hero h1 { font-size: 32px !important; }
-            .event-card { padding: 20px; }
-            .form-group { margin-bottom: 16px; }
-            .btn { padding: 14px 24px; font-size: 14px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        @media (max-width: 480px) {
-            .hero h1 { font-size: 24px !important; }
-            .hero p { font-size: 14px; }
-            .info-grid { grid-template-columns: 1fr !important; }
-            .form-grid { grid-template-columns: 1fr !important; }
+
+        body {
+            font-family: 'Archivo', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #f5f0e8;
+            min-height: 100vh;
         }
-        
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, rgba(196,146,42,0.2) 0%, rgba(26,26,26,0.8) 100%);
-            border: 1px solid rgba(196,146,42,0.3);
-            border-radius: 20px;
-            padding: 60px 40px;
-            margin-bottom: 40px;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* ──── Firebase Status Badge ──── */
+        #firebase-status {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid rgba(196, 146, 42, 0.3);
+            border-radius: 24px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        #firebase-status.connected {
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        #firebase-status.error {
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #888;
+            transition: all 0.3s ease;
+        }
+
+        .status-dot.connected {
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+            animation: blink 2s infinite;
+        }
+
+        .status-dot.error {
+            background: #ef4444;
+        }
+
+        .status-dot.loading {
+            background: #f59e0b;
+            animation: pulse-dot 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.3);
+            }
+        }
+
+        /* ──── Real-Time Counter ──── */
+        #realtime-counter {
+            background: linear-gradient(135deg, rgba(196, 146, 42, 0.15) 0%, rgba(184, 134, 11, 0.05) 100%);
+            border: 1px solid rgba(196, 146, 42, 0.4);
+            border-radius: 16px;
+            padding: 20px 28px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .counter-block {
+            text-align: center;
+        }
+
+        .counter-value {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(135deg, #c4922a 0%, #f5d060 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.4s ease;
+        }
+
+        .counter-value.pulse-update {
+            animation: counter-flash 0.6s ease;
+        }
+
+        @keyframes counter-flash {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+                filter: brightness(1.5);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .counter-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        /* ──── Progress Bar ──── */
+        .progress-container {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .progress-track {
+            height: 10px;
+            background: rgba(196, 146, 42, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #c4922a, #f5d060);
+            border-radius: 10px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            to {
+                left: 100%;
+            }
+        }
+
+        .progress-fill.full {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        /* ──── Alert Banner ──── */
+        #sold-out-banner {
+            display: none;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.05) 100%);
+            border: 2px solid rgba(239, 68, 68, 0.5);
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            color: #ef4444;
+            animation: slideIn 0.5s ease;
+        }
+
+        #almost-full-banner {
+            display: none;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(196, 146, 42, 0.05) 100%);
+            border: 2px solid rgba(245, 158, 11, 0.5);
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            color: #f59e0b;
+            animation: slideIn 0.5s ease;
+        }
+
+        /* ──── Hero ──── */
+        .hero {
+            background: linear-gradient(135deg, rgba(196, 146, 42, 0.2) 0%, rgba(26, 26, 26, 0.8) 100%);
+            border: 1px solid rgba(196, 146, 42, 0.3);
+            border-radius: 20px;
+            padding: 60px 40px;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
         .hero::before {
             content: '';
             position: absolute;
@@ -49,18 +266,28 @@
             right: -50%;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(196,146,42,0.1) 0%, transparent 70%);
-            animation: pulse 4s ease-in-out infinite;
+            background: radial-gradient(circle, rgba(196, 146, 42, 0.1) 0%, transparent 70%);
+            animation: pulse-bg 4s ease-in-out infinite;
         }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.2); opacity: 0.8; }
+
+        @keyframes pulse-bg {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.8;
+            }
         }
-        
-        /* Event Card */
+
+        /* ──── Event Card ──── */
         .event-card {
             background: linear-gradient(145deg, #161616 0%, #1e1e1e 100%);
-            border: 1px solid rgba(196,146,42,0.3);
+            border: 1px solid rgba(196, 146, 42, 0.3);
             border-radius: 16px;
             padding: 32px;
             cursor: pointer;
@@ -68,6 +295,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .event-card::before {
             content: '';
             position: absolute;
@@ -79,16 +307,28 @@
             transform: scaleX(0);
             transition: transform 0.4s ease;
         }
+
         .event-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 60px rgba(196,146,42,0.3);
-            border-color: rgba(196,146,42,0.6);
+            box-shadow: 0 20px 60px rgba(196, 146, 42, 0.3);
+            border-color: rgba(196, 146, 42, 0.6);
         }
+
         .event-card:hover::before {
             transform: scaleX(1);
         }
-        
-        /* Buttons */
+
+        .event-card.sold-out {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .event-card.sold-out:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ──── Buttons ──── */
         .btn {
             background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%);
             color: white;
@@ -99,10 +339,11 @@
             font-weight: 600;
             font-size: 16px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(196,146,42,0.3);
+            box-shadow: 0 4px 20px rgba(196, 146, 42, 0.3);
             position: relative;
             overflow: hidden;
         }
+
         .btn::before {
             content: '';
             position: absolute;
@@ -110,28 +351,44 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.5s ease;
         }
+
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(196,146,42,0.5);
+            box-shadow: 0 8px 30px rgba(196, 146, 42, 0.5);
         }
+
         .btn:hover::before {
             left: 100%;
         }
-        
-        /* Form */
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn.btn-sold-out {
+            background: linear-gradient(135deg, #4b4b4b 0%, #333 100%);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* ──── Form ──── */
         .form-container {
             background: linear-gradient(145deg, #161616 0%, #1e1e1e 100%);
-            border: 1px solid rgba(196,146,42,0.3);
+            border: 1px solid rgba(196, 146, 42, 0.3);
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
+
         .form-group {
             margin-bottom: 24px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
@@ -141,48 +398,37 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
             padding: 16px;
-            background: rgba(30,30,30,0.8);
-            border: 2px solid rgba(196,146,42,0.2);
+            background: rgba(30, 30, 30, 0.8);
+            border: 2px solid rgba(196, 146, 42, 0.2);
             border-radius: 12px;
             color: white;
             font-size: 16px;
             transition: all 0.3s ease;
         }
+
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
             outline: none;
             border-color: #c4922a;
-            box-shadow: 0 0 20px rgba(196,146,42,0.2);
+            box-shadow: 0 0 20px rgba(196, 146, 42, 0.2);
         }
+
         .form-group textarea {
             resize: vertical;
             min-height: 120px;
         }
-        
-        /* Success Message */
-        .success-container {
-            background: linear-gradient(145deg, rgba(16,185,129,0.1) 0%, rgba(16,185,129,0.05) 100%);
-            border: 2px solid #10b981;
-            border-radius: 20px;
-            padding: 60px 40px;
-            text-align: center;
-            animation: slideIn 0.5s ease;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Info Cards */
+
+        /* ──── Info Cards ──── */
         .info-card {
-            background: rgba(30,30,30,0.6);
-            border: 1px solid rgba(196,146,42,0.2);
+            background: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(196, 146, 42, 0.2);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 16px;
@@ -190,6 +436,7 @@
             align-items: center;
             gap: 16px;
         }
+
         .info-icon {
             width: 48px;
             height: 48px;
@@ -198,140 +445,298 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
+
         .info-icon .material-icons {
             font-size: 24px;
             color: white;
         }
-        
-        /* Progress Bar */
-        .progress-bar {
-            height: 8px;
-            background: rgba(196,146,42,0.2);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 32px;
+
+        /* ──── Success ──── */
+        .success-container {
+            background: linear-gradient(145deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 2px solid #10b981;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            animation: slideIn 0.5s ease;
         }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #c4922a, #b8860b);
-            border-radius: 4px;
-            transition: width 0.5s ease;
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        .hidden { display: none !important; }
-        
-        /* Responsive */
+
+        /* ──── Loading overlay ──── */
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        #loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 56px;
+            height: 56px;
+            border: 4px solid rgba(196, 146, 42, 0.2);
+            border-top-color: #c4922a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ──── Responsive ──── */
         @media (max-width: 768px) {
-            .hero { padding: 40px 20px; }
-            .form-container { padding: 24px; }
-            .container { padding: 20px 16px; }
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .form-container {
+                padding: 24px;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+
+            .hero h1 {
+                font-size: 32px !important;
+            }
+
+            #realtime-counter {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 24px !important;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr !important;
+            }
         }
     </style>
 </head>
+
 <body>
+
+    <!-- Firebase Status Badge -->
+    <div id="firebase-status">
+        <div class="status-dot loading" id="status-dot"></div>
+        <span id="status-text">Connexion...</span>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
     <div class="container">
-        <!-- Events List -->
+
+        <!-- ════════ Events List View ════════ -->
         <div id="events-section">
             <div class="hero">
-                <h1 style="font-size: 48px; margin-bottom: 16px; background: linear-gradient(135deg, #c4922a 0%, #f5f0e8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Événements Mirichi</h1>
-                <p style="font-size: 18px; color: #888; margin-bottom: 24px;">Découvrez et réservez vos places pour nos événements exclusifs</p>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                <h1
+                    style="font-size: 48px; margin-bottom: 16px; background: linear-gradient(135deg, #c4922a 0%, #f5f0e8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    Événements Mirichi</h1>
+                <p style="font-size: 18px; color: #888; margin-bottom: 0;">Découvrez et réservez vos places pour nos
+                    événements exclusifs</p>
+            </div>
+
+            <!-- Real-Time Counter Block -->
+            <div id="realtime-counter">
+                <div class="counter-block">
+                    <div class="counter-value" id="counter-reserved">–</div>
+                    <div class="counter-label">Réservations</div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span>Remplissage en direct</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="counter-block">
+                    <div class="counter-value" id="counter-available">–</div>
+                    <div class="counter-label">Places restantes</div>
                 </div>
             </div>
-            
+
+            <!-- Banners -->
+            <div id="sold-out-banner">
+                🚫 Événement complet — Plus aucune place disponible
+            </div>
+            <div id="almost-full-banner">
+                ⚡ Dernières places ! Réservez maintenant avant qu'il soit trop tard
+            </div>
+
             <div id="events-grid"></div>
         </div>
 
-        <!-- Reservation Form -->
+        <!-- ════════ Reservation Form View ════════ -->
         <div id="reservation-form" class="hidden">
             <button onclick="showEvents()" class="btn" style="margin-bottom: 24px;">← Retour aux événements</button>
-            
+
             <div class="form-container">
                 <h2 style="font-size: 32px; margin-bottom: 24px; color: #c4922a;">Réserver votre place</h2>
-                
+
                 <div id="selected-event-info" style="margin-bottom: 32px;"></div>
-                
-                <form onsubmit="handleBooking(event)">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+                <!-- Live counter in form -->
+                <div
+                    style="display:flex; align-items:center; gap:12px; background:rgba(196,146,42,0.08); border:1px solid rgba(196,146,42,0.2); border-radius:12px; padding:12px 20px; margin-bottom:24px;">
+                    <span class="material-icons" style="color:#c4922a;">people</span>
+                    <div>
+                        <span style="font-weight:700; color:#c4922a;" id="form-counter-available">–</span>
+                        <span style="color:#888; font-size:14px;"> places restantes sur <strong
+                                style="color:#f5f0e8;">100</strong></span>
+                    </div>
+                    <div class="status-dot connected" style="margin-left:auto;" title="Mise à jour en temps réel"></div>
+                </div>
+
+                <form onsubmit="handleBooking(event)" id="booking-form-main">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;" class="form-grid">
                         <div class="form-group">
                             <label for="fullName">Nom complet *</label>
-                            <input type="text" id="fullName" placeholder="Votre nom complet" required>
+                            <input type="text" id="fullName" placeholder="Votre nom complet" required maxlength="100">
                         </div>
                         <div class="form-group">
                             <label for="email">Email *</label>
-                            <input type="email" id="email" placeholder="votre@email.com" required>
+                            <input type="email" id="email" placeholder="votre@email.com" required maxlength="254">
                         </div>
                     </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;" class="form-grid">
                         <div class="form-group">
                             <label for="phone">Téléphone *</label>
-                            <input type="tel" id="phone" placeholder="+243 XXX XXX XXX" required>
+                            <input type="tel" id="phone" placeholder="+243 XXX XXX XXX" required maxlength="30">
                         </div>
                         <div class="form-group">
                             <label for="city">Ville *</label>
-                            <input type="text" id="city" placeholder="Votre ville" required>
+                            <input type="text" id="city" placeholder="Votre ville" required maxlength="80">
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="profession">Profession</label>
-                        <input type="text" id="profession" placeholder="Votre profession">
+                        <input type="text" id="profession" placeholder="Votre profession" maxlength="100">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="photo">Photo d'identité *</label>
-                        <div style="border: 2px dashed rgba(196,146,42,0.3); border-radius: 12px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('photo').click()" id="photo-dropzone">
-                            <div id="photo-preview-container" style="display: none; position: relative; width: 200px; height: 200px; margin: 0 auto;">
-                                <img id="photo-preview-img" style="max-width: 100%; max-height: 100%; border-radius: 8px; border: 2px solid #c4922a;">
+                        <div style="border: 2px dashed rgba(196,146,42,0.3); border-radius: 12px; padding: 32px; text-align: center; cursor: pointer; transition: all 0.3s ease;"
+                            onclick="document.getElementById('photo').click()" id="photo-dropzone">
+                            <div id="photo-preview-container"
+                                style="display: none; position: relative; width: 200px; height: 200px; margin: 0 auto;">
+                                <img id="photo-preview-img"
+                                    style="max-width: 100%; max-height: 100%; border-radius: 8px; border: 2px solid #c4922a;">
                             </div>
                             <div id="photo-placeholder">
-                                <span class="material-icons" style="font-size: 48px; color: #c4922a; margin-bottom: 16px;">add_a_photo</span>
+                                <span class="material-icons"
+                                    style="font-size: 48px; color: #c4922a; margin-bottom: 16px;">add_a_photo</span>
                                 <p style="color: #888;">Cliquez pour ajouter votre photo</p>
                                 <p style="color: #666; font-size: 12px; margin-top: 8px;">Format: JPG, PNG (Max 5MB)</p>
                             </div>
                         </div>
-                        <input type="file" id="photo" accept="image/jpeg,image/png" style="display: none;" onchange="handlePhotoUpload(event)" required>
+                        <input type="file" id="photo" accept="image/jpeg,image/png" style="display: none;"
+                            onchange="handlePhotoUpload(event)" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="motivation">Pourquoi souhaitez-vous participer ? *</label>
-                        <textarea id="motivation" placeholder="Partagez vos motivations..." rows="4" required></textarea>
+                        <textarea id="motivation" placeholder="Partagez vos motivations..." rows="4" required
+                            maxlength="2000"></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="expectations">Qu'attendez-vous de cet événement ?</label>
-                        <textarea id="expectations" placeholder="Vos attentes..." rows="3"></textarea>
+                        <textarea id="expectations" placeholder="Vos attentes..." rows="3" maxlength="1000"></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>
                             <input type="checkbox" id="newsletter" style="width: auto; margin-right: 8px;">
                             Je souhaite recevoir des informations sur les futurs événements
                         </label>
                     </div>
-                    
-                    <button type="submit" class="btn" style="width: 100%; margin-top: 16px;">Confirmer ma réservation</button>
+
+                    <button type="submit" class="btn" id="submit-btn" style="width: 100%; margin-top: 16px;">Confirmer
+                        ma réservation</button>
                 </form>
             </div>
         </div>
 
-        <!-- Success Message -->
+        <!-- ════════ Success View ════════ -->
         <div id="success-message" class="hidden">
             <div class="success-container">
-                <div style="font-size: 64px; color: #10b981; margin-bottom: 24px;"><span class="material-icons" style="font-size: 64px;">check_circle</span></div>
+                <div style="font-size: 64px; color: #10b981; margin-bottom: 24px;"><span class="material-icons"
+                        style="font-size: 64px;">check_circle</span></div>
                 <h2 style="font-size: 36px; margin-bottom: 16px; color: #10b981;">Réservation confirmée!</h2>
-                <p style="font-size: 18px; color: #888; margin-bottom: 32px;">Votre place a été réservée avec succès. Préparez-vous pour une expérience exceptionnelle.</p>
-                <button onclick="downloadTicket()" class="btn" style="margin-right: 16px;">Télécharger mon ticket</button>
-                <button onclick="showEvents()" class="btn" style="background: rgba(30,30,30,0.8); border: 2px solid rgba(196,146,42,0.3);">Retour aux événements</button>
+                <p style="font-size: 18px; color: #888; margin-bottom: 8px;">Votre place a été réservée avec succès.</p>
+                <p style="font-size: 14px; color: #666; margin-bottom: 32px;">Préparez-vous pour une expérience
+                    exceptionnelle.</p>
+                <button onclick="downloadTicket()" class="btn" style="margin-right: 16px;">Télécharger mon
+                    ticket</button>
+                <button onclick="showEvents()" class="btn"
+                    style="background: rgba(30,30,30,0.8); border: 2px solid rgba(196,146,42,0.3);">Retour aux
+                    événements</button>
             </div>
         </div>
     </div>
 
+    <!-- firebase-config.js doit être présent dans le même dossier -->
+    <script src="firebase-config.js"></script>
+
     <script>
-        // Event Data
+        // ════════════════════════════════════════════
+        //  FIREBASE INTEGRATION — MIRICHI EVENTS
+        // ════════════════════════════════════════════
+
+        let db = null;
+        let firebaseReady = false;
+        let currentBookings = 0;
+        let selectedEvent = null;
+        let currentBooking = null;
+        let uploadedPhoto = null;
+
+        const MAX_PARTICIPANTS_LOCAL = window.MAX_PARTICIPANTS || 100;
+        const EVENT_ID_LOCAL = window.EVENT_ID || 'touch-up-2026';
+
+        // ──── Event Data ────
         const events = [
             {
                 id: 1,
@@ -353,151 +758,259 @@
             }
         ];
 
-        const MAX_PARTICIPANTS = 100;
-        let selectedEvent = null;
-        let currentBooking = null;
-        let uploadedPhoto = null;
+        // ════════════════════════════════════════════
+        //  INITIALISATION FIREBASE
+        // ════════════════════════════════════════════
 
-        // Handle photo upload with automatic square crop
-        function handlePhotoUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        function setStatus(state, text) {
+            const dot = document.getElementById('status-dot');
+            const label = document.getElementById('status-text');
+            const badge = document.getElementById('firebase-status');
+            dot.className = 'status-dot ' + state;
+            badge.className = state;
+            label.textContent = text;
+        }
 
-            // Validate file size (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                alert('La photo ne doit pas dépasser 5MB.');
-                event.target.value = '';
+        async function initFirebase() {
+            setStatus('loading', 'Connexion Firebase...');
+
+            const config = window.FIREBASE_CONFIG;
+
+            // Vérifier si les credentials sont configurés
+            if (!config || config.apiKey === 'YOUR_API_KEY') {
+                setStatus('error', 'Firebase non configuré');
+                console.warn('⚠️ Firebase non configuré. Ouvrez firebase-config.js et saisissez vos credentials.');
+                showFirebaseSetupModal();
+                // Charger quand même la page en mode dégradé
+                loadEventsUI(0);
                 return;
             }
 
-            // Validate file type
-            if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
-                alert('Seuls les fichiers JPG et PNG sont acceptés.');
-                event.target.value = '';
-                return;
+            try {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(config);
+                }
+                db = firebase.database();
+
+                // Tester la connexion
+                const connRef = db.ref('.info/connected');
+                connRef.on('value', (snap) => {
+                    if (snap.val() === true) {
+                        setStatus('connected', 'Temps réel actif');
+                        firebaseReady = true;
+                    } else {
+                        setStatus('loading', 'Reconnexion...');
+                    }
+                });
+
+                // ════ ÉCOUTE EN TEMPS RÉEL DU COMPTEUR ════
+                // Écoute le chemin bookings/EVENT_ID dans Firebase
+                const bookingsRef = db.ref(`bookings/${EVENT_ID_LOCAL}`);
+
+                bookingsRef.on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    const count = data ? Object.keys(data).length : 0;
+
+                    const wasBelow = currentBookings < MAX_PARTICIPANTS_LOCAL;
+                    currentBookings = count;
+
+                    updateCounterUI(count);
+
+                    // Si on vient d'atteindre 100 → notification visuelle
+                    if (!wasBelow && count >= MAX_PARTICIPANTS_LOCAL) {
+                        console.log('🚨 Événement complet !');
+                    }
+                }, (error) => {
+                    console.error('Firebase écoute échouée:', error);
+                    setStatus('error', 'Erreur connexion');
+                });
+
+            } catch (error) {
+                console.error('Firebase init échoué:', error);
+                setStatus('error', 'Échec connexion');
+                loadEventsUI(0);
+            }
+        }
+
+        // ════════════════════════════════════════════
+        //  MISE À JOUR UI DU COMPTEUR
+        // ════════════════════════════════════════════
+
+        function updateCounterUI(count) {
+            const available = Math.max(0, MAX_PARTICIPANTS_LOCAL - count);
+            const percent = Math.min(100, Math.round((count / MAX_PARTICIPANTS_LOCAL) * 100));
+
+            // Compteurs
+            const elReserved = document.getElementById('counter-reserved');
+            const elAvailable = document.getElementById('counter-available');
+            const elFormAvailable = document.getElementById('form-counter-available');
+
+            if (elReserved) {
+                elReserved.textContent = count;
+                elReserved.classList.remove('pulse-update');
+                void elReserved.offsetWidth; // force reflow
+                elReserved.classList.add('pulse-update');
+            }
+            if (elAvailable) {
+                elAvailable.textContent = available;
+                elAvailable.classList.remove('pulse-update');
+                void elAvailable.offsetWidth;
+                elAvailable.classList.add('pulse-update');
+            }
+            if (elFormAvailable) elFormAvailable.textContent = available;
+
+            // Barre de progression
+            const fillEl = document.getElementById('progress-fill');
+            const percentEl = document.getElementById('progress-percent');
+            if (fillEl) {
+                fillEl.style.width = percent + '%';
+                if (percent >= 100) fillEl.classList.add('full');
+                else fillEl.classList.remove('full');
+            }
+            if (percentEl) percentEl.textContent = percent + '%';
+
+            // Banners
+            const soldOut = document.getElementById('sold-out-banner');
+            const almostFull = document.getElementById('almost-full-banner');
+            if (available <= 0) {
+                if (soldOut) soldOut.style.display = 'block';
+                if (almostFull) almostFull.style.display = 'none';
+            } else if (available <= 15) {
+                if (soldOut) soldOut.style.display = 'none';
+                if (almostFull) almostFull.style.display = 'block';
+            } else {
+                if (soldOut) soldOut.style.display = 'none';
+                if (almostFull) almostFull.style.display = 'none';
             }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    // Create canvas for square crop
-                    const canvas = document.createElement('canvas');
-                    const size = Math.min(img.width, img.height);
-                    canvas.width = size;
-                    canvas.height = size;
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Center crop to square
-                    const startX = (img.width - size) / 2;
-                    const startY = (img.height - size) / 2;
-                    
-                    ctx.drawImage(img, startX, startY, size, size);
-                    
-                    // Compress to 80% quality
-                    uploadedPhoto = canvas.toDataURL('image/jpeg', 0.8);
-                    
-                    // Update preview
-                    document.getElementById('photo-preview-img').src = uploadedPhoto;
-                    document.getElementById('photo-preview-container').style.display = 'block';
-                    document.getElementById('photo-placeholder').style.display = 'none';
-                    
-                    console.log('Photo uploaded successfully');
-                };
-                img.src = e.target.result;
+            // Recharger la grille d'événements avec le bon compteur
+            loadEventsUI(count);
+        }
+
+        // ════════════════════════════════════════════
+        //  SAUVEGARDE RÉSERVATION DANS FIREBASE
+        // ════════════════════════════════════════════
+
+        async function saveBookingToFirebase(bookingData) {
+            if (!db || !firebaseReady) {
+                throw new Error('Firebase non disponible. Vérifiez votre configuration.');
+            }
+
+            const available = MAX_PARTICIPANTS_LOCAL - currentBookings;
+            if (available <= 0) {
+                throw new Error('Désolé, toutes les places sont réservées.');
+            }
+
+            // Référence unique dans Firebase
+            const newRef = db.ref(`bookings/${EVENT_ID_LOCAL}`).push();
+            const bookingId = newRef.key;
+
+            // Données à sauvegarder (sans la photo — trop lourde pour RTDB)
+            const dbRecord = {
+                bookingId,
+                fullName: String(bookingData.fullName || '').slice(0, 100),
+                email: String(bookingData.email || '').slice(0, 254),
+                phone: String(bookingData.phone || '').slice(0, 30),
+                city: String(bookingData.city || '').slice(0, 80),
+                profession: String(bookingData.profession || '').slice(0, 100),
+                motivation: String(bookingData.motivation || '').slice(0, 2000),
+                expectations: String(bookingData.expectations || '').slice(0, 1000),
+                newsletter: bookingData.newsletter || false,
+                ticketCode: bookingData.ticketCode,
+                eventId: EVENT_ID_LOCAL,
+                eventTitle: bookingData.event.title,
+                bookingDate: new Date().toISOString(),
+                status: 'confirmed'
             };
-            reader.readAsDataURL(file);
+
+            await newRef.set(dbRecord);
+
+            console.log('✅ Réservation enregistrée dans Firebase:', bookingId);
+            return bookingId;
         }
 
-        // Get current registrations from localStorage
-        function getCurrentRegistrations() {
-            const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
-            return bookings.length;
-        }
+        // ════════════════════════════════════════════
+        //  UI — CHARGEMENT DES ÉVÉNEMENTS
+        // ════════════════════════════════════════════
 
-        // Get available places
-        function getAvailablePlaces() {
-            return MAX_PARTICIPANTS - getCurrentRegistrations();
-        }
-
-        // Load events
-        function loadEvents() {
-            console.log('Loading events...');
+        function loadEventsUI(bookingsCount) {
             const eventsGrid = document.getElementById('events-grid');
-            if (!eventsGrid) {
-                console.error('Events grid not found');
+            if (!eventsGrid) return;
+
+            const available = Math.max(0, MAX_PARTICIPANTS_LOCAL - bookingsCount);
+            const isSoldOut = available <= 0;
+
+            eventsGrid.innerHTML = events.map(event => `
+            <div class="event-card ${isSoldOut ? 'sold-out' : ''}" onclick="${isSoldOut ? '' : `selectEvent(${event.id})`}">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 24px;">
+                    <div>
+                        <span style="background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%); color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">${event.category}</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 40px; font-weight: 700; background: linear-gradient(135deg, ${isSoldOut ? '#ef4444' : '#c4922a'} 0%, ${isSoldOut ? '#dc2626' : '#f5d060'} 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">${available}</div>
+                        <div style="font-size: 12px; color: #888; text-transform: uppercase;">Places restantes</div>
+                    </div>
+                </div>
+
+                <h2 style="font-size: 32px; margin-bottom: 12px; font-weight: 700;">${event.title}</h2>
+                <p style="font-size: 18px; color: #c4922a; margin-bottom: 16px; font-style: italic;">${event.theme}</p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;" class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon"><span class="material-icons">event</span></div>
+                        <div>
+                            <div style="font-size: 12px; color: #888; text-transform: uppercase;">Date</div>
+                            <div style="font-weight: 600;">${event.date}</div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon"><span class="material-icons">schedule</span></div>
+                        <div>
+                            <div style="font-size: 12px; color: #888; text-transform: uppercase;">Heure</div>
+                            <div style="font-weight: 600;">${event.time}</div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon"><span class="material-icons">location_on</span></div>
+                        <div>
+                            <div style="font-size: 12px; color: #888; text-transform: uppercase;">Lieu</div>
+                            <div style="font-weight: 600;">${event.location}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="color: #888; line-height: 1.8; margin-bottom: 24px;">${event.description}</p>
+
+                <div style="margin-bottom: 24px;">
+                    <h3 style="font-size: 16px; color: #c4922a; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Programme</h3>
+                    <ul style="list-style: none;">
+                        ${event.program.map(item => `
+                            <li style="padding: 8px 0; border-bottom: 1px solid rgba(196,146,42,0.1); display: flex; align-items: center; gap: 12px;">
+                                <span style="width: 8px; height: 8px; background: #c4922a; border-radius: 50%; flex-shrink:0;"></span>
+                                ${item}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+
+                <button class="btn ${isSoldOut ? 'btn-sold-out' : ''}" style="width: 100%;" ${isSoldOut ? 'disabled' : ''}>
+                    ${isSoldOut ? '🚫 Événement complet' : 'Réserver ma place'}
+                </button>
+            </div>
+        `).join('');
+        }
+
+        // ════════════════════════════════════════════
+        //  NAVIGATION
+        // ════════════════════════════════════════════
+
+        function selectEvent(eventId) {
+            const available = MAX_PARTICIPANTS_LOCAL - currentBookings;
+            if (available <= 0) {
+                alert('Désolé, toutes les places sont réservées pour cet événement.');
                 return;
             }
-            
-            const availablePlaces = getAvailablePlaces();
-            const progress = ((MAX_PARTICIPANTS - availablePlaces) / MAX_PARTICIPANTS) * 100;
-            document.getElementById('progress-fill').style.width = progress + '%';
-            
-            console.log('Places disponibles:', availablePlaces);
-            console.log('Nombre d\'événements:', events.length);
-            
-            eventsGrid.innerHTML = events.map(event => `
-                <div class="event-card" onclick="selectEvent(${event.id})">
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 24px;">
-                        <div>
-                            <span style="background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%); color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">${event.category}</span>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-size: 32px; font-weight: 700; color: #c4922a;">${availablePlaces}</div>
-                            <div style="font-size: 12px; color: #888; text-transform: uppercase;">Places restantes</div>
-                        </div>
-                    </div>
-                    
-                    <h2 style="font-size: 32px; margin-bottom: 12px; font-weight: 700;">${event.title}</h2>
-                    <p style="font-size: 18px; color: #c4922a; margin-bottom: 16px; font-style: italic;">${event.theme}</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
-                        <div class="info-card">
-                            <div class="info-icon"><span class="material-icons">event</span></div>
-                            <div>
-                                <div style="font-size: 12px; color: #888; text-transform: uppercase;">Date</div>
-                                <div style="font-weight: 600;">${event.date}</div>
-                            </div>
-                        </div>
-                        <div class="info-card">
-                            <div class="info-icon"><span class="material-icons">schedule</span></div>
-                            <div>
-                                <div style="font-size: 12px; color: #888; text-transform: uppercase;">Heure</div>
-                                <div style="font-weight: 600;">${event.time}</div>
-                            </div>
-                        </div>
-                        <div class="info-card">
-                            <div class="info-icon"><span class="material-icons">location_on</span></div>
-                            <div>
-                                <div style="font-size: 12px; color: #888; text-transform: uppercase;">Lieu</div>
-                                <div style="font-weight: 600;">${event.location}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <p style="color: #888; line-height: 1.8; margin-bottom: 24px;">${event.description}</p>
-                    
-                    <div style="margin-bottom: 24px;">
-                        <h3 style="font-size: 16px; color: #c4922a; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Programme</h3>
-                        <ul style="list-style: none;">
-                            ${event.program.map(item => `
-                                <li style="padding: 8px 0; border-bottom: 1px solid rgba(196,146,42,0.1); display: flex; align-items: center; gap: 12px;">
-                                    <span style="width: 8px; height: 8px; background: #c4922a; border-radius: 50%;"></span>
-                                    ${item}
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                    
-                    <button class="btn" style="width: 100%;">Réserver ma place</button>
-                </div>
-            `).join('');
-            
-            console.log('Événements affichés');
-        }
 
-        // Select event
-        function selectEvent(eventId) {
             selectedEvent = events.find(e => e.id === eventId);
             if (!selectedEvent) return;
 
@@ -506,118 +1019,168 @@
             document.getElementById('success-message').classList.add('hidden');
 
             document.getElementById('selected-event-info').innerHTML = `
+            <div class="info-card">
+                <div class="info-icon"><span class="material-icons">stars</span></div>
+                <div>
+                    <div style="font-size: 24px; font-weight: 700;">${selectedEvent.title}</div>
+                    <div style="color: #c4922a;">${selectedEvent.theme}</div>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px;">
                 <div class="info-card">
-                    <div class="info-icon"><span class="material-icons">stars</span></div>
+                    <div class="info-icon"><span class="material-icons">event</span></div>
                     <div>
-                        <div style="font-size: 24px; font-weight: 700;">${selectedEvent.title}</div>
-                        <div style="color: #c4922a;">${selectedEvent.theme}</div>
+                        <div style="font-size: 12px; color: #888;">Date</div>
+                        <div style="font-weight: 600;">${selectedEvent.date}</div>
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 16px;">
-                    <div class="info-card">
-                        <div class="info-icon"><span class="material-icons">event</span></div>
-                        <div>
-                            <div style="font-size: 12px; color: #888;">Date</div>
-                            <div style="font-weight: 600;">${selectedEvent.date}</div>
-                        </div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-icon"><span class="material-icons">schedule</span></div>
-                        <div>
-                            <div style="font-size: 12px; color: #888;">Heure</div>
-                            <div style="font-weight: 600;">${selectedEvent.time}</div>
-                        </div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-icon"><span class="material-icons">location_on</span></div>
-                        <div>
-                            <div style="font-size: 12px; color: #888;">Lieu</div>
-                            <div style="font-weight: 600;">${selectedEvent.location}</div>
-                        </div>
+                <div class="info-card">
+                    <div class="info-icon"><span class="material-icons">schedule</span></div>
+                    <div>
+                        <div style="font-size: 12px; color: #888;">Heure</div>
+                        <div style="font-weight: 600;">${selectedEvent.time}</div>
                     </div>
                 </div>
-            `;
+                <div class="info-card">
+                    <div class="info-icon"><span class="material-icons">location_on</span></div>
+                    <div>
+                        <div style="font-size: 12px; color: #888;">Lieu</div>
+                        <div style="font-weight: 600;">${selectedEvent.location}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Show events
         function showEvents() {
             document.getElementById('events-section').classList.remove('hidden');
             document.getElementById('reservation-form').classList.add('hidden');
             document.getElementById('success-message').classList.add('hidden');
-            document.querySelector('form').reset();
+            const form = document.getElementById('booking-form-main');
+            if (form) form.reset();
             selectedEvent = null;
             currentBooking = null;
-            loadEvents();
+            uploadedPhoto = null;
+            // Reset photo preview
+            document.getElementById('photo-preview-container').style.display = 'none';
+            document.getElementById('photo-placeholder').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Handle booking
-        function handleBooking(event) {
+        // ════════════════════════════════════════════
+        //  GESTION DU FORMULAIRE
+        // ════════════════════════════════════════════
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert('La photo ne doit pas dépasser 5MB.');
+                event.target.value = '';
+                return;
+            }
+            if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+                alert('Seuls les fichiers JPG et PNG sont acceptés.');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    const size = Math.min(img.width, img.height);
+                    canvas.width = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+                    const startX = (img.width - size) / 2;
+                    const startY = (img.height - size) / 2;
+                    ctx.drawImage(img, startX, startY, size, size);
+                    uploadedPhoto = canvas.toDataURL('image/jpeg', 0.8);
+
+                    document.getElementById('photo-preview-img').src = uploadedPhoto;
+                    document.getElementById('photo-preview-container').style.display = 'block';
+                    document.getElementById('photo-placeholder').style.display = 'none';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function handleBooking(event) {
             event.preventDefault();
-            console.log('Booking form submitted');
 
-            const fullName = document.getElementById('fullName').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const city = document.getElementById('city').value;
-            const profession = document.getElementById('profession').value;
-            const motivation = document.getElementById('motivation').value;
-            const expectations = document.getElementById('expectations').value;
-            const newsletter = document.getElementById('newsletter').checked;
-
-            console.log('Form data collected:', { fullName, email, phone, city });
-
-            // Validate photo
             if (!uploadedPhoto) {
                 alert('Veuillez ajouter votre photo d\'identité.');
                 return;
             }
 
-            // Check if event is full
-            const availablePlaces = getAvailablePlaces();
-            if (availablePlaces <= 0) {
-                alert('Désolé, toutes les places sont réservées.');
+            // Vérification temps réel des places
+            const available = MAX_PARTICIPANTS_LOCAL - currentBookings;
+            if (available <= 0) {
+                alert('Désolé, toutes les places viennent d\'être réservées en temps réel.');
+                showEvents();
                 return;
             }
 
-            // Generate ticket code in TU-2026-XXX format
+            if (!firebaseReady || !db) {
+                alert('Connexion Firebase non établie. Veuillez configurer firebase-config.js avec vos credentials Firebase.');
+                return;
+            }
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const profession = document.getElementById('profession').value.trim();
+            const motivation = document.getElementById('motivation').value.trim();
+            const expectations = document.getElementById('expectations').value.trim();
+            const newsletter = document.getElementById('newsletter').checked;
+
+            // Génération du code ticket
             const year = '2026';
-            const randomNum = Math.floor(Math.random() * 900) + 100;
-            const ticketCode = `TU-${year}-${String(randomNum)}`;
+            const randomNum = Math.floor(Math.random() * 90000) + 10000;
+            const ticketCode = `TU-${year}-${randomNum}`;
 
             currentBooking = {
                 event: selectedEvent,
-                fullName,
-                email,
-                phone,
-                city,
-                profession,
-                motivation,
-                expectations,
-                newsletter,
+                fullName, email, phone, city, profession,
+                motivation, expectations, newsletter,
                 photo: uploadedPhoto,
                 ticketCode,
                 bookingDate: new Date().toISOString()
             };
 
-            console.log('Booking created:', currentBooking);
+            // Afficher le loader
+            document.getElementById('loading-overlay').classList.add('active');
+            const submitBtn = document.getElementById('submit-btn');
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Enregistrement...'; }
 
-            // Save to localStorage
-            const bookings = JSON.parse(localStorage.getItem('mirichi_bookings') || '[]');
-            bookings.push(currentBooking);
-            localStorage.setItem('mirichi_bookings', JSON.stringify(bookings));
+            try {
+                await saveBookingToFirebase(currentBooking);
 
-            console.log('Booking saved to localStorage');
+                document.getElementById('reservation-form').classList.add('hidden');
+                document.getElementById('success-message').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            document.getElementById('reservation-form').classList.add('hidden');
-            document.getElementById('success-message').classList.remove('hidden');
-            
-            console.log('Success message displayed');
+            } catch (err) {
+                alert('Erreur: ' + err.message);
+                console.error('Booking error:', err);
+            } finally {
+                document.getElementById('loading-overlay').classList.remove('active');
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Confirmer ma réservation'; }
+            }
         }
 
-        // Download ticket
+        // ════════════════════════════════════════════
+        //  GÉNÉRATION PDF TICKET
+        // ════════════════════════════════════════════
+
         function downloadTicket() {
-            console.log('Download ticket called');
-            
             if (!currentBooking || !selectedEvent) {
                 alert('Erreur: Aucune réservation trouvée.');
                 return;
@@ -625,45 +1188,30 @@
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
-            
             const pageWidth = 210;
             const pageHeight = 297;
 
-            // Background gradient
             doc.setFillColor(9, 9, 15);
             doc.rect(0, 0, pageWidth, pageHeight, 'F');
-
-            // Gold accent bar at top
             doc.setFillColor(196, 146, 42);
             doc.rect(0, 0, pageWidth, 6, 'F');
-
-            // Gold accent bar at bottom
-            doc.setFillColor(196, 146, 42);
             doc.rect(0, pageHeight - 6, pageWidth, 6, 'F');
 
-            // Header section
             doc.setFillColor(15, 15, 26);
             doc.roundedRect(15, 12, pageWidth - 30, 35, 3, 3, 'F');
-            
-            // Event title
             doc.setTextColor(196, 146, 42);
             doc.setFontSize(26);
             doc.setFont('helvetica', 'bold');
             doc.text(selectedEvent.title, 20, 28);
-
-            // Event theme
             doc.setTextColor(232, 184, 75);
             doc.setFontSize(11);
             doc.setFont('helvetica', 'italic');
             doc.text(selectedEvent.theme, 20, 35);
 
-            // Event card
             doc.setFillColor(15, 15, 26);
             doc.setDrawColor(196, 146, 42);
             doc.setLineWidth(0.5);
             doc.roundedRect(15, 55, pageWidth - 30, 50, 3, 3, 'FD');
-
-            // Event details
             doc.setTextColor(196, 146, 42);
             doc.setFontSize(10);
             doc.setFont('helvetica', 'bold');
@@ -672,60 +1220,36 @@
             doc.setTextColor(245, 240, 232);
             doc.setFontSize(10);
             doc.setFont('helvetica', 'normal');
-            
-            const detailsY = 72;
-            const detailsX = 20;
-            const lineHeight = 7;
+            const detailsY = 72, detailsX = 20, lineHeight = 7;
 
-            doc.setFont('helvetica', 'bold');
-            doc.text('DATE:', detailsX, detailsY);
-            doc.setFont('helvetica', 'normal');
-            doc.text(selectedEvent.date, detailsX + 20, detailsY);
+            [
+                ['DATE:', selectedEvent.date],
+                ['HEURE:', selectedEvent.time],
+                ['LIEU:', selectedEvent.location],
+                ['CATÉGORIE:', selectedEvent.category]
+            ].forEach(([label, value], i) => {
+                doc.setFont('helvetica', 'bold');
+                doc.text(label, detailsX, detailsY + lineHeight * i);
+                doc.setFont('helvetica', 'normal');
+                doc.text(value, detailsX + 25, detailsY + lineHeight * i);
+            });
 
-            doc.setFont('helvetica', 'bold');
-            doc.text('HEURE:', detailsX, detailsY + lineHeight);
-            doc.setFont('helvetica', 'normal');
-            doc.text(selectedEvent.time, detailsX + 20, detailsY + lineHeight);
-
-            doc.setFont('helvetica', 'bold');
-            doc.text('LIEU:', detailsX, detailsY + lineHeight * 2);
-            doc.setFont('helvetica', 'normal');
-            doc.text(selectedEvent.location, detailsX + 20, detailsY + lineHeight * 2);
-
-            doc.setFont('helvetica', 'bold');
-            doc.text('CATÉGORIE:', detailsX, detailsY + lineHeight * 3);
-            doc.setFont('helvetica', 'normal');
-            doc.text(selectedEvent.category, detailsX + 20, detailsY + lineHeight * 3);
-
-            // Participant card
             doc.setFillColor(15, 15, 26);
             doc.roundedRect(15, 112, pageWidth - 30, 85, 3, 3, 'FD');
 
-            // Photo - add directly without async
             if (currentBooking.photo) {
                 try {
                     doc.addImage(currentBooking.photo, 'JPEG', 20, 118, 40, 55);
                 } catch (e) {
                     doc.setFillColor(30, 30, 30);
                     doc.rect(20, 118, 40, 55, 'F');
-                    doc.setTextColor(196, 146, 42);
-                    doc.setFontSize(8);
-                    doc.text('Photo', 40, 145, { align: 'center' });
                 }
-            } else {
-                doc.setFillColor(30, 30, 30);
-                doc.rect(20, 118, 40, 55, 'F');
-                doc.setTextColor(196, 146, 42);
-                doc.setFontSize(8);
-                doc.text('Photo', 40, 145, { align: 'center' });
             }
 
-            // Photo border with gold
             doc.setDrawColor(196, 146, 42);
             doc.setLineWidth(0.5);
             doc.rect(20, 118, 40, 55);
 
-            // Participant info
             doc.setTextColor(196, 146, 42);
             doc.setFontSize(10);
             doc.setFont('helvetica', 'bold');
@@ -741,36 +1265,24 @@
             doc.text('Email: ' + currentBooking.email, 70, 145);
             doc.text('Téléphone: ' + currentBooking.phone, 70, 153);
             doc.text('Ville: ' + currentBooking.city, 70, 161);
-            
-            if (currentBooking.profession) {
-                doc.text('Profession: ' + currentBooking.profession, 70, 169);
-            }
+            if (currentBooking.profession) doc.text('Profession: ' + currentBooking.profession, 70, 169);
 
-            // Booking info
             doc.setDrawColor(196, 146, 42);
             doc.setLineWidth(0.3);
             doc.line(70, 175, pageWidth - 20, 175);
-            
             doc.setFontSize(8);
             doc.setTextColor(153, 153, 153);
             const bookingDate = new Date(currentBooking.bookingDate).toLocaleDateString('fr-FR', {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+                day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
             });
             doc.text('Réservation: ' + bookingDate, 70, 182);
 
-            // QR Code section
             doc.setFillColor(15, 15, 26);
             doc.roundedRect(15, 205, pageWidth - 30, 65, 3, 3, 'FD');
 
-            // Generate QR code synchronously
             const qrCanvas = document.createElement('canvas');
             qrCanvas.style.display = 'none';
             document.body.appendChild(qrCanvas);
-            
             new QRious({
                 element: qrCanvas,
                 value: currentBooking.ticketCode,
@@ -778,60 +1290,78 @@
                 background: '#0F0F1A',
                 foreground: '#C4922A'
             });
-
             const qrDataUrl = qrCanvas.toDataURL('image/png');
             document.body.removeChild(qrCanvas);
 
             doc.addImage(qrDataUrl, 'PNG', 25, 215, 40, 40);
-
-            // Ticket code
             doc.setTextColor(196, 146, 42);
             doc.setFontSize(20);
             doc.setFont('helvetica', 'bold');
             doc.text(currentBooking.ticketCode, 75, 230);
-
             doc.setTextColor(245, 240, 232);
             doc.setFontSize(9);
             doc.setFont('helvetica', 'normal');
             doc.text('Code unique de validation', 75, 238);
             doc.text('Scannez ce code pour accéder à l\'événement', 75, 246);
 
-            // Footer with legal info
             doc.setDrawColor(196, 146, 42);
             doc.setLineWidth(0.3);
             doc.line(15, 280, pageWidth - 15, 280);
-
             doc.setTextColor(153, 153, 153);
             doc.setFontSize(7);
             doc.setFont('helvetica', 'normal');
             doc.text('Ce badge est personnel et incessible. Présentation obligatoire à l\'entrée.', pageWidth / 2, 286, { align: 'center' });
             doc.text('Pour toute information: contact@mirichimbumba.com', pageWidth / 2, 291, { align: 'center' });
 
-            // Save immediately
-            doc.save(`badge-${selectedEvent.title.replace(/\s+/g, '-')}-${currentBooking.fullName.replace(/\s+/g, '-')}.pdf`);
-            console.log('PDF saved successfully');
+            doc.save(`badge-TOUCH-UP-${currentBooking.fullName.replace(/\s+/g, '-')}.pdf`);
         }
 
-        function drawSilhouette(doc, x, y, radius) {
-            doc.setDrawColor(180, 134, 58);
-            doc.setLineWidth(1);
-            
-            // Head - circle
-            doc.circle(x, y - 8, 9, 'S');
-            
-            // Body - curved shoulders
-            doc.line(x - 14, y + 14, x + 14, y + 14);
-            doc.line(x - 14, y + 14, x - 10, y + 24);
-            doc.line(x + 14, y + 14, x + 10, y + 24);
-            doc.line(x - 10, y + 24, x, y + 30);
-            doc.line(x + 10, y + 24, x, y + 30);
+        // ════════════════════════════════════════════
+        //  MODAL CONFIGURATION FIREBASE
+        // ════════════════════════════════════════════
+
+        function showFirebaseSetupModal() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+            position: fixed; inset: 0; z-index: 99999;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+        `;
+            modal.innerHTML = `
+            <div style="background: #161616; border: 1px solid rgba(196,146,42,0.4); border-radius: 20px; padding: 40px; max-width: 560px; width: 100%; text-align: center;">
+                <span class="material-icons" style="font-size: 56px; color: #c4922a; margin-bottom: 16px;">local_fire_department</span>
+                <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 12px; color: #f5f0e8;">Configuration Firebase requise</h2>
+                <p style="color: #888; margin-bottom: 24px; line-height: 1.7;">
+                    Pour activer les réservations en temps réel, vous devez configurer Firebase.<br>
+                    Ouvrez le fichier <code style="background:rgba(196,146,42,0.15); padding:2px 8px; border-radius:4px; color:#c4922a;">firebase-config.js</code> et remplacez les valeurs <code style="background:rgba(196,146,42,0.15); padding:2px 8px; border-radius:4px; color:#c4922a;">YOUR_...</code> par vos credentials Firebase.
+                </p>
+                <div style="background:rgba(196,146,42,0.08); border:1px solid rgba(196,146,42,0.2); border-radius:12px; padding:16px; text-align:left; margin-bottom:24px; font-size:13px; color:#aaa;">
+                    <strong style="color:#c4922a;">Étapes :</strong><br>
+                    1. Allez sur <a href="https://console.firebase.google.com" target="_blank" style="color:#c4922a;">console.firebase.google.com</a><br>
+                    2. Créez un projet → activez Realtime Database<br>
+                    3. Paramètres du projet → copiez votre config<br>
+                    4. Collez dans <strong>firebase-config.js</strong><br>
+                    5. Consultez <strong>FIREBASE_SETUP.md</strong> pour le guide complet
+                </div>
+                <button onclick="this.closest('div[style]').remove()" style="background: linear-gradient(135deg, #c4922a 0%, #b8860b 100%); color: white; padding: 12px 32px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; font-size: 15px;">
+                    Compris, je vais configurer Firebase
+                </button>
+            </div>
+        `;
+            document.body.appendChild(modal);
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM chargé, initialisation...');
-            loadEvents();
+        // ════════════════════════════════════════════
+        //  INITIALISATION AU CHARGEMENT
+        // ════════════════════════════════════════════
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Afficher la grille avec 0 pendant le chargement
+            loadEventsUI(0);
+            // Lancer Firebase
+            initFirebase();
         });
     </script>
 </body>
+
 </html>
