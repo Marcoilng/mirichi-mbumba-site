@@ -219,6 +219,9 @@
                 <button onclick="switchTab('articles')" id="tab-articles"
                     class="admin-tab-btn px-4 py-3 text-xs md:text-sm font-semibold tracking-wider uppercase border-b-2">Articles
                     de Blog</button>
+                <button onclick="switchTab('touchup')" id="tab-touchup"
+                    class="admin-tab-btn px-4 py-3 text-xs md:text-sm font-semibold tracking-wider uppercase border-b-2">🎯
+                    Touch Up</button>
             </div>
 
             <!-- Tab Content Area -->
@@ -489,6 +492,117 @@
                     </div>
                 </div>
 
+                <!-- 6. TOUCH UP FIREBASE TAB -->
+                <div id="panel-touchup" class="tab-panel hidden space-y-6">
+                    <div class="flex items-center justify-between flex-wrap gap-4">
+                        <div>
+                            <h2 class="text-2xl font-normal text-[var(--gold-light)]"
+                                style="font-family:'Cormorant Garant',serif;">Réservations TOUCH UP</h2>
+                            <p class="text-xs text-gray-500">La Clinique de l'Entrepreneuriat — 29 août 2026 · Silikin
+                                Village</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="exportTouchUpCSV()"
+                                class="bg-[#1e1a3a] border border-[rgba(196,146,42,0.35)] text-xs text-amber-100 hover:text-white px-3 py-1.5 font-semibold"
+                                style="transition:0.3s; cursor:pointer;">Exporter CSV</button>
+                            <button onclick="refreshTouchUp()" class="btn-gold"
+                                style="padding:8px 18px; font-size:0.7rem;">↻ Actualiser</button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="admin-card p-5 flex flex-col justify-between relative overflow-hidden group">
+                            <div
+                                class="absolute right-3 top-3 text-amber-500/10 text-3xl group-hover:scale-110 transition duration-300">
+                                🎫</div>
+                            <div>
+                                <span class="section-label">Inscrits</span>
+                                <h3 class="text-4xl font-normal text-amber-200 mt-2 glow-gold font-serif"
+                                    id="tu-stat-total">–</h3>
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-3 uppercase tracking-wider">Total réservations</p>
+                        </div>
+                        <div class="admin-card p-5 flex flex-col justify-between relative overflow-hidden group">
+                            <div
+                                class="absolute right-3 top-3 text-amber-500/10 text-3xl group-hover:scale-110 transition duration-300">
+                                🏟️</div>
+                            <div>
+                                <span class="section-label">Capacité</span>
+                                <h3 class="text-4xl font-normal text-amber-200 mt-2 glow-gold font-serif"
+                                    id="tu-stat-available">–</h3>
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-3 uppercase tracking-wider">Places disponibles</p>
+                        </div>
+                        <div class="admin-card p-5 flex flex-col justify-between relative overflow-hidden group">
+                            <div
+                                class="absolute right-3 top-3 text-amber-500/10 text-3xl group-hover:scale-110 transition duration-300">
+                                📊</div>
+                            <div>
+                                <span class="section-label">Remplissage</span>
+                                <h3 class="text-4xl font-normal text-amber-200 mt-2 glow-gold font-serif"
+                                    id="tu-stat-fill">–</h3>
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-3 uppercase tracking-wider">Taux de remplissage</p>
+                        </div>
+                        <div class="admin-card p-5 flex flex-col justify-between relative overflow-hidden group">
+                            <div
+                                class="absolute right-3 top-3 text-amber-500/10 text-3xl group-hover:scale-110 transition duration-300">
+                                🔥</div>
+                            <div>
+                                <span class="section-label">Firebase</span>
+                                <h3 class="text-sm font-semibold mt-2" id="tu-firebase-badge" style="color:#f59e0b;">
+                                    Connexion...</h3>
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-3 uppercase tracking-wider">Statut base de données
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="admin-card p-5">
+                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                            <span>Remplissage de l'événement</span>
+                            <span id="tu-progress-text">0 / 100 places</span>
+                        </div>
+                        <div class="h-3 bg-[rgba(196,146,42,0.1)] rounded-full overflow-hidden">
+                            <div id="tu-progress-bar" class="h-full rounded-full transition-all duration-700"
+                                style="width:0%; background: linear-gradient(90deg,#c4922a,#f5d060);"></div>
+                        </div>
+                    </div>
+
+                    <!-- Search + Table -->
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <input type="text" id="tu-search" oninput="renderTouchUpTable()"
+                            class="form-input-admin py-2 text-xs" style="max-width:300px"
+                            placeholder="Rechercher par nom, email, ville...">
+                    </div>
+
+                    <div class="admin-card overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="admin-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nom complet</th>
+                                        <th>Email</th>
+                                        <th>Téléphone</th>
+                                        <th>Ville</th>
+                                        <th>Code Ticket</th>
+                                        <th>Date inscription</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tu-rows">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-8 text-gray-500">Chargement des données
+                                            Firebase...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
@@ -499,6 +613,10 @@
     <!-- Footers -->
     <div id="mm-footer-root"></div>
     <div id="mm-cart-root"></div>
+
+    <!-- Firebase SDK (pour Touch Up) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <!-- Loading Scripts -->
     <script src="site-chrome.js"></script>

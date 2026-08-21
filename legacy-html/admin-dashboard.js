@@ -1380,3 +1380,199 @@ function closeAdminModal() {
     if (root) root.innerHTML = '';
 }
 window.closeAdminModal = closeAdminModal;
+
+// ============================================================
+// TOUCH UP — FIREBASE REALTIME DATABASE INTEGRATION
+// Lit les réservations depuis Firebase touchup/bookings
+// et les affiche dans l'onglet admin dédié.
+// ============================================================
+
+const TU_MAX = 100;
+const TU_BOOKINGS_PATH = 'touchup/bookings';
+const TU_FIREBASE_CONFIG = {
+    apiKey: "AIzaSyDpdm8el1KWM_WD42HMExRCvFp9ySf4fvI",
+    authDomain: "mirichi-events.firebaseapp.com",
+    databaseURL: "https://mirichi-events-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "mirichi-events",
+    storageBucket: "mirichi-events.firebasestorage.app",
+    messagingSenderId: "582412284374",
+    appId: "1:582412284374:web:3c57614741e8a595f13477"
+};
+
+let tuDb = null;
+let tuFirebaseReady = false;
+let tuBookings = []; // array of booking objects
+let tuListenerAttached = false;
+
+/**
+ * Initialise Firebase et démarre l'écoute en temps réel.
+ * Appelé lorsque l'onglet Touch Up est activé pour la première fois.
+ */
+async function initTouchUpFirebase() {
+    setBadge('Connexion...', '#f59e0b');
+
+    if (!window.firebase) {
+        setBadge('SDK manquant', '#ef4444');
+        console.error('Firebase SDK non chargé.');
+        return;
+    }
+
+    try {
+        // Réutiliser l'app existante ou en créer une dédiée
+        const appName = 'touchup-admin';
+        let app;
+        try {
+            app = firebase.app(appName);
+        } catch (_) {
+            app = firebase.initializeApp(TU_FIREBASE_CONFIG, appName);
+        }
+        tuDb = firebase.database(app);
+
+        // Surveiller la connexion
+        tuDb.ref('.info/connected').on('value', (snap) => {
+            if (snap.val() === true) {
+                tuFirebaseReady = true;
+                setBadge('Connecté ✓', '#4ade80');
+            } else {
+                tuFirebaseReady = false;
+                setBadge('Reconnexion...', '#f59e0b');
+            }
+        });
+
+        // Écoute temps réel des réservations
+        if (!tuListenerAttached) {
+            tuListenerAttached = true;
+            tuDb.ref(TU_BOOKINGS_PATH).on('value', (snapshot) => {
+                const data = snapshot.val() || {};
+                tuBookings = Object.values(data);
+                renderTouchUpStats();
+                renderTouchUpTable();
+            }, (err) => {
+                console.error('Touch Up Firebase error:', err);
+                setBadge('Erreur lecture', '#ef4444');
+            });
+        }
+    } catch (err) {
+        console.error('Touch Up Firebase init error:', err);
+        setBadge('Erreur init', '#ef4444');
+    }
+}
+
+function setBadge(text, color) {
+    const el = document.getElementById('tu-firebase-badge');
+    if (el) { el.textContent = text; el.style.color = color; }
+}
+
+function renderTouchUpStats() {
+    const total = tuBookings.length;
+    const available = Math.max(0, TU_MAX - total);
+    const fillPct = Math.min(100, Math.round((total / TU_MAX) * 100));
+
+    const elTotal = document.getElementById('tu-stat-total');
+    const elAvail = document.getElementById('tu-stat-available');
+    const elFill = document.getElementById('tu-stat-fill');
+    const elBar = document.getElementById('tu-progress-bar');
+    const elProg = document.getElementById('tu-progress-text');
+
+    if (elTotal) elTotal.textContent = total;
+    if (elAvail) elAvail.textContent = available;
+    if (elFill) elFill.textContent = fillPct + '%';
+    if (elBar) {
+        elBar.style.width = fillPct + '%';
+        elBar.style.background = fillPct >= 100
+            ? 'linear-gradient(90deg,#ef4444,#dc2626)'
+            : 'linear-gradient(90deg,#c4922a,#f5d060)';
+    }
+    if (elProg) elProg.textContent = `${total} / ${TU_MAX} places`;
+}
+
+function renderTouchUpTable() {
+    const rows = document.getElementById('tu-rows');
+    if (!rows) return;
+
+    const q = (document.getElementById('tu-search')?.value || '').toLowerCase().trim();
+
+    const filtered = tuBookings.filter(b => {
+        if (!q) return true;
+        return (b.fullName || '').toLowerCase().includes(q)
+            || (b.email || '').toLowerCase().includes(q)
+            || (b.city || '').toLowerCase().includes(q)
+            || (b.ticketCode || '').toLowerCase().includes(q);
+    });
+
+    // Sort by booking date descending
+    filtered.sort((a, b) => {
+        const da = a.bookingDate || a.createdAt || '';
+        const db2 = b.bookingDate || b.createdAt || '';
+        return db2.localeCompare(da);
+    });
+
+    if (filtered.length === 0) {
+        rows.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-gray-500">${tuFirebaseReady
+                ? (q ? 'Aucun résultat pour cette recherche.' : 'Aucune réservation enregistrée pour le moment.')
+                : 'Connexion Firebase en cours...'
+            }</td></tr>`;
+        return;
+    }
+
+    const sx = window.sanitizeText || (t => String(t).replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+    rows.innerHTML = filtered.map((b, i) => {
+        const dateStr = b.bookingDate
+            ? new Date(b.bookingDate).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+            : '–';
+        return `
+        <tr>
+            <td class="text-gray-500" style="font-size:0.75rem">${i + 1}</td>
+            <td class="font-medium">${sx(b.fullName || '–')}</td>
+            <td><a href="mailto:${sx(b.email || '')}" class="hover:underline text-amber-200" style="font-size:0.8rem">${sx(b.email || '–')}</a></td>
+            <td style="font-size:0.8rem">${sx(b.phone || '–')}</td>
+            <td style="font-size:0.8rem">${sx(b.city || '–')}</td>
+            <td><span style="font-family:monospace;color:#c4922a;font-size:0.78rem;">${sx(b.ticketCode || '–')}</span></td>
+            <td class="text-gray-400" style="font-size:0.75rem">${sx(dateStr)}</td>
+        </tr>`;
+    }).join('');
+}
+
+function refreshTouchUp() {
+    if (!tuListenerAttached) {
+        initTouchUpFirebase();
+    } else {
+        renderTouchUpStats();
+        renderTouchUpTable();
+    }
+}
+window.refreshTouchUp = refreshTouchUp;
+
+function exportTouchUpCSV() {
+    if (tuBookings.length === 0) {
+        alert('Aucune réservation à exporter.');
+        return;
+    }
+    const header = 'Nom,Email,Téléphone,Ville,Profession,Code Ticket,Date inscription\n';
+    const rows = tuBookings.map(b => {
+        const esc = v => '"' + String(v || '').replace(/"/g, '""') + '"';
+        const dateStr = b.bookingDate ? new Date(b.bookingDate).toLocaleString('fr-FR') : '';
+        return [b.fullName, b.email, b.phone, b.city, b.profession, b.ticketCode, dateStr].map(esc).join(',');
+    }).join('\n');
+
+    const blob = new Blob(['\uFEFF' + header + rows], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `touchup_reservations_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+window.exportTouchUpCSV = exportTouchUpCSV;
+
+// ── Patch switchTab pour lancer Firebase à la 1ère visite du tab Touch Up ──
+const _origSwitchTab = window.switchTab;
+window.switchTab = function (tabId) {
+    _origSwitchTab(tabId);
+    if (tabId === 'touchup' && !tuListenerAttached) {
+        initTouchUpFirebase();
+    }
+};
+
